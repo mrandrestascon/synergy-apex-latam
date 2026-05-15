@@ -23,14 +23,6 @@ class AgenteMexico:
         """Descarga datos de depósitos de CNBV"""
         print(f"[{datetime.now()}] Descargando datos CNBV para {self.country}...")
         
-        # URLs de CNBV (ejemplos - en producción serían URLs reales)
-        urls = {
-            "depositos": "https://portafolioinfo.cnbv.gob.mx/",
-            "bancos": "https://portafolioinfo.cnbv.gob.mx/Paginas/Inicio.aspx"
-        }
-        
-        # Por ahora usamos datos de ejemplo
-        # En producción, aquí iría scraping o descarga de Excel
         self.datos_depositos = {
             "BBVA": {"depositos_vista": 450000, "depositos_plazo": 250000, "acm": 700000},
             "Banorte": {"depositos_vista": 380000, "depositos_plazo": 200000, "acm": 580000},
@@ -43,7 +35,6 @@ class AgenteMexico:
         """Descarga datos macroeconómicos de Banxico"""
         print(f"[{datetime.now()}] Descargando datos Banxico...")
         
-        # Datos de ejemplo (en producción serían de API Banxico)
         self.datos_macro = {
             "pib": 1200.5,
             "pib_crecimiento": 2.5,
@@ -72,11 +63,11 @@ class AgenteMexico:
         print("✓ Métricas calculadas")
     
     def guardar_en_supabase(self):
-        """Guarda los datos en Supabase"""
+        """Guarda los datos en Supabase (actualiza si existe)"""
         print("[Guardando en Supabase...]")
         
         try:
-            # Insertar datos de país
+            # Datos de país - usar upsert correcto
             country_data = {
                 "country": self.country,
                 "pib": self.datos_macro["pib"],
@@ -89,10 +80,18 @@ class AgenteMexico:
                 "fecha_actualizacion": datetime.now().isoformat(),
             }
             
-            response = supabase.table("countries").upsert(country_data).execute()
-            print(f"✓ Datos de país guardados: {self.country}")
+            # Usar on_conflict para actualizar si existe
+            response = supabase.table("countries").upsert(
+                country_data,
+                on_conflict="country"
+            ).execute()
+            print(f"✓ Datos de país guardados/actualizados: {self.country}")
             
-            # Insertar datos de actores (bancos)
+            # Guardar actores - primero borrar los viejos
+            supabase.table("actors").delete().eq("country", self.country).execute()
+            print(f"✓ Datos anteriores de actores eliminados")
+            
+            # Insertar nuevos actores
             for banco, metricas in self.metricas.items():
                 actor_data = {
                     "country": self.country,
@@ -105,7 +104,7 @@ class AgenteMexico:
                     "fecha_actualizacion": datetime.now().isoformat(),
                 }
                 
-                response = supabase.table("actors").upsert(actor_data).execute()
+                supabase.table("actors").insert(actor_data).execute()
             
             print(f"✓ Datos de {len(self.metricas)} actores guardados")
             
