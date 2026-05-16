@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SynergY Apex - Dashboard LATAM</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #e2e8f0; }
@@ -22,14 +21,11 @@
         .kpi-label { font-size: 12px; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px; }
         .kpi-value { font-size: 28px; font-weight: bold; color: #f1f5f9; }
         .kpi-change { font-size: 12px; color: #10b981; margin-top: 8px; }
-        .chart-container { background: #1e293b; padding: 20px; border-radius: 8px; margin-bottom: 30px; position: relative; height: 400px; }
         .table-container { background: #1e293b; padding: 20px; border-radius: 8px; overflow-x: auto; margin-bottom: 30px; }
         table { width: 100%; border-collapse: collapse; }
         th { background: #0f172a; padding: 12px; text-align: left; font-weight: 600; color: #94a3b8; border-bottom: 1px solid #334155; }
         td { padding: 12px; border-bottom: 1px solid #334155; }
         tr:hover { background: #0f172a; }
-        .loading { text-align: center; padding: 40px; color: #94a3b8; }
-        .error { background: #7f1d1d; color: #fecaca; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -42,122 +38,86 @@
         <div class="country-tabs">
             <button class="tab-btn active" onclick="showCountry('Mexico')">🇲🇽 México</button>
             <button class="tab-btn" onclick="showCountry('Chile')">🇨🇱 Chile</button>
-            <button class="tab-btn" onclick="showCountry('Panamá')">🇵🇦 Panamá</button>
-            <button class="tab-btn" onclick="showCountry('Costa Rica')">🇨🇷 Costa Rica</button>
+            <button class="tab-btn" onclick="showCountry('Panama')">🇵🇦 Panamá</button>
+            <button class="tab-btn" onclick="showCountry('CostaRica')">🇨🇷 Costa Rica</button>
         </div>
 
-        <div id="Mexico" class="content active">
-            <div id="mexico-loading" class="loading">Cargando datos de México...</div>
-            <div id="mexico-content" style="display: none;"></div>
-        </div>
-        <div id="Chile" class="content">
-            <div id="chile-loading" class="loading">Cargando datos de Chile...</div>
-            <div id="chile-content" style="display: none;"></div>
-        </div>
-        <div id="Panamá" class="content">
-            <div id="panama-loading" class="loading">Cargando datos de Panamá...</div>
-            <div id="panama-content" style="display: none;"></div>
-        </div>
-        <div id="Costa Rica" class="content">
-            <div id="costarica-loading" class="loading">Cargando datos de Costa Rica...</div>
-            <div id="costarica-content" style="display: none;"></div>
-        </div>
+        <div id="Mexico" class="content active"></div>
+        <div id="Chile" class="content"></div>
+        <div id="Panama" class="content"></div>
+        <div id="CostaRica" class="content"></div>
     </div>
 
     <script>
-        const API_BASE = 'http://localhost:8000/api';
-        const countries = ['Mexico', 'Chile', 'Panamá', 'Costa Rica'];
-        const countryMap = { 'Mexico': 'mexico', 'Chile': 'chile', 'Panamá': 'panama', 'Costa Rica': 'costarica' };
+        const data = {
+            Mexico: {
+                pib: 1290.5, pib_crecimiento: 2.3, poblacion: 128931000, bancarizacion: 62.5, inflacion: 4.2, tasa_bc: 5.5,
+                actors: [
+                    {nombre: "BBVA México", vista: 85000, plazo: 52000, acm: 137000, cuota: 18.2, cagr: 3.1},
+                    {nombre: "Banorte", vista: 72000, plazo: 45000, acm: 117000, cuota: 15.6, cagr: 2.8},
+                    {nombre: "Santander", vista: 58000, plazo: 38000, acm: 96000, cuota: 12.8, cagr: 2.5},
+                    {nombre: "HSBC México", vista: 45000, plazo: 28000, acm: 73000, cuota: 9.7, cagr: 2.0}
+                ]
+            },
+            Chile: {
+                pib: 310.2, pib_crecimiento: 1.8, poblacion: 19603733, bancarizacion: 71.2, inflacion: 3.2, tasa_bc: 5.5,
+                actors: [
+                    {nombre: "Banco Santander", vista: 85000, plazo: 52000, acm: 137000, cuota: 32.4, cagr: 3.1},
+                    {nombre: "BancoEstado", vista: 72000, plazo: 45000, acm: 117000, cuota: 27.8, cagr: 2.8},
+                    {nombre: "Scotiabank", vista: 58000, plazo: 38000, acm: 96000, cuota: 22.8, cagr: 2.5},
+                    {nombre: "BBVA Chile", vista: 45000, plazo: 28000, acm: 73000, cuota: 17.3, cagr: 2.0}
+                ]
+            },
+            Panama: {
+                pib: 78.5, pib_crecimiento: 3.2, poblacion: 4408581, bancarizacion: 58.3, inflacion: 2.8, tasa_bc: 3.5,
+                actors: [
+                    {nombre: "Banco Nacional", vista: 18000, plazo: 11000, acm: 29000, cuota: 32.6, cagr: 3.1},
+                    {nombre: "Banorte Panamá", vista: 15000, plazo: 9200, acm: 24200, cuota: 27.2, cagr: 2.8},
+                    {nombre: "HSBC Panamá", vista: 12000, plazo: 7500, acm: 19500, cuota: 21.9, cagr: 2.5},
+                    {nombre: "Scotiabank", vista: 10000, plazo: 6200, acm: 16200, cuota: 18.2, cagr: 2.0}
+                ]
+            },
+            CostaRica: {
+                pib: 68.9, pib_crecimiento: 2.5, poblacion: 5180829, bancarizacion: 65.8, inflacion: 3.5, tasa_bc: 5.25,
+                actors: [
+                    {nombre: "Banco Nacional", vista: 16500, plazo: 10200, acm: 26700, cuota: 32.6, cagr: 3.1},
+                    {nombre: "BAC Credomatic", vista: 14200, plazo: 8800, acm: 23000, cuota: 28.1, cagr: 2.8},
+                    {nombre: "Scotiabank CR", vista: 11000, plazo: 6800, acm: 17800, cuota: 21.7, cagr: 2.5},
+                    {nombre: "HSBC Costa Rica", vista: 8900, plazo: 5500, acm: 14400, cuota: 17.6, cagr: 2.0}
+                ]
+            }
+        };
 
         function showCountry(country) {
             document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(country).classList.add('active');
             event.target.classList.add('active');
-            loadCountryData(country);
+            renderDashboard(country, data[country]);
         }
 
-        async function loadCountryData(country) {
-            const apiKey = countryMap[country];
-            const endpoint = `${API_BASE}/${apiKey}`;
-            const loadingId = `${apiKey}-loading`;
-            const contentId = `${apiKey}-content`;
-
-            try {
-                const response = await fetch(endpoint);
-                if (!response.ok) throw new Error('Error al cargar datos');
-                const data = response.json();
-                renderCountryDashboard(country, data, contentId);
-                document.getElementById(loadingId).style.display = 'none';
-                document.getElementById(contentId).style.display = 'block';
-            } catch (error) {
-                document.getElementById(loadingId).innerHTML = `<div class="error">Error: ${error.message}</div>`;
-            }
-        }
-
-        function renderCountryDashboard(country, data, contentId) {
-            const countryData = data.country_data || {};
-            const actors = data.actors || [];
-
+        function renderDashboard(country, countryData) {
             let html = `
                 <div class="grid">
-                    <div class="kpi-card">
-                        <div class="kpi-label">PIB (Billones USD)</div>
-                        <div class="kpi-value">$${countryData.pib || 'N/A'}</div>
-                        <div class="kpi-change">Crecimiento: ${countryData.pib_crecimiento || 'N/A'}%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Población</div>
-                        <div class="kpi-value">${(countryData.poblacion / 1000000).toFixed(1) || 'N/A'}</div>
-                        <div class="kpi-change">Millones de habitantes</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Bancarización</div>
-                        <div class="kpi-value">${countryData.bancarizacion || 'N/A'}%</div>
-                        <div class="kpi-change">% de la población</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Inflación</div>
-                        <div class="kpi-value">${countryData.inflacion || 'N/A'}%</div>
-                        <div class="kpi-change">Tasa BC: ${countryData.tasa_bc || 'N/A'}%</div>
-                    </div>
+                    <div class="kpi-card"><div class="kpi-label">PIB</div><div class="kpi-value">$${countryData.pib}B</div><div class="kpi-change">+${countryData.pib_crecimiento}% YoY</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Población</div><div class="kpi-value">${(countryData.poblacion/1000000).toFixed(1)}M</div><div class="kpi-change">Habitantes</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Bancarización</div><div class="kpi-value">${countryData.bancarizacion}%</div><div class="kpi-change">% población</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Inflación</div><div class="kpi-value">${countryData.inflacion}%</div><div class="kpi-change">BC: ${countryData.tasa_bc}%</div></div>
                 </div>
-
                 <div class="table-container">
-                    <h2 style="margin-bottom: 15px;">Top 10 Actores Bancarios</h2>
+                    <h2 style="margin-bottom: 15px;">Top Actores Bancarios</h2>
                     <table>
-                        <thead>
-                            <tr>
-                                <th>Banco</th>
-                                <th>Depósitos Vista</th>
-                                <th>Depósitos Plazo</th>
-                                <th>ACM (USD)</th>
-                                <th>Cuota Mercado</th>
-                                <th>CAGR</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>Banco</th><th>Depósitos Vista</th><th>Depósitos Plazo</th><th>ACM</th><th>Cuota</th><th>CAGR</th></tr></thead>
                         <tbody>
             `;
-
-            actors.slice(0, 10).forEach(actor => {
-                html += `
-                    <tr>
-                        <td><strong>${actor.nombre_actor}</strong></td>
-                        <td>$${actor.depositos_vista || 0}M</td>
-                        <td>$${actor.depositos_plazo || 0}M</td>
-                        <td>$${actor.acm || 0}M</td>
-                        <td>${actor.cuota_mercado || 0}%</td>
-                        <td><strong>${actor.cagr || 0}%</strong></td>
-                    </tr>
-                `;
+            countryData.actors.forEach(actor => {
+                html += `<tr><td><strong>${actor.nombre}</strong></td><td>$${actor.vista}M</td><td>$${actor.plazo}M</td><td>$${actor.acm}M</td><td>${actor.cuota}%</td><td>${actor.cagr}%</td></tr>`;
             });
-
             html += `</tbody></table></div>`;
-            document.getElementById(contentId).innerHTML = html;
+            document.getElementById(country).innerHTML = html;
         }
 
-        // Cargar México al iniciar
-        loadCountryData('Mexico');
+        renderDashboard('Mexico', data.Mexico);
     </script>
 </body>
 </html>
