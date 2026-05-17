@@ -91,6 +91,19 @@ tr:last-child td{border-bottom:none}
 tr:hover td{background:#f8fafc}
 .usd-col{color:#6366f1;font-size:11.5px}
 .no-data{color:#94a3b8;padding:60px;text-align:center}
+
+/* ─── News feed ──────────────────────────────────────────────────────── */
+.news-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:760px){.news-grid{grid-template-columns:1fr}}
+.news-col{background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,0.07);border:1px solid #e2e8f0}
+.news-col-title{font-size:12px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #f1f5f9}
+.news-item{padding:9px 0;border-bottom:1px solid #f8fafc}
+.news-item:last-child{border-bottom:none}
+.news-headline a{color:#0f172a;text-decoration:none;font-size:13px;font-weight:500;line-height:1.4;display:block}
+.news-headline a:hover{color:#4f46e5;text-decoration:underline}
+.news-meta{font-size:10.5px;color:#94a3b8;margin-top:2px}
+.news-loading{color:#94a3b8;padding:20px;text-align:center;font-size:12px}
+.news-footer{font-size:10.5px;color:#94a3b8;margin-bottom:28px}
 </style>
 </head>
 <body>
@@ -198,6 +211,20 @@ tr:hover td{background:#f8fafc}
   <div id="CostaRica"     class="content"></div>
   <div id="RepDominicana" class="content"></div>
 
+  <!-- ── News Feed ────────────────────────────────────────────────── -->
+  <div class="section-title" style="margin-top:28px">Noticias de Economía — Actualización en tiempo real</div>
+  <div class="news-grid">
+    <div class="news-col">
+      <div class="news-col-title">Economía Global</div>
+      <div id="news-global" class="news-list"><div class="news-loading">Cargando noticias…</div></div>
+    </div>
+    <div class="news-col">
+      <div class="news-col-title" id="news-country-title">País Seleccionado</div>
+      <div id="news-country" class="news-list"><div class="news-loading">Cargando noticias…</div></div>
+    </div>
+  </div>
+  <div class="news-footer">Fuente: Google News RSS · Actualización cada 30 min · Última carga: <span id="news-last-update">—</span></div>
+
 </div><!-- /container -->
 
 <!-- ─── Clocks ──────────────────────────────────────────────────────── -->
@@ -282,7 +309,7 @@ const GR={
 };
 
 /* ── State ─────────────────────────────────────────────────────────── */
-let dashboardData={}, exchangeRates=null, rateDate=null;
+let dashboardData={}, exchangeRates=null, rateDate=null, exchangeRateDates={};
 let activeCountry='Mexico';
 let evoCharts={};
 
@@ -494,7 +521,10 @@ function renderDashboard(tabId,d){
     rateHtml=`<div class="rate-bar"><span class="rate-label">💱 Economía dolarizada (USD)</span><span class="rate-source">Sin conversión necesaria</span></div>`;
   }else if(rate){
     const fmtR=Number(rate).toLocaleString('es-MX',{maximumFractionDigits:2});
-    rateHtml=`<div class="rate-bar"><span class="rate-label">💱 1 USD = <strong>${fmtR} ${cur.code}</strong></span><span class="rate-source">Fuente: <a href="https://open.er-api.com" target="_blank">open.er-api.com</a>${rateDate?' · '+rateDate:''}</span></div>`;
+    const rateDateStr=exchangeRateDates[cur.code]||rateDate;
+    const fromSupabase=!!exchangeRateDates[cur.code];
+    const srcHtml=fromSupabase?'Banco Central (Supabase)':`<a href="https://open.er-api.com" target="_blank">open.er-api.com</a>`;
+    rateHtml=`<div class="rate-bar"><span class="rate-label">💱 1 USD = <strong>${fmtR} ${cur.code}</strong></span><span class="rate-source">Fuente: ${srcHtml}${rateDateStr?' · Actualizado: '+rateDateStr:''}</span></div>`;
   }else{
     rateHtml=`<div class="rate-bar"><span class="rate-label">💱 ${cur.code}</span><span class="rate-source">Tipo de cambio no disponible</span></div>`;
   }
@@ -508,14 +538,6 @@ function renderDashboard(tabId,d){
     return`<tr><td>${a.nombre}</td><td>${fmt(a.vista)}</td><td>${fmt(a.plazo)}</td><td>${fmt(a.acm)}</td>${usdTd}<td>${a.cuota}%</td></tr>`;
   }).join('');
   el.innerHTML=`
-    <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label">PIB</div><div class="kpi-value">$${fmt(d.pib)}B</div><div class="kpi-sub up">+${d.pib_crecimiento}% YoY</div></div>
-      <div class="kpi-card"><div class="kpi-label">Población</div><div class="kpi-value">${fmt(d.poblacion)}</div><div class="kpi-sub">habitantes</div></div>
-      <div class="kpi-card"><div class="kpi-label">Bancarización</div><div class="kpi-value">${d.bancarizacion}%</div><div class="kpi-sub">de la población</div></div>
-      <div class="kpi-card"><div class="kpi-label">Inflación</div><div class="kpi-value">${d.inflacion}%</div><div class="kpi-sub">${bcLabel}</div></div>
-      <div class="kpi-card"><div class="kpi-label">Desempleo</div><div class="kpi-value">${d.desempleo}%</div><div class="kpi-sub">tasa oficial</div></div>
-      <div class="kpi-card green-top"><div class="kpi-label">CAGR ACM 2023–26</div><div class="kpi-value">${d.cagr}%${parseFloat(d.cagr)>=30?'<div class="kpi-sub note">(nominal)</div>':''}</div><div class="kpi-sub">tendencia anual</div></div>
-    </div>
     ${rateHtml}
     <div class="detail-row">
       <div class="chart-card" style="padding:16px">
@@ -568,10 +590,28 @@ window.showCountry=function(country,btn){
     renderDashboard(country,dashboardData[country]);
     updateGauge(country,dashboardData[country]);
   }
+  // Refresh country news panel
+  const ct=document.getElementById('news-country-title');
+  if(ct)ct.textContent=COUNTRY_MAP[country]||country;
+  const term=NEWS_TERMS[country]||'economía LATAM banco';
+  fetchNews(term,'news-country');
 };
 
 /* ── Data loading ───────────────────────────────────────────────────── */
 async function loadRates(){
+  // Try Supabase exchange_rates table first (populated by auto_update_exchange_rates.py)
+  try{
+    const {data}=await supabase.from('exchange_rates').select('*');
+    if(data&&data.length>0){
+      exchangeRates={};
+      data.forEach(r=>{
+        exchangeRates[r.currency_code]=r.rate_usd;
+        exchangeRateDates[r.currency_code]=new Date(r.last_updated).toLocaleString('es-MX',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+      });
+      return;
+    }
+  }catch(e){console.warn('Supabase FX failed',e);}
+  // Fallback: open.er-api.com live
   try{
     const r=await fetch('https://open.er-api.com/v6/latest/USD');
     const j=await r.json();
@@ -604,12 +644,62 @@ async function loadSupabase(){
   }
 }
 
+/* ── News feed ──────────────────────────────────────────────────────── */
+const NEWS_TERMS={
+  Mexico:'economía México banco finanzas',Chile:'economía Chile banco finanzas',
+  Colombia:'economía Colombia banco finanzas',Brasil:'economía Brasil banco finanzas',
+  Argentina:'economía Argentina banco finanzas',Peru:'economía Perú banco finanzas',
+  Ecuador:'economía Ecuador banco',Bolivia:'economía Bolivia banco',
+  Paraguay:'economía Paraguay banco',Uruguay:'economía Uruguay banco',
+  Venezuela:'economía Venezuela banco',Guatemala:'economía Guatemala banco',
+  Honduras:'economía Honduras banco',ElSalvador:'economía El Salvador banco',
+  Nicaragua:'economía Nicaragua banco',Panama:'economía Panamá banco',
+  CostaRica:'economía Costa Rica banco',RepDominicana:'economía República Dominicana',
+};
+async function fetchNews(query,containerId){
+  const container=document.getElementById(containerId);
+  if(!container)return;
+  const rssUrl=`https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=es-419&gl=US&ceid=US:es-419`;
+  const proxyUrl=`https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
+  try{
+    const r=await fetch(proxyUrl,{signal:AbortSignal.timeout(15000)});
+    const j=await r.json();
+    const xml=new DOMParser().parseFromString(j.contents,'text/xml');
+    const items=[...xml.querySelectorAll('item')].slice(0,8);
+    if(!items.length){container.innerHTML='<div class="news-loading">Sin resultados.</div>';return;}
+    container.innerHTML=items.map(item=>{
+      const title=(item.querySelector('title')?.textContent||'Sin título').replace(/<[^>]+>/g,'');
+      const link=item.querySelector('link')?.textContent||'#';
+      const pubDate=item.querySelector('pubDate')?.textContent||'';
+      const dateStr=pubDate?new Date(pubDate).toLocaleString('es-MX',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+      const src=item.querySelector('source')?.textContent||'';
+      return`<div class="news-item"><div class="news-headline"><a href="${link}" target="_blank" rel="noopener noreferrer">${title}</a></div><div class="news-meta">${src?src+' · ':''}${dateStr}</div></div>`;
+    }).join('');
+  }catch(e){
+    container.innerHTML='<div class="news-loading">No disponible.</div>';
+    console.warn('News fetch error',e);
+  }
+}
+async function refreshNews(){
+  const term=NEWS_TERMS[activeCountry]||'economía LATAM banco';
+  const ct=document.getElementById('news-country-title');
+  if(ct)ct.textContent=COUNTRY_MAP[activeCountry]||activeCountry;
+  await Promise.all([
+    fetchNews('banca central economía global finanzas inflación','news-global'),
+    fetchNews(term,'news-country'),
+  ]);
+  const el=document.getElementById('news-last-update');
+  if(el)el.textContent=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+}
+
 /* ── Init ───────────────────────────────────────────────────────────── */
 async function init(){
   await Promise.all([loadRates(),loadSupabase()]);
   renderRegionalCharts();
   renderDashboard(activeCountry,dashboardData[activeCountry]);
   updateGauge(activeCountry,dashboardData[activeCountry]);
+  refreshNews();
+  setInterval(refreshNews,30*60*1000);
 }
 init();
 </script>

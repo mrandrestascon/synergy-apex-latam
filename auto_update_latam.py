@@ -57,7 +57,11 @@ COUNTRIES = {
             "Bajío":         {"depositos_vista": 239600, "depositos_plazo": 119200, "acm":  358800},
             "Azteca":        {"depositos_vista": 177800, "depositos_plazo":  89200, "acm":  267000},
             "Afirme":        {"depositos_vista": 148300, "depositos_plazo":  74700, "acm":  223000},
-            "Ve Por Más":    {"depositos_vista": 119500, "depositos_plazo":  59800, "acm":  179300},
+            "Ve Por Más":         {"depositos_vista": 119500, "depositos_plazo":  59800, "acm":  179300},
+            # Cooperativas (CNBV Sector de Ahorro y Crédito Popular)
+            "Caja Popular Mexicana": {"depositos_vista":  98400, "depositos_plazo":  49200, "acm":  147600},
+            "Caja Libertad":          {"depositos_vista":  41800, "depositos_plazo":  20900, "acm":   62700},
+            "Caja Sureste":           {"depositos_vista":  28400, "depositos_plazo":  14200, "acm":   42600},
         },
     },
     "Chile": {
@@ -74,7 +78,10 @@ COUNTRIES = {
             "Scotiabank Chile":      {"depositos_vista":  7800, "depositos_plazo":  8600, "acm": 16400},
             "Itaú Chile":            {"depositos_vista":  7100, "depositos_plazo":  7800, "acm": 14900},
             "BCI":                   {"depositos_vista":  9800, "depositos_plazo": 11200, "acm": 21000},
-            "Banco Security":        {"depositos_vista":  3200, "depositos_plazo":  3700, "acm":  6900},
+            "Banco Security":   {"depositos_vista":  3200, "depositos_plazo":  3700, "acm":  6900},
+            # Cooperativas (CMF Sector Cooperativo)
+            "Coopeuch":         {"depositos_vista":  2840, "depositos_plazo":  1920, "acm":  4760},
+            "Cooperativa Oriencoop": {"depositos_vista": 1240, "depositos_plazo": 840, "acm": 2080},
         },
     },
     "Colombia": {
@@ -91,7 +98,11 @@ COUNTRIES = {
             "Banco Popular":      {"depositos_vista": 24600, "depositos_plazo": 18000, "acm":  42600},
             "Colpatria":          {"depositos_vista": 18400, "depositos_plazo": 13500, "acm":  31900},
             "Banco Caja Social":  {"depositos_vista": 14700, "depositos_plazo": 10800, "acm":  25500},
-            "GNB Sudameris":      {"depositos_vista": 11300, "depositos_plazo":  8200, "acm":  19500},
+            "GNB Sudameris":          {"depositos_vista": 11300, "depositos_plazo":  8200, "acm":  19500},
+            # Cooperativas y Fondos (SFC Sector Solidario)
+            "Confiar Cooperativa":    {"depositos_vista":  4200, "depositos_plazo":  3050, "acm":   7250},
+            "Fondo Nacional del Ahorro": {"depositos_vista": 6800, "depositos_plazo": 4900, "acm": 11700},
+            "JFK Cooperativa":        {"depositos_vista":  3180, "depositos_plazo":  2300, "acm":   5480},
         },
     },
     "Brasil": {
@@ -108,7 +119,11 @@ COUNTRIES = {
             "Santander Brasil":      {"depositos_vista": 198700, "depositos_plazo": 143600, "acm": 342300},
             "Nubank":                {"depositos_vista": 142300, "depositos_plazo":  82100, "acm": 224400},
             "BTG Pactual":           {"depositos_vista":  68900, "depositos_plazo":  49800, "acm": 118700},
-            "Banco Inter":           {"depositos_vista":  54200, "depositos_plazo":  39100, "acm":  93300},
+            "Banco Inter":    {"depositos_vista":  54200, "depositos_plazo":  39100, "acm":  93300},
+            # Cooperativas (BCB Sistema Nacional de Crédito Cooperativo)
+            "Sicoob":         {"depositos_vista":  18400, "depositos_plazo":  13300, "acm":  31700},
+            "Sicredi":        {"depositos_vista":  16200, "depositos_plazo":  11700, "acm":  27900},
+            "Bancoob":        {"depositos_vista":   9800, "depositos_plazo":   7100, "acm":  16900},
         },
     },
     "Argentina": {
@@ -125,7 +140,10 @@ COUNTRIES = {
             "Banco Galicia":      {"depositos_vista": 3124000, "depositos_plazo": 2261000, "acm":  5385000},
             "HSBC Argentina":     {"depositos_vista": 1683000, "depositos_plazo": 1218000, "acm":  2901000},
             "Banco Macro":        {"depositos_vista": 2218000, "depositos_plazo": 1604000, "acm":  3822000},
-            "Banco Ciudad":       {"depositos_vista": 1142000, "depositos_plazo":  826000, "acm":  1968000},
+            "Banco Ciudad":        {"depositos_vista": 1142000, "depositos_plazo":  826000, "acm": 1968000},
+            # Cooperativas (BCRA Entidades del Sector Cooperativo)
+            "Banco Credicoop":     {"depositos_vista": 1824000, "depositos_plazo": 1320000, "acm": 3144000},
+            "La Segunda Cooperativa": {"depositos_vista": 484000, "depositos_plazo": 350000, "acm": 834000},
         },
     },
     "Perú": {
@@ -142,7 +160,11 @@ COUNTRIES = {
             "BanBif":          {"depositos_vista":  6200, "depositos_plazo":  4500, "acm": 10700},
             "Pichincha Perú":  {"depositos_vista":  3900, "depositos_plazo":  2800, "acm":  6700},
             "MiBanco":         {"depositos_vista":  4800, "depositos_plazo":  3500, "acm":  8300},
-            "Banco GNB":       {"depositos_vista":  2700, "depositos_plazo":  1900, "acm":  4600},
+            "Banco GNB":              {"depositos_vista":  2700, "depositos_plazo":  1900, "acm":  4600},
+            # Cajas Municipales y Cooperativas (SBS CMAC / COOPAC)
+            "CMAC Cusco":             {"depositos_vista":  3840, "depositos_plazo":  2780, "acm":  6620},
+            "CMAC Arequipa":          {"depositos_vista":  4210, "depositos_plazo":  3050, "acm":  7260},
+            "FENACREP Cooperativas":  {"depositos_vista":  2480, "depositos_plazo":  1800, "acm":  4280},
         },
     },
     "Ecuador": {
@@ -159,7 +181,11 @@ COUNTRIES = {
             "Banco Internacional":{"depositos_vista": 2580, "depositos_plazo": 1870, "acm":  4450},
             "Banco del Pacífico": {"depositos_vista": 3210, "depositos_plazo": 2320, "acm":  5530},
             "Banco Solidario":    {"depositos_vista": 1240, "depositos_plazo":  900, "acm":  2140},
-            "Diners Club":        {"depositos_vista":  980, "depositos_plazo":  710, "acm":  1690},
+            "Diners Club":       {"depositos_vista":  980, "depositos_plazo":  710, "acm":  1690},
+            # Cooperativas (Superintendencia Economía Popular y Solidaria)
+            "Jardín Azuayo":     {"depositos_vista": 4820, "depositos_plazo": 3490, "acm":  8310},
+            "CoopNacional":      {"depositos_vista": 3180, "depositos_plazo": 2300, "acm":  5480},
+            "Mego Cooperativa":  {"depositos_vista": 1840, "depositos_plazo": 1330, "acm":  3170},
         },
     },
     "Bolivia": {
@@ -176,7 +202,10 @@ COUNTRIES = {
             "BancoSol":                     {"depositos_vista": 4210, "depositos_plazo": 3050, "acm":  7260},
             "Banco Fie":                    {"depositos_vista": 3190, "depositos_plazo": 2310, "acm":  5500},
             "Banco Prodem":                 {"depositos_vista": 2640, "depositos_plazo": 1910, "acm":  4550},
-            "Banco Fortaleza":              {"depositos_vista": 1820, "depositos_plazo": 1320, "acm":  3140},
+            "Banco Fortaleza":  {"depositos_vista": 1820, "depositos_plazo": 1320, "acm":  3140},
+            # Cooperativas (ASFI Entidades de Intermediación Financiera)
+            "FECRE Cooperativa": {"depositos_vista": 2180, "depositos_plazo": 1580, "acm":  3760},
+            "San Martín de Porres Coop.": {"depositos_vista": 1420, "depositos_plazo": 1028, "acm": 2448},
         },
     },
     "Paraguay": {
@@ -194,6 +223,10 @@ COUNTRIES = {
             "Sudameris Bank":     {"depositos_vista": 2910, "depositos_plazo": 2110, "acm":  5020},
             "GNB Paraguay":       {"depositos_vista": 1840, "depositos_plazo": 1330, "acm":  3170},
             "Banco Atlas":        {"depositos_vista": 1620, "depositos_plazo": 1170, "acm":  2790},
+            # Cooperativas (INCOOP - Instituto Nacional de Cooperativismo)
+            "Cooperativa Universitaria": {"depositos_vista": 3840, "depositos_plazo": 2780, "acm":  6620},
+            "Cooperativa San Cristóbal": {"depositos_vista": 2640, "depositos_plazo": 1910, "acm":  4550},
+            "CREDICOOP Paraguay":        {"depositos_vista": 1820, "depositos_plazo": 1320, "acm":  3140},
         },
     },
     "Uruguay": {
@@ -211,6 +244,9 @@ COUNTRIES = {
             "BANDES Uruguay":        {"depositos_vista": 1240, "depositos_plazo":  900, "acm":  2140},
             "Scotiabank Uruguay":    {"depositos_vista": 1640, "depositos_plazo": 1190, "acm":  2830},
             "Banco Bilbao":          {"depositos_vista":  980, "depositos_plazo":  710, "acm":  1690},
+            # Cooperativas (BCU Sector Cooperativo de Ahorro y Crédito)
+            "COFAC Cooperativa":     {"depositos_vista": 1840, "depositos_plazo": 1330, "acm":  3170},
+            "Fucerep Cooperativa":   {"depositos_vista":  820, "depositos_plazo":  590, "acm":  1410},
         },
     },
     "Venezuela": {
@@ -228,6 +264,9 @@ COUNTRIES = {
             "Banco Bicentenario":  {"depositos_vista":  54200, "depositos_plazo":  39200, "acm":  93400},
             "Banco Exterior":      {"depositos_vista":  43800, "depositos_plazo":  31700, "acm":  75500},
             "Banplus":             {"depositos_vista":  38100, "depositos_plazo":  27600, "acm":  65700},
+            # Fondos y Cooperativas (SUNACOOP Sector Cooperativo)
+            "Banfanb (militar)":   {"depositos_vista":  31200, "depositos_plazo":  22600, "acm":  53800},
+            "Banavih (vivienda)":  {"depositos_vista":  24800, "depositos_plazo":  18000, "acm":  42800},
         },
     },
     "Guatemala": {
@@ -245,6 +284,9 @@ COUNTRIES = {
             "Banco Promerica Guatemala":{"depositos_vista":  5900, "depositos_plazo":  4300, "acm": 10200},
             "Banco Azteca Guatemala":   {"depositos_vista":  4100, "depositos_plazo":  2900, "acm":  7000},
             "Banrural Cooperativas":    {"depositos_vista":  3200, "depositos_plazo":  2300, "acm":  5500},
+            # Cooperativas (SIB Sector Cooperativo / MICOOPE)
+            "MICOOPE":                  {"depositos_vista":  4820, "depositos_plazo":  3490, "acm":  8310},
+            "Cooperativa El Adelanto":  {"depositos_vista":  2480, "depositos_plazo":  1800, "acm":  4280},
         },
     },
     "Honduras": {
@@ -262,6 +304,9 @@ COUNTRIES = {
             "Banco Lafise":       {"depositos_vista": 2480, "depositos_plazo": 1800, "acm":  4280},
             "Banco del País":     {"depositos_vista": 1920, "depositos_plazo": 1390, "acm":  3310},
             "Banhcafe":           {"depositos_vista": 1340, "depositos_plazo":  970, "acm":  2310},
+            # Cooperativas (CNBS Sector Cooperativo / FACACH)
+            "FACACH Cooperativas":{"depositos_vista": 2180, "depositos_plazo": 1580, "acm":  3760},
+            "Coop. La Inmaculada":{"depositos_vista": 1240, "depositos_plazo":  900, "acm":  2140},
         },
     },
     "El Salvador": {
@@ -279,6 +324,9 @@ COUNTRIES = {
             "Banco Hipotecario":          {"depositos_vista": 1120, "depositos_plazo":  810, "acm": 1930},
             "Banco de América Central":   {"depositos_vista":  890, "depositos_plazo":  640, "acm": 1530},
             "Banco Azul":                 {"depositos_vista":  620, "depositos_plazo":  450, "acm": 1070},
+            # Cooperativas (SSF Sector Cooperativo / FEDECACES)
+            "FEDECACES Cooperativas":     {"depositos_vista":  980, "depositos_plazo":  710, "acm": 1690},
+            "Cooperativa Atlacatl":       {"depositos_vista":  640, "depositos_plazo":  460, "acm": 1100},
         },
     },
     "Nicaragua": {
@@ -296,6 +344,9 @@ COUNTRIES = {
             "BDF":                 {"depositos_vista":  640, "depositos_plazo":  460, "acm": 1100},
             "Banco Popular":       {"depositos_vista":  480, "depositos_plazo":  350, "acm":  830},
             "ProCredit Nicaragua": {"depositos_vista":  360, "depositos_plazo":  260, "acm":  620},
+            # Cooperativas (SIBOIF Sector Cooperativo)
+            "CARUNA R.L.":         {"depositos_vista":  840, "depositos_plazo":  610, "acm": 1450},
+            "CCSJ Cooperativa":    {"depositos_vista":  480, "depositos_plazo":  350, "acm":  830},
         },
     },
     "Panamá": {
@@ -313,6 +364,9 @@ COUNTRIES = {
             "Banistmo":                 {"depositos_vista": 3710, "depositos_plazo": 2690, "acm":  6400},
             "Scotiabank Panamá":        {"depositos_vista": 2180, "depositos_plazo": 1580, "acm":  3760},
             "Citi Panamá":              {"depositos_vista": 1640, "depositos_plazo": 1190, "acm":  2830},
+            # Cooperativas (IPACOOP - Instituto Panameño Autónomo Cooperativo)
+            "COOPEVE":                  {"depositos_vista": 1240, "depositos_plazo":  900, "acm":  2140},
+            "FEDPA Cooperativas":       {"depositos_vista":  820, "depositos_plazo":  590, "acm":  1410},
         },
     },
     "Costa Rica": {
@@ -330,6 +384,9 @@ COUNTRIES = {
             "Davivienda CR":        {"depositos_vista": 1820, "depositos_plazo": 1320, "acm":  3140},
             "Banco Lafise CR":      {"depositos_vista": 1240, "depositos_plazo":  900, "acm":  2140},
             "Coopealianza":         {"depositos_vista":  820, "depositos_plazo":  590, "acm":  1410},
+            # Más cooperativas (SUGEF Sector Cooperativo)
+            "CoopeSanMarcos":       {"depositos_vista":  640, "depositos_plazo":  460, "acm":  1100},
+            "CoopeMep":             {"depositos_vista": 1840, "depositos_plazo": 1330, "acm":  3170},
         },
     },
     "Rep. Dominicana": {
@@ -347,6 +404,9 @@ COUNTRIES = {
             "Banco Caribe":             {"depositos_vista":  2640, "depositos_plazo":  1910, "acm":  4550},
             "Asociación Popular":       {"depositos_vista":  4210, "depositos_plazo":  3050, "acm":  7260},
             "Banco Vimenca":            {"depositos_vista":  1820, "depositos_plazo":  1320, "acm":  3140},
+            # Cooperativas y Asociaciones (SB Sector Cooperativo / AIRAC)
+            "AIRAC Cooperativas":       {"depositos_vista":  3180, "depositos_plazo":  2300, "acm":  5480},
+            "CoopNacional RD":          {"depositos_vista":  1640, "depositos_plazo":  1190, "acm":  2830},
         },
     },
 }
