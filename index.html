@@ -48,76 +48,100 @@
         <div id="CostaRica" class="content"></div>
     </div>
 
-    <script>
-        const data = {
-            Mexico: {
-                pib: 1290.5, pib_crecimiento: 2.3, poblacion: 128931000, bancarizacion: 62.5, inflacion: 4.2, tasa_bc: 5.5,
-                actors: [
-                    {nombre: "BBVA México", vista: 85000, plazo: 52000, acm: 137000, cuota: 18.2, cagr: 3.1},
-                    {nombre: "Banorte", vista: 72000, plazo: 45000, acm: 117000, cuota: 15.6, cagr: 2.8},
-                    {nombre: "Santander", vista: 58000, plazo: 38000, acm: 96000, cuota: 12.8, cagr: 2.5},
-                    {nombre: "HSBC México", vista: 45000, plazo: 28000, acm: 73000, cuota: 9.7, cagr: 2.0}
-                ]
-            },
-            Chile: {
-                pib: 310.2, pib_crecimiento: 1.8, poblacion: 19603733, bancarizacion: 71.2, inflacion: 3.2, tasa_bc: 5.5,
-                actors: [
-                    {nombre: "Banco Santander", vista: 85000, plazo: 52000, acm: 137000, cuota: 32.4, cagr: 3.1},
-                    {nombre: "BancoEstado", vista: 72000, plazo: 45000, acm: 117000, cuota: 27.8, cagr: 2.8},
-                    {nombre: "Scotiabank", vista: 58000, plazo: 38000, acm: 96000, cuota: 22.8, cagr: 2.5},
-                    {nombre: "BBVA Chile", vista: 45000, plazo: 28000, acm: 73000, cuota: 17.3, cagr: 2.0}
-                ]
-            },
-            Panama: {
-                pib: 78.5, pib_crecimiento: 3.2, poblacion: 4408581, bancarizacion: 58.3, inflacion: 2.8, tasa_bc: 3.5,
-                actors: [
-                    {nombre: "Banco Nacional", vista: 18000, plazo: 11000, acm: 29000, cuota: 32.6, cagr: 3.1},
-                    {nombre: "Banorte Panamá", vista: 15000, plazo: 9200, acm: 24200, cuota: 27.2, cagr: 2.8},
-                    {nombre: "HSBC Panamá", vista: 12000, plazo: 7500, acm: 19500, cuota: 21.9, cagr: 2.5},
-                    {nombre: "Scotiabank", vista: 10000, plazo: 6200, acm: 16200, cuota: 18.2, cagr: 2.0}
-                ]
-            },
-            CostaRica: {
-                pib: 68.9, pib_crecimiento: 2.5, poblacion: 5180829, bancarizacion: 65.8, inflacion: 3.5, tasa_bc: 5.25,
-                actors: [
-                    {nombre: "Banco Nacional", vista: 16500, plazo: 10200, acm: 26700, cuota: 32.6, cagr: 3.1},
-                    {nombre: "BAC Credomatic", vista: 14200, plazo: 8800, acm: 23000, cuota: 28.1, cagr: 2.8},
-                    {nombre: "Scotiabank CR", vista: 11000, plazo: 6800, acm: 17800, cuota: 21.7, cagr: 2.5},
-                    {nombre: "HSBC Costa Rica", vista: 8900, plazo: 5500, acm: 14400, cuota: 17.6, cagr: 2.0}
-                ]
-            }
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        const supabase = createClient(
+            'https://bnpfxaxswmmxzxiggywz.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJucGZ4YXhzd21teHp4aWdneXd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NzA4MDcsImV4cCI6MjA5NDQ0NjgwN30.9rlU4sRukMOAuEz_FyPRasRdYmsZNHi4EzNE9JyiT8M'
+        );
+
+        const COUNTRY_MAP = {
+            Mexico: 'México',
+            Chile: 'Chile',
+            Panama: 'Panamá',
+            CostaRica: 'Costa Rica'
         };
 
-        function showCountry(country) {
-            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(country).classList.add('active');
-            event.target.classList.add('active');
-            renderDashboard(country, data[country]);
+        let dashboardData = {};
+        let activeCountry = 'Mexico';
+
+        async function loadData() {
+            const [{ data: countries }, { data: actors }] = await Promise.all([
+                supabase.from('countries').select('*'),
+                supabase.from('actors').select('*')
+            ]);
+
+            for (const [tabId, countryName] of Object.entries(COUNTRY_MAP)) {
+                const country = countries?.find(c => c.country === countryName);
+                if (!country) continue;
+                const countryActors = (actors || [])
+                    .filter(a => a.country === countryName)
+                    .map(a => ({
+                        nombre: a.nombre_actor,
+                        vista: a.depositos_vista,
+                        plazo: a.depositos_plazo,
+                        acm: a.acm,
+                        cuota: a.cuota_mercado,
+                        cagr: a.cagr
+                    }));
+                dashboardData[tabId] = {
+                    pib: country.pib,
+                    pib_crecimiento: country.pib_crecimiento,
+                    poblacion: country.poblacion,
+                    bancarizacion: country.bancarizacion,
+                    inflacion: country.inflacion,
+                    tasa_bc: country.tasa_bc,
+                    fecha: country.fecha_actualizacion,
+                    actors: countryActors
+                };
+            }
+
+            renderDashboard(activeCountry, dashboardData[activeCountry]);
         }
 
-        function renderDashboard(country, countryData) {
+        function fmt(n) {
+            if (n == null) return '—';
+            return Number(n).toLocaleString('es-MX');
+        }
+
+        function renderDashboard(country, d) {
+            if (!d) {
+                document.getElementById(country).innerHTML = '<p style="color:#94a3b8;padding:20px">Sin datos en Supabase para este país.</p>';
+                return;
+            }
+            const fecha = d.fecha ? new Date(d.fecha).toLocaleDateString('es-MX') : '';
             let html = `
                 <div class="grid">
-                    <div class="kpi-card"><div class="kpi-label">PIB</div><div class="kpi-value">$${countryData.pib}B</div><div class="kpi-change">+${countryData.pib_crecimiento}% YoY</div></div>
-                    <div class="kpi-card"><div class="kpi-label">Población</div><div class="kpi-value">${(countryData.poblacion/1000000).toFixed(1)}M</div><div class="kpi-change">Habitantes</div></div>
-                    <div class="kpi-card"><div class="kpi-label">Bancarización</div><div class="kpi-value">${countryData.bancarizacion}%</div><div class="kpi-change">% población</div></div>
-                    <div class="kpi-card"><div class="kpi-label">Inflación</div><div class="kpi-value">${countryData.inflacion}%</div><div class="kpi-change">BC: ${countryData.tasa_bc}%</div></div>
+                    <div class="kpi-card"><div class="kpi-label">PIB</div><div class="kpi-value">$${fmt(d.pib)}B</div><div class="kpi-change">+${d.pib_crecimiento}% YoY</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Población</div><div class="kpi-value">${fmt(d.poblacion)}</div><div class="kpi-change">Habitantes</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Bancarización</div><div class="kpi-value">${d.bancarizacion}%</div><div class="kpi-change">% población</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Inflación</div><div class="kpi-value">${d.inflacion}%</div><div class="kpi-change">BC: ${d.tasa_bc}%</div></div>
                 </div>
                 <div class="table-container">
-                    <h2 style="margin-bottom: 15px;">Top Actores Bancarios</h2>
+                    <h2 style="margin-bottom:8px;">Top Actores Bancarios</h2>
+                    ${fecha ? `<p style="font-size:11px;color:#64748b;margin-bottom:15px;">Actualizado: ${fecha}</p>` : ''}
                     <table>
                         <thead><tr><th>Banco</th><th>Depósitos Vista</th><th>Depósitos Plazo</th><th>ACM</th><th>Cuota</th><th>CAGR</th></tr></thead>
                         <tbody>
             `;
-            countryData.actors.forEach(actor => {
-                html += `<tr><td><strong>${actor.nombre}</strong></td><td>$${actor.vista}M</td><td>$${actor.plazo}M</td><td>$${actor.acm}M</td><td>${actor.cuota}%</td><td>${actor.cagr}%</td></tr>`;
+            d.actors.forEach(a => {
+                html += `<tr><td><strong>${a.nombre}</strong></td><td>${fmt(a.vista)}</td><td>${fmt(a.plazo)}</td><td>${fmt(a.acm)}</td><td>${a.cuota}%</td><td>${a.cagr}%</td></tr>`;
             });
             html += `</tbody></table></div>`;
             document.getElementById(country).innerHTML = html;
         }
 
-        renderDashboard('Mexico', data.Mexico);
+        window.showCountry = function(country) {
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(country).classList.add('active');
+            event.target.classList.add('active');
+            activeCountry = country;
+            renderDashboard(country, dashboardData[country]);
+        };
+
+        loadData();
     </script>
 </body>
 </html>
