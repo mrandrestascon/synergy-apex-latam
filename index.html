@@ -8,44 +8,81 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #e2e8f0; }
         .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px; margin-bottom: 30px; text-align: center; }
-        h1 { font-size: 2.5em; margin-bottom: 10px; }
-        .country-tabs { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
-        .tab-btn { padding: 10px 20px; background: #1e293b; border: 2px solid #475569; color: #e2e8f0; cursor: pointer; border-radius: 5px; transition: all 0.3s; font-size: 14px; font-weight: 500; }
-        .tab-btn.active { background: #667eea; border-color: #667eea; }
-        .tab-btn:hover { border-color: #667eea; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px; margin-bottom: 24px; text-align: center; }
+        h1 { font-size: 2.2em; margin-bottom: 8px; }
+        header p { font-size: 14px; opacity: 0.85; }
+        .country-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+        .tab-btn { padding: 8px 14px; background: #1e293b; border: 2px solid #334155; color: #cbd5e1; cursor: pointer; border-radius: 6px; transition: all 0.2s; font-size: 13px; font-weight: 500; white-space: nowrap; }
+        .tab-btn.active { background: #667eea; border-color: #667eea; color: #fff; }
+        .tab-btn:hover:not(.active) { border-color: #667eea; color: #e2e8f0; }
         .content { display: none; }
         .content.active { display: block; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .kpi-card { background: #1e293b; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; }
-        .kpi-label { font-size: 12px; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px; }
-        .kpi-value { font-size: 28px; font-weight: bold; color: #f1f5f9; }
-        .kpi-change { font-size: 12px; color: #10b981; margin-top: 8px; }
-        .table-container { background: #1e293b; padding: 20px; border-radius: 8px; overflow-x: auto; margin-bottom: 30px; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #0f172a; padding: 12px; text-align: left; font-weight: 600; color: #94a3b8; border-bottom: 1px solid #334155; }
-        td { padding: 12px; border-bottom: 1px solid #334155; }
-        tr:hover { background: #0f172a; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
+        .kpi-card { background: #1e293b; padding: 18px; border-radius: 8px; border-left: 4px solid #667eea; }
+        .kpi-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+        .kpi-value { font-size: 26px; font-weight: bold; color: #f1f5f9; }
+        .kpi-change { font-size: 12px; color: #10b981; margin-top: 6px; }
+        .kpi-change.neutral { color: #94a3b8; }
+        .table-container { background: #1e293b; padding: 20px; border-radius: 8px; overflow-x: auto; margin-bottom: 20px; }
+        .table-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; flex-wrap: wrap; gap: 8px; }
+        .table-header h2 { font-size: 16px; color: #f1f5f9; }
+        .meta { font-size: 11px; color: #475569; text-align: right; line-height: 1.6; }
+        .meta a { color: #667eea; text-decoration: none; }
+        .meta a:hover { text-decoration: underline; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        th { background: #0f172a; padding: 10px 12px; text-align: left; font-size: 12px; font-weight: 600; color: #94a3b8; border-bottom: 1px solid #334155; white-space: nowrap; }
+        td { padding: 10px 12px; border-bottom: 1px solid #1e293b; font-size: 13px; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #0f172a; }
+        .loading { color: #475569; padding: 40px 20px; text-align: center; font-size: 14px; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🌎 SynergY Apex - Dashboard de Expansión LATAM</h1>
-            <p>Inteligencia de datos bancarios en tiempo real</p>
+            <h1>🌎 SynergY Apex — Dashboard LATAM</h1>
+            <p>Inteligencia bancaria en tiempo real · 18 países · Actualización mensual</p>
         </header>
 
         <div class="country-tabs">
-            <button class="tab-btn active" onclick="showCountry('Mexico')">🇲🇽 México</button>
-            <button class="tab-btn" onclick="showCountry('Chile')">🇨🇱 Chile</button>
-            <button class="tab-btn" onclick="showCountry('Panama')">🇵🇦 Panamá</button>
-            <button class="tab-btn" onclick="showCountry('CostaRica')">🇨🇷 Costa Rica</button>
+            <button class="tab-btn active"  onclick="showCountry('Mexico','this')">🇲🇽 México</button>
+            <button class="tab-btn"         onclick="showCountry('Chile','this')">🇨🇱 Chile</button>
+            <button class="tab-btn"         onclick="showCountry('Colombia','this')">🇨🇴 Colombia</button>
+            <button class="tab-btn"         onclick="showCountry('Brasil','this')">🇧🇷 Brasil</button>
+            <button class="tab-btn"         onclick="showCountry('Argentina','this')">🇦🇷 Argentina</button>
+            <button class="tab-btn"         onclick="showCountry('Peru','this')">🇵🇪 Perú</button>
+            <button class="tab-btn"         onclick="showCountry('Ecuador','this')">🇪🇨 Ecuador</button>
+            <button class="tab-btn"         onclick="showCountry('Bolivia','this')">🇧🇴 Bolivia</button>
+            <button class="tab-btn"         onclick="showCountry('Paraguay','this')">🇵🇾 Paraguay</button>
+            <button class="tab-btn"         onclick="showCountry('Uruguay','this')">🇺🇾 Uruguay</button>
+            <button class="tab-btn"         onclick="showCountry('Venezuela','this')">🇻🇪 Venezuela</button>
+            <button class="tab-btn"         onclick="showCountry('Guatemala','this')">🇬🇹 Guatemala</button>
+            <button class="tab-btn"         onclick="showCountry('Honduras','this')">🇭🇳 Honduras</button>
+            <button class="tab-btn"         onclick="showCountry('ElSalvador','this')">🇸🇻 El Salvador</button>
+            <button class="tab-btn"         onclick="showCountry('Nicaragua','this')">🇳🇮 Nicaragua</button>
+            <button class="tab-btn"         onclick="showCountry('Panama','this')">🇵🇦 Panamá</button>
+            <button class="tab-btn"         onclick="showCountry('CostaRica','this')">🇨🇷 Costa Rica</button>
+            <button class="tab-btn"         onclick="showCountry('RepDominicana','this')">🇩🇴 Rep. Dominicana</button>
         </div>
 
-        <div id="Mexico" class="content active"></div>
-        <div id="Chile" class="content"></div>
-        <div id="Panama" class="content"></div>
-        <div id="CostaRica" class="content"></div>
+        <div id="Mexico"        class="content active"><div class="loading">Cargando datos…</div></div>
+        <div id="Chile"         class="content"></div>
+        <div id="Colombia"      class="content"></div>
+        <div id="Brasil"        class="content"></div>
+        <div id="Argentina"     class="content"></div>
+        <div id="Peru"          class="content"></div>
+        <div id="Ecuador"       class="content"></div>
+        <div id="Bolivia"       class="content"></div>
+        <div id="Paraguay"      class="content"></div>
+        <div id="Uruguay"       class="content"></div>
+        <div id="Venezuela"     class="content"></div>
+        <div id="Guatemala"     class="content"></div>
+        <div id="Honduras"      class="content"></div>
+        <div id="ElSalvador"    class="content"></div>
+        <div id="Nicaragua"     class="content"></div>
+        <div id="Panama"        class="content"></div>
+        <div id="CostaRica"     class="content"></div>
+        <div id="RepDominicana" class="content"></div>
     </div>
 
     <script type="module">
@@ -56,11 +93,48 @@
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJucGZ4YXhzd21teHp4aWdneXd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NzA4MDcsImV4cCI6MjA5NDQ0NjgwN30.9rlU4sRukMOAuEz_FyPRasRdYmsZNHi4EzNE9JyiT8M'
         );
 
+        // tabId → Supabase country name
         const COUNTRY_MAP = {
-            Mexico: 'México',
-            Chile: 'Chile',
-            Panama: 'Panamá',
-            CostaRica: 'Costa Rica'
+            Mexico:        'México',
+            Chile:         'Chile',
+            Colombia:      'Colombia',
+            Brasil:        'Brasil',
+            Argentina:     'Argentina',
+            Peru:          'Perú',
+            Ecuador:       'Ecuador',
+            Bolivia:       'Bolivia',
+            Paraguay:      'Paraguay',
+            Uruguay:       'Uruguay',
+            Venezuela:     'Venezuela',
+            Guatemala:     'Guatemala',
+            Honduras:      'Honduras',
+            ElSalvador:    'El Salvador',
+            Nicaragua:     'Nicaragua',
+            Panama:        'Panamá',
+            CostaRica:     'Costa Rica',
+            RepDominicana: 'Rep. Dominicana',
+        };
+
+        // Official data sources per country
+        const SOURCES = {
+            Mexico:        [['CNBV','https://cnbv.gob.mx'], ['Banxico','https://banxico.org.mx']],
+            Chile:         [['CMF','https://cmfchile.cl'], ['BCCh','https://bcentral.cl']],
+            Colombia:      [['SFC','https://superfinanciera.gov.co'], ['Banco de la República','https://banrep.gov.co']],
+            Brasil:        [['BCB','https://bcb.gov.br'], ['IBGE','https://ibge.gov.br']],
+            Argentina:     [['BCRA','https://bcra.gob.ar'], ['INDEC','https://indec.gob.ar']],
+            Peru:          [['SBS','https://sbs.gob.pe'], ['BCRP','https://bcrp.gob.pe']],
+            Ecuador:       [['Superbancos','https://superbancos.gob.ec'], ['BCE','https://bce.fin.ec']],
+            Bolivia:       [['ASFI','https://asfi.gob.bo'], ['BCB','https://bcb.gob.bo']],
+            Paraguay:      [['BCP','https://bcp.gov.py']],
+            Uruguay:       [['BCU','https://bcu.gub.uy'], ['INE','https://ine.gub.uy']],
+            Venezuela:     [['SUDEBAN','https://sudeban.gob.ve'], ['BCV','https://bcv.org.ve']],
+            Guatemala:     [['SIB','https://sib.gob.gt'], ['Banguat','https://banguat.gob.gt']],
+            Honduras:      [['CNBS','https://cnbs.gob.hn'], ['BCH','https://bch.hn']],
+            ElSalvador:    [['SSF','https://ssf.gob.sv'], ['BCR','https://bcr.gob.sv']],
+            Nicaragua:     [['SIBOIF','https://siboif.gob.ni'], ['BCN','https://bcn.gob.ni']],
+            Panama:        [['SBP','https://superbancos.gob.pa'], ['MEF','https://mef.gob.pa']],
+            CostaRica:     [['SUGEF','https://sugef.fi.cr'], ['BCCR','https://bccr.fi.cr']],
+            RepDominicana: [['SB','https://sb.gob.do'], ['BCRD','https://bancentral.gov.do']],
         };
 
         let dashboardData = {};
@@ -79,21 +153,22 @@
                     .filter(a => a.country === countryName)
                     .map(a => ({
                         nombre: a.nombre_actor,
-                        vista: a.depositos_vista,
-                        plazo: a.depositos_plazo,
-                        acm: a.acm,
-                        cuota: a.cuota_mercado,
-                        cagr: a.cagr
+                        vista:  a.depositos_vista,
+                        plazo:  a.depositos_plazo,
+                        acm:    a.acm,
+                        cuota:  a.cuota_mercado,
+                        cagr:   a.cagr,
                     }));
                 dashboardData[tabId] = {
-                    pib: country.pib,
+                    pib:             country.pib,
                     pib_crecimiento: country.pib_crecimiento,
-                    poblacion: country.poblacion,
-                    bancarizacion: country.bancarizacion,
-                    inflacion: country.inflacion,
-                    tasa_bc: country.tasa_bc,
-                    fecha: country.fecha_actualizacion,
-                    actors: countryActors
+                    inflacion:       country.inflacion,
+                    tasa_bc:         country.tasa_bc,
+                    desempleo:       country.desempleo,
+                    poblacion:       country.poblacion,
+                    bancarizacion:   country.bancarizacion,
+                    fecha:           country.fecha_actualizacion,
+                    actors:          countryActors,
                 };
             }
 
@@ -105,31 +180,85 @@
             return Number(n).toLocaleString('es-MX');
         }
 
-        function renderDashboard(country, d) {
+        function renderDashboard(tabId, d) {
+            const el = document.getElementById(tabId);
             if (!d) {
-                document.getElementById(country).innerHTML = '<p style="color:#94a3b8;padding:20px">Sin datos en Supabase para este país.</p>';
+                el.innerHTML = '<p style="color:#475569;padding:40px;text-align:center">Sin datos en Supabase para este país.</p>';
                 return;
             }
-            const fecha = d.fecha ? new Date(d.fecha).toLocaleDateString('es-MX') : '';
+
+            const fecha = d.fecha
+                ? new Date(d.fecha).toLocaleDateString('es-MX', {year:'numeric',month:'long',day:'numeric'})
+                : null;
+
+            const sourceLinks = (SOURCES[tabId] || [])
+                .map(([name, url]) => `<a href="${url}" target="_blank" rel="noopener">${name}</a>`)
+                .join(' · ');
+
+            const bcLabel = d.tasa_bc > 0 ? `BC: ${d.tasa_bc}%` : 'Economía dolarizada';
+
             let html = `
                 <div class="grid">
-                    <div class="kpi-card"><div class="kpi-label">PIB</div><div class="kpi-value">$${fmt(d.pib)}B</div><div class="kpi-change">+${d.pib_crecimiento}% YoY</div></div>
-                    <div class="kpi-card"><div class="kpi-label">Población</div><div class="kpi-value">${fmt(d.poblacion)}</div><div class="kpi-change">Habitantes</div></div>
-                    <div class="kpi-card"><div class="kpi-label">Bancarización</div><div class="kpi-value">${d.bancarizacion}%</div><div class="kpi-change">% población</div></div>
-                    <div class="kpi-card"><div class="kpi-label">Inflación</div><div class="kpi-value">${d.inflacion}%</div><div class="kpi-change">BC: ${d.tasa_bc}%</div></div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">PIB</div>
+                        <div class="kpi-value">$${fmt(d.pib)}B</div>
+                        <div class="kpi-change">+${d.pib_crecimiento}% YoY</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Población</div>
+                        <div class="kpi-value">${fmt(d.poblacion)}</div>
+                        <div class="kpi-change neutral">habitantes</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Bancarización</div>
+                        <div class="kpi-value">${d.bancarizacion}%</div>
+                        <div class="kpi-change neutral">de la población</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Inflación</div>
+                        <div class="kpi-value">${d.inflacion}%</div>
+                        <div class="kpi-change neutral">${bcLabel}</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Desempleo</div>
+                        <div class="kpi-value">${d.desempleo}%</div>
+                        <div class="kpi-change neutral">tasa oficial</div>
+                    </div>
                 </div>
                 <div class="table-container">
-                    <h2 style="margin-bottom:8px;">Top Actores Bancarios</h2>
-                    ${fecha ? `<p style="font-size:11px;color:#64748b;margin-bottom:15px;">Actualizado: ${fecha}</p>` : ''}
+                    <div class="table-header">
+                        <h2>Principales Actores Bancarios</h2>
+                        <div class="meta">
+                            ${fecha ? `Actualizado: ${fecha}<br>` : ''}
+                            ${sourceLinks ? `Fuentes: ${sourceLinks}` : ''}
+                        </div>
+                    </div>
                     <table>
-                        <thead><tr><th>Banco</th><th>Depósitos Vista</th><th>Depósitos Plazo</th><th>ACM</th><th>Cuota</th><th>CAGR</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>Banco</th>
+                                <th>Depósitos Vista</th>
+                                <th>Depósitos Plazo</th>
+                                <th>ACM</th>
+                                <th>Cuota de Mercado</th>
+                                <th>CAGR</th>
+                            </tr>
+                        </thead>
                         <tbody>
             `;
             d.actors.forEach(a => {
-                html += `<tr><td><strong>${a.nombre}</strong></td><td>${fmt(a.vista)}</td><td>${fmt(a.plazo)}</td><td>${fmt(a.acm)}</td><td>${a.cuota}%</td><td>${a.cagr}%</td></tr>`;
+                html += `
+                    <tr>
+                        <td><strong>${a.nombre}</strong></td>
+                        <td>${fmt(a.vista)}</td>
+                        <td>${fmt(a.plazo)}</td>
+                        <td>${fmt(a.acm)}</td>
+                        <td>${a.cuota}%</td>
+                        <td>${a.cagr}%</td>
+                    </tr>`;
             });
             html += `</tbody></table></div>`;
-            document.getElementById(country).innerHTML = html;
+            el.innerHTML = html;
         }
 
         window.showCountry = function(country) {
@@ -138,7 +267,9 @@
             document.getElementById(country).classList.add('active');
             event.target.classList.add('active');
             activeCountry = country;
-            renderDashboard(country, dashboardData[country]);
+            if (dashboardData[country] !== undefined) {
+                renderDashboard(country, dashboardData[country]);
+            }
         };
 
         loadData();
