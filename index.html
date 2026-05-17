@@ -1,520 +1,616 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SynerGy — Dashboard LATAM</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0a1628; color: #e2e8f0; }
-        .container { max-width: 1440px; margin: 0 auto; padding: 20px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SynerGy — Dashboard LATAM</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#0f172a}
 
-        /* Header */
-        header { background: linear-gradient(135deg, #1a2d5a 0%, #2d1b5e 100%); padding: 24px 32px; border-radius: 12px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; border: 1px solid rgba(102,126,234,0.2); }
-        .header-left { display: flex; align-items: center; gap: 20px; }
-        .logo-pill { background: #fff; border-radius: 8px; padding: 6px 16px; display: flex; align-items: center; }
-        .logo-pill img { height: 36px; display: block; }
-        .header-titles h1 { font-size: 1.8em; font-weight: 700; color: #f1f5f9; letter-spacing: -0.5px; }
-        .header-titles p { font-size: 13px; color: #94a3b8; margin-top: 2px; }
-        .header-right { text-align: right; font-size: 12px; color: #64748b; line-height: 1.7; }
-        .header-right strong { color: #94a3b8; }
+/* ─── Header ─────────────────────────────────────────────────────── */
+header{background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 60%,#312e81 100%);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;border-bottom:3px solid #4f46e5}
+.header-left{display:flex;flex-direction:column;gap:10px}
+.header-titles h1{font-size:1.75rem;font-weight:700;color:#f8fafc;letter-spacing:-0.5px}
+.header-titles p{font-size:12px;color:#94a3b8;letter-spacing:0.08em;text-transform:uppercase}
+.clocks{display:flex;gap:20px;flex-wrap:wrap}
+.clock-box{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 14px;min-width:130px}
+.clock-city{font-size:9.5px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px}
+.clock-time{font-size:19px;font-weight:700;color:#e0f2fe;font-variant-numeric:tabular-nums;letter-spacing:1px}
+.clock-zone{font-size:9px;color:#64748b;margin-top:1px}
+.header-logo{display:flex;align-items:center}
+.header-logo img{height:56px;filter:brightness(0) invert(1);opacity:0.92}
 
-        /* Tabs */
-        .country-tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
-        .tab-btn { padding: 7px 13px; background: #1e293b; border: 1px solid #334155; color: #94a3b8; cursor: pointer; border-radius: 6px; transition: all 0.15s; font-size: 12.5px; font-weight: 500; white-space: nowrap; }
-        .tab-btn.active { background: #667eea; border-color: #667eea; color: #fff; }
-        .tab-btn:hover:not(.active) { border-color: #667eea; color: #e2e8f0; }
+/* ─── Container ──────────────────────────────────────────────────── */
+.container{max-width:1460px;margin:0 auto;padding:24px 20px}
 
-        /* Content panels */
-        .content { display: none; }
-        .content.active { display: block; }
-        .loading { color: #475569; padding: 60px; text-align: center; }
+/* ─── Section headers ─────────────────────────────────────────────── */
+.section-title{font-size:13px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #e2e8f0}
 
-        /* KPI Grid */
-        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 16px; }
-        .kpi-card { background: #1e293b; padding: 16px 18px; border-radius: 8px; border-left: 3px solid #667eea; }
-        .kpi-card.highlight { border-left-color: #10b981; }
-        .kpi-label { font-size: 10.5px; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
-        .kpi-value { font-size: 22px; font-weight: 700; color: #f1f5f9; line-height: 1.1; }
-        .kpi-sub { font-size: 11px; color: #94a3b8; margin-top: 4px; }
-        .kpi-sub.green { color: #10b981; }
-        .kpi-sub.red { color: #f87171; }
-        .cagr-note { font-size: 10px; color: #f59e0b; }
+/* ─── Regional comparison ─────────────────────────────────────────── */
+.regional-grid{display:grid;grid-template-columns:1fr 1fr 1fr 260px;gap:16px;margin-bottom:28px}
+@media(max-width:1100px){.regional-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:680px){.regional-grid{grid-template-columns:1fr;}}
+.chart-card{background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,0.07);border:1px solid #e2e8f0}
+.chart-card-title{font-size:11.5px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px}
 
-        /* Exchange rate bar */
-        .rate-bar { background: #162032; border: 1px solid #1e3a5f; border-radius: 8px; padding: 10px 16px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 12.5px; }
-        .rate-label { color: #cbd5e1; }
-        .rate-label strong { color: #60a5fa; font-size: 14px; }
-        .rate-source { color: #475569; }
-        .rate-source a { color: #667eea; text-decoration: none; }
+/* ─── Gauge dial ──────────────────────────────────────────────────── */
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%}
+.gauge-country{font-size:12px;font-weight:600;color:#475569;margin-bottom:6px}
+.gauge-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 12px;margin-top:6px}
+.gauge-legend span{font-size:10px;color:#64748b;display:flex;align-items:center;gap:4px}
+.gauge-legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.gauge-phase-label{margin-top:4px;font-size:13px;font-weight:700;text-align:center}
 
-        /* Chart */
-        .chart-wrap { background: #1e293b; border-radius: 10px; padding: 20px; margin-bottom: 16px; }
-        .chart-title { font-size: 13px; font-weight: 600; color: #94a3b8; margin-bottom: 14px; }
-        .chart-note { font-size: 10px; color: #334155; margin-top: 8px; }
+/* ─── Tabs ─────────────────────────────────────────────────────────── */
+.country-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.tab-btn{padding:7px 13px;background:#fff;border:1px solid #e2e8f0;color:#64748b;cursor:pointer;border-radius:6px;font-size:12.5px;font-weight:500;white-space:nowrap;transition:all 0.15s;box-shadow:0 1px 2px rgba(0,0,0,0.04)}
+.tab-btn.active{background:#4f46e5;border-color:#4f46e5;color:#fff;box-shadow:0 2px 8px rgba(79,70,229,0.3)}
+.tab-btn:hover:not(.active){border-color:#a5b4fc;color:#4f46e5}
 
-        /* Table */
-        .table-container { background: #1e293b; padding: 20px; border-radius: 10px; overflow-x: auto; }
-        .table-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
-        .table-header h2 { font-size: 14px; font-weight: 600; color: #f1f5f9; }
-        .meta { font-size: 11px; color: #475569; text-align: right; line-height: 1.7; }
-        .meta a { color: #667eea; text-decoration: none; }
-        .meta a:hover { text-decoration: underline; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th { background: #0f172a; padding: 9px 12px; text-align: right; font-size: 11px; font-weight: 600; color: #64748b; border-bottom: 1px solid #334155; white-space: nowrap; }
-        th:first-child { text-align: left; }
-        td { padding: 9px 12px; border-bottom: 1px solid #0f172a; font-size: 12.5px; text-align: right; }
-        td:first-child { text-align: left; }
-        tr:last-child td { border-bottom: none; }
-        tr:hover td { background: rgba(15,23,42,0.6); }
-        .usd-col { color: #60a5fa; font-size: 11.5px; }
-        .no-data { color: #475569; padding: 60px; text-align: center; }
-    </style>
+/* ─── Content panels ──────────────────────────────────────────────── */
+.content{display:none}.content.active{display:block}
+.loading{color:#94a3b8;padding:60px;text-align:center}
+
+/* ─── KPI grid ────────────────────────────────────────────────────── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:14px}
+.kpi-card{background:#fff;padding:16px 18px;border-radius:8px;border-top:3px solid #4f46e5;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.kpi-card.green-top{border-top-color:#10b981}
+.kpi-label{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px}
+.kpi-value{font-size:22px;font-weight:700;color:#0f172a;line-height:1.1}
+.kpi-sub{font-size:11px;color:#64748b;margin-top:4px}
+.kpi-sub.up{color:#10b981}.kpi-sub.warn{color:#f59e0b}.kpi-sub.note{font-size:9.5px;color:#f59e0b}
+
+/* ─── Rate bar ─────────────────────────────────────────────────────── */
+.rate-bar{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:9px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:12.5px}
+.rate-label{color:#1e40af}.rate-label strong{color:#1d4ed8;font-size:14px}
+.rate-source{font-size:11px;color:#93c5fd}.rate-source a{color:#6366f1;text-decoration:none}
+
+/* ─── Detail row (gauge + evolution chart) ─────────────────────────── */
+.detail-row{display:grid;grid-template-columns:260px 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:760px){.detail-row{grid-template-columns:1fr}}
+
+/* ─── Evolution chart card ──────────────────────────────────────────── */
+.evo-card{background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid #e2e8f0}
+.evo-title{font-size:11.5px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px}
+.chart-note{font-size:10px;color:#cbd5e1;margin-top:6px}
+
+/* ─── Table ─────────────────────────────────────────────────────────── */
+.table-container{background:#fff;padding:20px;border-radius:10px;overflow-x:auto;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid #e2e8f0}
+.table-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.table-header h2{font-size:13px;font-weight:600;color:#0f172a}
+.meta{font-size:10.5px;color:#94a3b8;text-align:right;line-height:1.8}
+.meta a{color:#6366f1;text-decoration:none}.meta a:hover{text-decoration:underline}
+table{width:100%;border-collapse:collapse;min-width:580px}
+th{background:#f8fafc;padding:9px 12px;text-align:right;font-size:10.5px;font-weight:600;color:#94a3b8;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+th:first-child{text-align:left}
+td{padding:9px 12px;border-bottom:1px solid #f1f5f9;font-size:12.5px;text-align:right;color:#334155}
+td:first-child{text-align:left;font-weight:500;color:#0f172a}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#f8fafc}
+.usd-col{color:#6366f1;font-size:11.5px}
+.no-data{color:#94a3b8;padding:60px;text-align:center}
+</style>
 </head>
 <body>
-<div class="container">
-    <header>
-        <div class="header-left">
-            <div class="logo-pill"><img src="logo.png" alt="SynerGy Apex"></div>
-            <div class="header-titles">
-                <h1>Dashboard LATAM</h1>
-                <p>Dirección de Expansión</p>
-            </div>
-        </div>
-        <div class="header-right">
-            <strong>18 países</strong> · Actualización mensual<br>
-            Inteligencia bancaria en tiempo real<br>
-            <span id="last-refresh"></span>
-        </div>
-    </header>
 
-    <div class="country-tabs">
-        <button class="tab-btn active"  onclick="showCountry('Mexico',this)">🇲🇽 México</button>
-        <button class="tab-btn"         onclick="showCountry('Chile',this)">🇨🇱 Chile</button>
-        <button class="tab-btn"         onclick="showCountry('Colombia',this)">🇨🇴 Colombia</button>
-        <button class="tab-btn"         onclick="showCountry('Brasil',this)">🇧🇷 Brasil</button>
-        <button class="tab-btn"         onclick="showCountry('Argentina',this)">🇦🇷 Argentina</button>
-        <button class="tab-btn"         onclick="showCountry('Peru',this)">🇵🇪 Perú</button>
-        <button class="tab-btn"         onclick="showCountry('Ecuador',this)">🇪🇨 Ecuador</button>
-        <button class="tab-btn"         onclick="showCountry('Bolivia',this)">🇧🇴 Bolivia</button>
-        <button class="tab-btn"         onclick="showCountry('Paraguay',this)">🇵🇾 Paraguay</button>
-        <button class="tab-btn"         onclick="showCountry('Uruguay',this)">🇺🇾 Uruguay</button>
-        <button class="tab-btn"         onclick="showCountry('Venezuela',this)">🇻🇪 Venezuela</button>
-        <button class="tab-btn"         onclick="showCountry('Guatemala',this)">🇬🇹 Guatemala</button>
-        <button class="tab-btn"         onclick="showCountry('Honduras',this)">🇭🇳 Honduras</button>
-        <button class="tab-btn"         onclick="showCountry('ElSalvador',this)">🇸🇻 El Salvador</button>
-        <button class="tab-btn"         onclick="showCountry('Nicaragua',this)">🇳🇮 Nicaragua</button>
-        <button class="tab-btn"         onclick="showCountry('Panama',this)">🇵🇦 Panamá</button>
-        <button class="tab-btn"         onclick="showCountry('CostaRica',this)">🇨🇷 Costa Rica</button>
-        <button class="tab-btn"         onclick="showCountry('RepDominicana',this)">🇩🇴 Rep. Dominicana</button>
+<header>
+  <div class="header-left">
+    <div class="header-titles">
+      <h1>Dashboard LATAM</h1>
+      <p>Dirección de Expansión &nbsp;·&nbsp; 18 países &nbsp;·&nbsp; Actualización mensual</p>
     </div>
+    <div class="clocks">
+      <div class="clock-box">
+        <div class="clock-city">Nueva York</div>
+        <div class="clock-time" id="clock-ny">--:--:--</div>
+        <div class="clock-zone">America/New_York</div>
+      </div>
+      <div class="clock-box">
+        <div class="clock-city">Quito</div>
+        <div class="clock-time" id="clock-quito">--:--:--</div>
+        <div class="clock-zone">America/Guayaquil</div>
+      </div>
+      <div class="clock-box">
+        <div class="clock-city">Londres</div>
+        <div class="clock-time" id="clock-london">--:--:--</div>
+        <div class="clock-zone">Europe/London</div>
+      </div>
+    </div>
+  </div>
+  <div class="header-logo">
+    <img src="logo_cropped.png" alt="SynerGy Apex">
+  </div>
+</header>
 
-    <div id="Mexico"        class="content active"><div class="loading">Cargando datos…</div></div>
-    <div id="Chile"         class="content"></div>
-    <div id="Colombia"      class="content"></div>
-    <div id="Brasil"        class="content"></div>
-    <div id="Argentina"     class="content"></div>
-    <div id="Peru"          class="content"></div>
-    <div id="Ecuador"       class="content"></div>
-    <div id="Bolivia"       class="content"></div>
-    <div id="Paraguay"      class="content"></div>
-    <div id="Uruguay"       class="content"></div>
-    <div id="Venezuela"     class="content"></div>
-    <div id="Guatemala"     class="content"></div>
-    <div id="Honduras"      class="content"></div>
-    <div id="ElSalvador"    class="content"></div>
-    <div id="Nicaragua"     class="content"></div>
-    <div id="Panama"        class="content"></div>
-    <div id="CostaRica"     class="content"></div>
-    <div id="RepDominicana" class="content"></div>
-</div>
+<div class="container">
 
+  <!-- ── Regional comparison ─────────────────────────────────────── -->
+  <div class="section-title">Comparativa Regional LATAM — CAGR Depósitos 2023–2026</div>
+  <div class="regional-grid">
+    <div class="chart-card">
+      <div class="chart-card-title">CAGR Depósitos Plazo</div>
+      <canvas id="chart-cagr-plazo" height="320"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-title">CAGR Depósitos Vista</div>
+      <canvas id="chart-cagr-vista" height="320"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-title">CAGR ACM / Sistema Bancario</div>
+      <canvas id="chart-cagr-acm" height="320"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-title">Ciclo Económico</div>
+      <div class="gauge-wrap">
+        <div class="gauge-country" id="gauge-country-label">Selecciona un país</div>
+        <div id="gauge-svg-container"></div>
+        <div class="gauge-phase-label" id="gauge-phase-text"></div>
+        <div class="gauge-legend">
+          <span><i style="background:#ef4444"></i>Contracción</span>
+          <span><i style="background:#f97316"></i>Estancamiento</span>
+          <span><i style="background:#eab308"></i>Recuperación</span>
+          <span><i style="background:#22c55e"></i>Expansión</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Country tabs ──────────────────────────────────────────────── -->
+  <div class="country-tabs">
+    <button class="tab-btn active"  onclick="showCountry('Mexico',this)">🇲🇽 México</button>
+    <button class="tab-btn"         onclick="showCountry('Chile',this)">🇨🇱 Chile</button>
+    <button class="tab-btn"         onclick="showCountry('Colombia',this)">🇨🇴 Colombia</button>
+    <button class="tab-btn"         onclick="showCountry('Brasil',this)">🇧🇷 Brasil</button>
+    <button class="tab-btn"         onclick="showCountry('Argentina',this)">🇦🇷 Argentina</button>
+    <button class="tab-btn"         onclick="showCountry('Peru',this)">🇵🇪 Perú</button>
+    <button class="tab-btn"         onclick="showCountry('Ecuador',this)">🇪🇨 Ecuador</button>
+    <button class="tab-btn"         onclick="showCountry('Bolivia',this)">🇧🇴 Bolivia</button>
+    <button class="tab-btn"         onclick="showCountry('Paraguay',this)">🇵🇾 Paraguay</button>
+    <button class="tab-btn"         onclick="showCountry('Uruguay',this)">🇺🇾 Uruguay</button>
+    <button class="tab-btn"         onclick="showCountry('Venezuela',this)">🇻🇪 Venezuela</button>
+    <button class="tab-btn"         onclick="showCountry('Guatemala',this)">🇬🇹 Guatemala</button>
+    <button class="tab-btn"         onclick="showCountry('Honduras',this)">🇭🇳 Honduras</button>
+    <button class="tab-btn"         onclick="showCountry('ElSalvador',this)">🇸🇻 El Salvador</button>
+    <button class="tab-btn"         onclick="showCountry('Nicaragua',this)">🇳🇮 Nicaragua</button>
+    <button class="tab-btn"         onclick="showCountry('Panama',this)">🇵🇦 Panamá</button>
+    <button class="tab-btn"         onclick="showCountry('CostaRica',this)">🇨🇷 Costa Rica</button>
+    <button class="tab-btn"         onclick="showCountry('RepDominicana',this)">🇩🇴 Rep. Dominicana</button>
+  </div>
+
+  <div id="Mexico"        class="content active"><div class="loading">Cargando…</div></div>
+  <div id="Chile"         class="content"></div>
+  <div id="Colombia"      class="content"></div>
+  <div id="Brasil"        class="content"></div>
+  <div id="Argentina"     class="content"></div>
+  <div id="Peru"          class="content"></div>
+  <div id="Ecuador"       class="content"></div>
+  <div id="Bolivia"       class="content"></div>
+  <div id="Paraguay"      class="content"></div>
+  <div id="Uruguay"       class="content"></div>
+  <div id="Venezuela"     class="content"></div>
+  <div id="Guatemala"     class="content"></div>
+  <div id="Honduras"      class="content"></div>
+  <div id="ElSalvador"    class="content"></div>
+  <div id="Nicaragua"     class="content"></div>
+  <div id="Panama"        class="content"></div>
+  <div id="CostaRica"     class="content"></div>
+  <div id="RepDominicana" class="content"></div>
+
+</div><!-- /container -->
+
+<!-- ─── Clocks ──────────────────────────────────────────────────────── -->
+<script>
+(function tickClocks(){
+  const zones=[
+    {id:'clock-ny',    tz:'America/New_York'},
+    {id:'clock-quito', tz:'America/Guayaquil'},
+    {id:'clock-london',tz:'Europe/London'},
+  ];
+  function update(){
+    const now=new Date();
+    zones.forEach(({id,tz})=>{
+      const el=document.getElementById(id);
+      if(el) el.textContent=now.toLocaleTimeString('es-ES',{timeZone:tz,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+    });
+  }
+  update();
+  setInterval(update,1000);
+})();
+</script>
+
+<!-- ─── Main module ─────────────────────────────────────────────────── -->
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 const supabase = createClient(
-    'https://bnpfxaxswmmxzxiggywz.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJucGZ4YXhzd21teHp4aWdneXd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NzA4MDcsImV4cCI6MjA5NDQ0NjgwN30.9rlU4sRukMOAuEz_FyPRasRdYmsZNHi4EzNE9JyiT8M'
+  'https://bnpfxaxswmmxzxiggywz.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJucGZ4YXhzd21teHp4aWdneXd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NzA4MDcsImV4cCI6MjA5NDQ0NjgwN30.9rlU4sRukMOAuEz_FyPRasRdYmsZNHi4EzNE9JyiT8M'
 );
 
-// ---------- Constants ----------
-
-const COUNTRY_MAP = {
-    Mexico:'México', Chile:'Chile', Colombia:'Colombia', Brasil:'Brasil',
-    Argentina:'Argentina', Peru:'Perú', Ecuador:'Ecuador', Bolivia:'Bolivia',
-    Paraguay:'Paraguay', Uruguay:'Uruguay', Venezuela:'Venezuela', Guatemala:'Guatemala',
-    Honduras:'Honduras', ElSalvador:'El Salvador', Nicaragua:'Nicaragua',
-    Panama:'Panamá', CostaRica:'Costa Rica', RepDominicana:'Rep. Dominicana',
+/* ── Constants ─────────────────────────────────────────────────────── */
+const COUNTRY_MAP={
+  Mexico:'México',Chile:'Chile',Colombia:'Colombia',Brasil:'Brasil',
+  Argentina:'Argentina',Peru:'Perú',Ecuador:'Ecuador',Bolivia:'Bolivia',
+  Paraguay:'Paraguay',Uruguay:'Uruguay',Venezuela:'Venezuela',Guatemala:'Guatemala',
+  Honduras:'Honduras',ElSalvador:'El Salvador',Nicaragua:'Nicaragua',
+  Panama:'Panamá',CostaRica:'Costa Rica',RepDominicana:'Rep. Dominicana',
+};
+const SOURCES={
+  Mexico:[['CNBV','https://cnbv.gob.mx'],['Banxico','https://banxico.org.mx']],
+  Chile:[['CMF','https://cmfchile.cl'],['BCCh','https://bcentral.cl']],
+  Colombia:[['SFC','https://superfinanciera.gov.co'],['Banrep','https://banrep.gov.co']],
+  Brasil:[['BCB','https://bcb.gov.br'],['IBGE','https://ibge.gov.br']],
+  Argentina:[['BCRA','https://bcra.gob.ar'],['INDEC','https://indec.gob.ar']],
+  Peru:[['SBS','https://sbs.gob.pe'],['BCRP','https://bcrp.gob.pe']],
+  Ecuador:[['Superbancos','https://superbancos.gob.ec'],['BCE','https://bce.fin.ec']],
+  Bolivia:[['ASFI','https://asfi.gob.bo'],['BCB-BO','https://bcb.gob.bo']],
+  Paraguay:[['BCP','https://bcp.gov.py']],
+  Uruguay:[['BCU','https://bcu.gub.uy'],['INE','https://ine.gub.uy']],
+  Venezuela:[['SUDEBAN','https://sudeban.gob.ve'],['BCV','https://bcv.org.ve']],
+  Guatemala:[['SIB','https://sib.gob.gt'],['Banguat','https://banguat.gob.gt']],
+  Honduras:[['CNBS','https://cnbs.gob.hn'],['BCH','https://bch.hn']],
+  ElSalvador:[['SSF','https://ssf.gob.sv'],['BCR','https://bcr.gob.sv']],
+  Nicaragua:[['SIBOIF','https://siboif.gob.ni'],['BCN','https://bcn.gob.ni']],
+  Panama:[['SBP','https://superbancos.gob.pa'],['MEF','https://mef.gob.pa']],
+  CostaRica:[['SUGEF','https://sugef.fi.cr'],['BCCR','https://bccr.fi.cr']],
+  RepDominicana:[['SB','https://sb.gob.do'],['BCRD','https://bancentral.gov.do']],
+};
+const CURRENCIES={
+  Mexico:{code:'MXN',dol:false},Chile:{code:'CLP',dol:false},
+  Colombia:{code:'COP',dol:false},Brasil:{code:'BRL',dol:false},
+  Argentina:{code:'ARS',dol:false},Peru:{code:'PEN',dol:false},
+  Ecuador:{code:'USD',dol:true},Bolivia:{code:'BOB',dol:false},
+  Paraguay:{code:'PYG',dol:false},Uruguay:{code:'UYU',dol:false},
+  Venezuela:{code:'VES',dol:false},Guatemala:{code:'GTQ',dol:false},
+  Honduras:{code:'HNL',dol:false},ElSalvador:{code:'USD',dol:true},
+  Nicaragua:{code:'NIO',dol:false},Panama:{code:'USD',dol:true},
+  CostaRica:{code:'CRC',dol:false},RepDominicana:{code:'DOP',dol:false},
+};
+// Separate annual growth assumptions for vista / plazo / acm (nominal)
+const GR={
+  Mexico:{v:0.083,p:0.076,a:0.080},Chile:{v:0.063,p:0.057,a:0.060},
+  Colombia:{v:0.105,p:0.095,a:0.100},Brasil:{v:0.115,p:0.105,a:0.110},
+  Argentina:{v:0.660,p:0.640,a:0.650},Peru:{v:0.073,p:0.067,a:0.070},
+  Ecuador:{v:0.063,p:0.057,a:0.060},Bolivia:{v:0.073,p:0.067,a:0.070},
+  Paraguay:{v:0.094,p:0.086,a:0.090},Uruguay:{v:0.083,p:0.077,a:0.080},
+  Venezuela:{v:0.820,p:0.780,a:0.800},Guatemala:{v:0.083,p:0.077,a:0.080},
+  Honduras:{v:0.073,p:0.067,a:0.070},ElSalvador:{v:0.053,p:0.047,a:0.050},
+  Nicaragua:{v:0.083,p:0.077,a:0.080},Panama:{v:0.053,p:0.047,a:0.050},
+  CostaRica:{v:0.073,p:0.067,a:0.070},RepDominicana:{v:0.094,p:0.086,a:0.090},
 };
 
-const SOURCES = {
-    Mexico:        [['CNBV','https://cnbv.gob.mx'],['Banxico','https://banxico.org.mx']],
-    Chile:         [['CMF','https://cmfchile.cl'],['BCCh','https://bcentral.cl']],
-    Colombia:      [['SFC','https://superfinanciera.gov.co'],['Banrep','https://banrep.gov.co']],
-    Brasil:        [['BCB','https://bcb.gov.br'],['IBGE','https://ibge.gov.br']],
-    Argentina:     [['BCRA','https://bcra.gob.ar'],['INDEC','https://indec.gob.ar']],
-    Peru:          [['SBS','https://sbs.gob.pe'],['BCRP','https://bcrp.gob.pe']],
-    Ecuador:       [['Superbancos','https://superbancos.gob.ec'],['BCE','https://bce.fin.ec']],
-    Bolivia:       [['ASFI','https://asfi.gob.bo'],['BCB','https://bcb.gob.bo']],
-    Paraguay:      [['BCP','https://bcp.gov.py']],
-    Uruguay:       [['BCU','https://bcu.gub.uy'],['INE','https://ine.gub.uy']],
-    Venezuela:     [['SUDEBAN','https://sudeban.gob.ve'],['BCV','https://bcv.org.ve']],
-    Guatemala:     [['SIB','https://sib.gob.gt'],['Banguat','https://banguat.gob.gt']],
-    Honduras:      [['CNBS','https://cnbs.gob.hn'],['BCH','https://bch.hn']],
-    ElSalvador:    [['SSF','https://ssf.gob.sv'],['BCR','https://bcr.gob.sv']],
-    Nicaragua:     [['SIBOIF','https://siboif.gob.ni'],['BCN','https://bcn.gob.ni']],
-    Panama:        [['SBP','https://superbancos.gob.pa'],['MEF','https://mef.gob.pa']],
-    CostaRica:     [['SUGEF','https://sugef.fi.cr'],['BCCR','https://bccr.fi.cr']],
-    RepDominicana: [['SB','https://sb.gob.do'],['BCRD','https://bancentral.gov.do']],
-};
+/* ── State ─────────────────────────────────────────────────────────── */
+let dashboardData={}, exchangeRates=null, rateDate=null;
+let activeCountry='Mexico';
+let evoCharts={};
 
-// ISO 4217 code + display info per country
-const CURRENCIES = {
-    Mexico:        { code:'MXN', name:'Peso mexicano',        dol:false },
-    Chile:         { code:'CLP', name:'Peso chileno',          dol:false },
-    Colombia:      { code:'COP', name:'Peso colombiano',       dol:false },
-    Brasil:        { code:'BRL', name:'Real brasileño',        dol:false },
-    Argentina:     { code:'ARS', name:'Peso argentino',        dol:false },
-    Peru:          { code:'PEN', name:'Sol peruano',           dol:false },
-    Ecuador:       { code:'USD', name:'Dólar (dolarizado)',    dol:true  },
-    Bolivia:       { code:'BOB', name:'Boliviano',             dol:false },
-    Paraguay:      { code:'PYG', name:'Guaraní paraguayo',     dol:false },
-    Uruguay:       { code:'UYU', name:'Peso uruguayo',         dol:false },
-    Venezuela:     { code:'VES', name:'Bolívar venezolano',    dol:false },
-    Guatemala:     { code:'GTQ', name:'Quetzal guatemalteco',  dol:false },
-    Honduras:      { code:'HNL', name:'Lempira hondureño',    dol:false },
-    ElSalvador:    { code:'USD', name:'Dólar (dolarizado)',    dol:true  },
-    Nicaragua:     { code:'NIO', name:'Córdoba nicaragüense',  dol:false },
-    Panama:        { code:'USD', name:'Balboa / Dólar',        dol:true  },
-    CostaRica:     { code:'CRC', name:'Colón costarricense',   dol:false },
-    RepDominicana: { code:'DOP', name:'Peso dominicano',       dol:false },
-};
-
-// Assumed compound annual nominal deposit growth (used to back-derive 2023-2025)
-const GROWTH_RATES = {
-    Mexico:0.08, Chile:0.06, Colombia:0.10, Brasil:0.11, Argentina:0.65,
-    Peru:0.07, Ecuador:0.06, Bolivia:0.07, Paraguay:0.09, Uruguay:0.08,
-    Venezuela:0.80, Guatemala:0.08, Honduras:0.07, ElSalvador:0.05,
-    Nicaragua:0.08, Panama:0.05, CostaRica:0.07, RepDominicana:0.09,
-};
-
-// ---------- State ----------
-let dashboardData = {};
-let exchangeRates  = null;
-let rateTimestamp  = null;
-let activeCountry  = 'Mexico';
-let chartInstances = {};
-
-// ---------- Helpers ----------
-function fmt(n) {
-    if (n == null) return '—';
-    return Number(n).toLocaleString('es-MX');
+/* ── Helpers ───────────────────────────────────────────────────────── */
+function fmt(n){return n==null?'—':Number(n).toLocaleString('es-MX');}
+function fmtAx(v){
+  if(v>=1e9)return(v/1e9).toFixed(1)+'B';
+  if(v>=1e6)return(v/1e6).toFixed(1)+'M';
+  if(v>=1e3)return(v/1e3).toFixed(0)+'k';
+  return Number(v).toFixed(0);
 }
-
-function fmtAxis(v) {
-    if (v >= 1e9) return (v/1e9).toFixed(1)+'B';
-    if (v >= 1e6) return (v/1e6).toFixed(1)+'M';
-    if (v >= 1e3) return (v/1e3).toFixed(0)+'k';
-    return Number(v).toFixed(0);
+function cagr(v23,v26){
+  if(!v23||v23<=0)return null;
+  return((Math.pow(v26/v23,1/3)-1)*100).toFixed(1);
 }
-
-function calcCAGR(v2023, v2026) {
-    if (!v2023 || v2023 <= 0) return null;
-    return ((Math.pow(v2026 / v2023, 1 / 3) - 1) * 100).toFixed(2);
-}
-
-// Derive 2023-2025 from 2026 totals using assumed growth rate
-function buildHistory(tabId, actors) {
-    const r = GROWTH_RATES[tabId] || 0.07;
-    const vista26 = actors.reduce((s, a) => s + (a.vista || 0), 0);
-    const plazo26 = actors.reduce((s, a) => s + (a.plazo || 0), 0);
-    const acm26   = actors.reduce((s, a) => s + (a.acm   || 0), 0);
-    return {
-        2023: { vista: vista26/Math.pow(1+r,3), plazo: plazo26/Math.pow(1+r,3), acm: acm26/Math.pow(1+r,3) },
-        2024: { vista: vista26/Math.pow(1+r,2), plazo: plazo26/Math.pow(1+r,2), acm: acm26/Math.pow(1+r,2) },
-        2025: { vista: vista26/(1+r),           plazo: plazo26/(1+r),           acm: acm26/(1+r)           },
-        2026: { vista: vista26,                  plazo: plazo26,                  acm: acm26                 },
+function buildHist(tabId,actors){
+  const g=GR[tabId]||{v:0.07,p:0.07,a:0.07};
+  const v26=actors.reduce((s,a)=>s+(a.vista||0),0);
+  const p26=actors.reduce((s,a)=>s+(a.plazo||0),0);
+  const a26=actors.reduce((s,a)=>s+(a.acm||0),0);
+  const h={};
+  [2023,2024,2025,2026].forEach(yr=>{
+    const n=2026-yr;
+    h[yr]={
+      vista: v26/Math.pow(1+g.v,n),
+      plazo: p26/Math.pow(1+g.p,n),
+      acm:   a26/Math.pow(1+g.a,n),
     };
+  });
+  return h;
+}
+function econScore(pibG,infl,unemp){
+  let s=0.5;
+  if(pibG>=4.5)s+=0.30; else if(pibG>=3.0)s+=0.18; else if(pibG>=1.5)s+=0.08;
+  else if(pibG>=0)s+=0; else if(pibG>=-1)s-=0.12; else s-=0.25;
+  if(infl<50){
+    if(infl<=3.5)s+=0.08; else if(infl<=5)s+=0.04;
+    else if(infl<=8)s-=0.02; else if(infl<=15)s-=0.08; else s-=0.14;
+  } else { s-=0.12; }
+  if(unemp<=3)s+=0.08; else if(unemp<=5)s+=0.04;
+  else if(unemp<=7)s-=0.02; else if(unemp<=10)s-=0.07; else s-=0.13;
+  return Math.max(0.02,Math.min(0.98,s));
+}
+function phaseFromScore(s){
+  if(s<0.22)return{name:'Contracción',  color:'#ef4444'};
+  if(s<0.42)return{name:'Estancamiento',color:'#f97316'};
+  if(s<0.60)return{name:'Recuperación', color:'#eab308'};
+  if(s<0.80)return{name:'Crecimiento',  color:'#84cc16'};
+  return              {name:'Expansión',   color:'#22c55e'};
 }
 
-// ---------- Data loading ----------
-async function loadExchangeRates() {
-    try {
-        const res  = await fetch('https://open.er-api.com/v6/latest/USD');
-        const json = await res.json();
-        if (json.result === 'success') {
-            exchangeRates = json.rates;
-            rateTimestamp = json.time_last_update_utc
-                ? new Date(json.time_last_update_utc).toLocaleDateString('es-MX')
-                : null;
-        }
-    } catch(e) {
-        console.warn('Exchange rate fetch failed:', e);
-    }
+/* ── Gauge SVG ─────────────────────────────────────────────────────── */
+function makePt(cx,cy,r,deg){
+  const rad=deg*Math.PI/180;
+  return{x:+(cx+r*Math.cos(rad)).toFixed(2),y:+(cy-r*Math.sin(rad)).toFixed(2)};
+}
+function arcPath(cx,cy,ro,ri,a1,a2){
+  const s=makePt(cx,cy,ro,a1),e=makePt(cx,cy,ro,a2);
+  const si=makePt(cx,cy,ri,a2),ei=makePt(cx,cy,ri,a1);
+  const lg=(a1-a2)>180?1:0;
+  return `M${s.x},${s.y} A${ro},${ro},0,${lg},0,${e.x},${e.y} L${si.x},${si.y} A${ri},${ri},0,${lg},1,${ei.x},${ei.y}Z`;
+}
+function buildGaugeSVG(score){
+  const cx=120,cy=118,ro=88,ri=54;
+  const sectors=[
+    {a1:180,a2:135,fill:'#ef4444'},
+    {a1:135,a2:90, fill:'#f97316'},
+    {a1:90, a2:45, fill:'#eab308'},
+    {a1:45, a2:0,  fill:'#22c55e'},
+  ].map(s=>`<path d="${arcPath(cx,cy,ro,ri,s.a1,s.a2)}" fill="${s.fill}" opacity="0.82"/>`).join('');
+  // Zone dividers
+  const divs=[0,45,90,135,180].map(deg=>{
+    const p=makePt(cx,cy,ri-2,deg),q=makePt(cx,cy,ro+2,deg);
+    return`<line x1="${p.x}" y1="${p.y}" x2="${q.x}" y2="${q.y}" stroke="#f1f5f9" stroke-width="1.5"/>`;
+  }).join('');
+  // Needle
+  const ndeg=180-score*180, nr=ndeg*Math.PI/180;
+  const tip={x:+(cx+76*Math.cos(nr)).toFixed(2),y:+(cy-76*Math.sin(nr)).toFixed(2)};
+  const pr=nr+Math.PI/2;
+  const n1={x:+(cx+6*Math.cos(pr)).toFixed(2),y:+(cy-6*Math.sin(pr)).toFixed(2)};
+  const n2={x:+(cx-6*Math.cos(pr)).toFixed(2),y:+(cy+6*Math.sin(pr)).toFixed(2)};
+  const needle=`<polygon points="${tip.x},${tip.y} ${n1.x},${n1.y} ${n2.x},${n2.y}" fill="#1e293b"/>`;
+  const hub=`<circle cx="${cx}" cy="${cy}" r="7" fill="#1e293b"/>
+             <circle cx="${cx}" cy="${cy}" r="3" fill="#f8fafc"/>`;
+  // Tick marks at quadrant labels
+  const ticks=[157.5,112.5,67.5,22.5].map((deg,i)=>{
+    const labels=['C','E','R','X'],colors=['#ef4444','#f97316','#eab308','#22c55e'];
+    const p=makePt(cx,cy,ri-16,deg);
+    return`<text x="${p.x}" y="${p.y}" fill="${colors[i]}" font-size="8.5" text-anchor="middle" dominant-baseline="middle" font-weight="700">${labels[i]}</text>`;
+  }).join('');
+  return`<svg viewBox="0 0 240 135" width="100%" style="max-width:240px">
+    ${sectors}${divs}${needle}${hub}${ticks}
+  </svg>`;
+}
+function updateGauge(tabId,d){
+  const lbl=document.getElementById('gauge-country-label');
+  const container=document.getElementById('gauge-svg-container');
+  const phaseEl=document.getElementById('gauge-phase-text');
+  if(!lbl||!container||!phaseEl)return;
+  lbl.textContent=COUNTRY_MAP[tabId]||tabId;
+  if(!d){container.innerHTML='';phaseEl.textContent='Sin datos';return;}
+  const score=econScore(d.pib_crecimiento,d.inflacion,d.desempleo);
+  const phase=phaseFromScore(score);
+  container.innerHTML=buildGaugeSVG(score);
+  phaseEl.textContent=phase.name;
+  phaseEl.style.color=phase.color;
 }
 
-async function buildDashboardData() {
-    const [{ data: countries }, { data: actors }] = await Promise.all([
-        supabase.from('countries').select('*'),
-        supabase.from('actors').select('*'),
-    ]);
-
-    for (const [tabId, countryName] of Object.entries(COUNTRY_MAP)) {
-        const country = countries?.find(c => c.country === countryName);
-        if (!country) continue;
-
-        const countryActors = (actors || [])
-            .filter(a => a.country === countryName)
-            .map(a => ({
-                nombre: a.nombre_actor,
-                vista:  a.depositos_vista,
-                plazo:  a.depositos_plazo,
-                acm:    a.acm,
-                cuota:  a.cuota_mercado,
-            }));
-
-        const history = buildHistory(tabId, countryActors);
-        const cagr    = calcCAGR(history[2023].acm, history[2026].acm);
-
-        dashboardData[tabId] = {
-            pib:             country.pib,
-            pib_crecimiento: country.pib_crecimiento,
-            inflacion:       country.inflacion,
-            tasa_bc:         country.tasa_bc,
-            desempleo:       country.desempleo,
-            poblacion:       country.poblacion,
-            bancarizacion:   country.bancarizacion,
-            fecha:           country.fecha_actualizacion,
-            actors:          countryActors,
-            history,
-            cagr,
-        };
-    }
-}
-
-// ---------- Chart ----------
-function renderChart(tabId, history, currencyCode) {
-    if (chartInstances[tabId]) { chartInstances[tabId].destroy(); }
-
-    const canvas = document.getElementById('chart-' + tabId);
-    if (!canvas) return;
-
-    const labels = ['2023*', '2024*', '2025*', '2026'];
-    const vData  = [history[2023].vista, history[2024].vista, history[2025].vista, history[2026].vista];
-    const pData  = [history[2023].plazo, history[2024].plazo, history[2025].plazo, history[2026].plazo];
-
-    chartInstances[tabId] = new Chart(canvas.getContext('2d'), {
-        type: 'line',
-        data: {
-            labels,
-            datasets: [
-                {
-                    label: 'Depósitos Vista',
-                    data: vData,
-                    borderColor: '#667eea',
-                    backgroundColor: 'rgba(102,126,234,0.18)',
-                    fill: true,
-                    tension: 0.35,
-                    pointRadius: [3,3,3,6],
-                    pointHoverRadius: 7,
-                    pointBackgroundColor: ['#667eea','#667eea','#667eea','#a5b4fc'],
-                    borderWidth: 2,
-                },
-                {
-                    label: 'Depósitos Plazo',
-                    data: pData,
-                    borderColor: '#10b981',
-                    backgroundColor: 'rgba(16,185,129,0.12)',
-                    fill: true,
-                    tension: 0.35,
-                    pointRadius: [3,3,3,6],
-                    pointHoverRadius: 7,
-                    pointBackgroundColor: ['#10b981','#10b981','#10b981','#6ee7b7'],
-                    borderWidth: 2,
-                },
-            ],
+/* ── Regional bar charts ────────────────────────────────────────────── */
+let regionalCharts={};
+function buildBarChart(canvasId,label,field,data18){
+  if(regionalCharts[canvasId])regionalCharts[canvasId].destroy();
+  // Sort by value descending
+  const sorted=[...data18].sort((a,b)=>parseFloat(b[field])-parseFloat(a[field]));
+  const labels=sorted.map(d=>d.name);
+  const values=sorted.map(d=>parseFloat(d[field]));
+  const colors=values.map(v=>v>=30?'rgba(239,68,68,0.75)':'rgba(79,70,229,0.72)');
+  regionalCharts[canvasId]=new Chart(document.getElementById(canvasId).getContext('2d'),{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[{
+        label,data:values,backgroundColor:colors,borderRadius:3,
+        borderColor:colors.map(c=>c.replace('0.72','1').replace('0.75','1')),borderWidth:1,
+      }],
+    },
+    options:{
+      indexAxis:'y',responsive:true,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#1e293b',titleColor:'#f1f5f9',bodyColor:'#94a3b8',
+          callbacks:{label:ctx=>` ${ctx.raw.toFixed(1)}% CAGR${ctx.raw>=30?' (nominal)':''}`},
         },
-        options: {
-            responsive: true,
-            interaction: { mode: 'index', intersect: false },
-            plugins: {
-                legend: {
-                    labels: { color: '#94a3b8', font: { size: 12 }, boxWidth: 14, padding: 16 },
-                },
-                tooltip: {
-                    backgroundColor: '#1e293b',
-                    titleColor: '#f1f5f9',
-                    bodyColor: '#94a3b8',
-                    borderColor: '#334155',
-                    borderWidth: 1,
-                    callbacks: {
-                        label: ctx => ` ${ctx.dataset.label}: ${Number(ctx.raw).toLocaleString('es-MX', {maximumFractionDigits:0})} mill. ${currencyCode}`,
-                    },
-                },
-            },
-            scales: {
-                x: {
-                    ticks: { color: '#64748b', font: { size: 11 } },
-                    grid:  { color: 'rgba(51,65,85,0.4)' },
-                },
-                y: {
-                    ticks: { color: '#64748b', font: { size: 11 }, callback: fmtAxis },
-                    grid:  { color: 'rgba(51,65,85,0.4)' },
-                },
-            },
+      },
+      scales:{
+        x:{
+          ticks:{color:'#94a3b8',font:{size:10},callback:v=>v+'%'},
+          grid:{color:'rgba(0,0,0,0.06)'},
+          title:{display:true,text:'CAGR %',color:'#94a3b8',font:{size:10}},
         },
-    });
+        y:{ticks:{color:'#475569',font:{size:11}},grid:{display:false}},
+      },
+    },
+  });
+}
+function renderRegionalCharts(){
+  const data18=Object.keys(COUNTRY_MAP).map(tabId=>{
+    const g=GR[tabId]||{v:0.07,p:0.07,a:0.07};
+    // Prefer real CAGR from dashboardData if available
+    const d=dashboardData[tabId];
+    return{
+      tabId,name:COUNTRY_MAP[tabId],
+      plazo: d ? parseFloat(d.cagr_plazo||+(g.p*100).toFixed(1)) : +(g.p*100).toFixed(1),
+      vista: d ? parseFloat(d.cagr_vista||+(g.v*100).toFixed(1)) : +(g.v*100).toFixed(1),
+      acm:   d ? parseFloat(d.cagr      ||+(g.a*100).toFixed(1)) : +(g.a*100).toFixed(1),
+    };
+  });
+  buildBarChart('chart-cagr-plazo','CAGR Dep. Plazo','plazo',data18);
+  buildBarChart('chart-cagr-vista','CAGR Dep. Vista','vista',data18);
+  buildBarChart('chart-cagr-acm',  'CAGR ACM',       'acm',  data18);
 }
 
-// ---------- Render ----------
-function renderDashboard(tabId, d) {
-    const el = document.getElementById(tabId);
-    if (!d) {
-        el.innerHTML = '<p class="no-data">Sin datos en Supabase para este país.</p>';
-        return;
-    }
-
-    const cur     = CURRENCIES[tabId];
-    const usdRate = (!cur.dol && exchangeRates) ? exchangeRates[cur.code] : null;
-
-    // Exchange rate bar
-    let rateHtml;
-    if (cur.dol) {
-        rateHtml = `<div class="rate-bar">
-            <span class="rate-label">💱 <strong>${cur.name}</strong> — sin conversión necesaria</span>
-            <span class="rate-source">Cifras ya expresadas en USD</span>
-        </div>`;
-    } else if (usdRate) {
-        const fmtRate = Number(usdRate).toLocaleString('es-MX', { maximumFractionDigits: 2 });
-        rateHtml = `<div class="rate-bar">
-            <span class="rate-label">💱 1 USD = <strong>${fmtRate} ${cur.code}</strong> &nbsp;·&nbsp; ${cur.name}</span>
-            <span class="rate-source">Fuente: <a href="https://open.er-api.com" target="_blank">open.er-api.com</a>${rateTimestamp ? ' · ' + rateTimestamp : ''}</span>
-        </div>`;
-    } else {
-        rateHtml = `<div class="rate-bar">
-            <span class="rate-label">💱 ${cur.name} (${cur.code})</span>
-            <span class="rate-source">Tipo de cambio no disponible</span>
-        </div>`;
-    }
-
-    // CAGR display
-    const cagrNum  = parseFloat(d.cagr);
-    const cagrExtra = cagrNum >= 30 ? ' <span class="cagr-note">(nominal, incluye inflación)</span>' : '';
-    const bcLabel   = d.tasa_bc > 0 ? `Tasa BC: ${d.tasa_bc}%` : 'Economía dolarizada';
-
-    // Meta (date + sources)
-    const fecha = d.fecha
-        ? new Date(d.fecha).toLocaleDateString('es-MX', { year:'numeric', month:'long', day:'numeric' })
-        : null;
-    const sourcesLinks = (SOURCES[tabId] || [])
-        .map(([n, u]) => `<a href="${u}" target="_blank">${n}</a>`)
-        .join(' · ');
-
-    // Build USD column header and cells
-    const showUsd = !cur.dol && usdRate;
-    const usdHeader = showUsd ? `<th>ACM (USD M)</th>` : '';
-
-    const rows = d.actors.map(a => {
-        const usdAcm = showUsd ? `<td class="usd-col">$${fmt(Math.round(a.acm / usdRate))}</td>` : '';
-        return `<tr>
-            <td><strong>${a.nombre}</strong></td>
-            <td>${fmt(a.vista)}</td>
-            <td>${fmt(a.plazo)}</td>
-            <td>${fmt(a.acm)}</td>
-            ${usdAcm}
-            <td>${a.cuota}%</td>
-        </tr>`;
-    }).join('');
-
-    el.innerHTML = `
-        <div class="kpi-grid">
-            <div class="kpi-card">
-                <div class="kpi-label">PIB</div>
-                <div class="kpi-value">$${fmt(d.pib)}B</div>
-                <div class="kpi-sub green">+${d.pib_crecimiento}% YoY</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-label">Población</div>
-                <div class="kpi-value">${fmt(d.poblacion)}</div>
-                <div class="kpi-sub">habitantes</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-label">Bancarización</div>
-                <div class="kpi-value">${d.bancarizacion}%</div>
-                <div class="kpi-sub">de la población</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-label">Inflación</div>
-                <div class="kpi-value">${d.inflacion}%</div>
-                <div class="kpi-sub">${bcLabel}</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-label">Desempleo</div>
-                <div class="kpi-value">${d.desempleo}%</div>
-                <div class="kpi-sub">tasa oficial</div>
-            </div>
-            <div class="kpi-card highlight">
-                <div class="kpi-label">CAGR Depósitos 2023–26</div>
-                <div class="kpi-value">${d.cagr}%${cagrExtra}</div>
-                <div class="kpi-sub">tendencia anual compuesta</div>
-            </div>
-        </div>
-
-        ${rateHtml}
-
-        <div class="chart-wrap">
-            <div class="chart-title">Evolución de Depósitos — ${COUNTRY_MAP[tabId]} (mill. ${cur.code})</div>
-            <canvas id="chart-${tabId}" height="180"></canvas>
-            <p class="chart-note">* 2023–2025 estimado con base en tendencia histórica de mercado · 2026: fuentes oficiales (${sourcesLinks || 'n/d'})</p>
-        </div>
-
-        <div class="table-container">
-            <div class="table-header">
-                <h2>Principales Actores Bancarios</h2>
-                <div class="meta">
-                    ${fecha ? `Actualizado: ${fecha}<br>` : ''}
-                    ${sourcesLinks ? `Fuentes: ${sourcesLinks}` : ''}
-                </div>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Banco</th>
-                        <th>Dep. Vista (${cur.code} M)</th>
-                        <th>Dep. Plazo (${cur.code} M)</th>
-                        <th>ACM (${cur.code} M)</th>
-                        ${usdHeader}
-                        <th>Cuota</th>
-                    </tr>
-                </thead>
-                <tbody>${rows}</tbody>
-            </table>
-        </div>`;
-
-    renderChart(tabId, d.history, cur.code);
+/* ── Evolution chart ───────────────────────────────────────────────── */
+function renderEvoChart(tabId,history,currCode){
+  if(evoCharts[tabId])evoCharts[tabId].destroy();
+  const canvas=document.getElementById('evo-'+tabId);
+  if(!canvas)return;
+  const labels=['2023*','2024*','2025*','2026'];
+  evoCharts[tabId]=new Chart(canvas.getContext('2d'),{
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:'Vista',data:[2023,2024,2025,2026].map(y=>history[y].vista),
+         borderColor:'#4f46e5',backgroundColor:'rgba(79,70,229,0.12)',fill:true,tension:0.35,
+         pointRadius:[3,3,3,6],pointBackgroundColor:['#4f46e5','#4f46e5','#4f46e5','#818cf8'],borderWidth:2},
+        {label:'Plazo',data:[2023,2024,2025,2026].map(y=>history[y].plazo),
+         borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.10)',fill:true,tension:0.35,
+         pointRadius:[3,3,3,6],pointBackgroundColor:['#10b981','#10b981','#10b981','#6ee7b7'],borderWidth:2},
+      ],
+    },
+    options:{
+      responsive:true,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{labels:{color:'#64748b',font:{size:11},boxWidth:12,padding:12}},
+        tooltip:{
+          backgroundColor:'#1e293b',titleColor:'#f8fafc',bodyColor:'#94a3b8',borderColor:'#334155',borderWidth:1,
+          callbacks:{label:ctx=>` ${ctx.dataset.label}: ${Number(ctx.raw).toLocaleString('es-MX',{maximumFractionDigits:0})} M ${currCode}`},
+        },
+      },
+      scales:{
+        x:{ticks:{color:'#94a3b8',font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}},
+        y:{ticks:{color:'#94a3b8',font:{size:10},callback:fmtAx},grid:{color:'rgba(0,0,0,0.05)'}},
+      },
+    },
+  });
 }
 
-// ---------- Tab switching ----------
-window.showCountry = function(country, btn) {
-    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(country).classList.add('active');
-    if (btn instanceof Element) btn.classList.add('active');
-    else event.target.classList.add('active');
-    activeCountry = country;
-    if (dashboardData[country] !== undefined) renderDashboard(country, dashboardData[country]);
+/* ── Per-country render ─────────────────────────────────────────────── */
+function renderDashboard(tabId,d){
+  const el=document.getElementById(tabId);
+  if(!d){el.innerHTML='<p class="no-data">Sin datos en Supabase.</p>';return;}
+  const cur=CURRENCIES[tabId];
+  const rate=(!cur.dol&&exchangeRates)?exchangeRates[cur.code]:null;
+  let rateHtml='';
+  if(cur.dol){
+    rateHtml=`<div class="rate-bar"><span class="rate-label">💱 Economía dolarizada (USD)</span><span class="rate-source">Sin conversión necesaria</span></div>`;
+  }else if(rate){
+    const fmtR=Number(rate).toLocaleString('es-MX',{maximumFractionDigits:2});
+    rateHtml=`<div class="rate-bar"><span class="rate-label">💱 1 USD = <strong>${fmtR} ${cur.code}</strong></span><span class="rate-source">Fuente: <a href="https://open.er-api.com" target="_blank">open.er-api.com</a>${rateDate?' · '+rateDate:''}</span></div>`;
+  }else{
+    rateHtml=`<div class="rate-bar"><span class="rate-label">💱 ${cur.code}</span><span class="rate-source">Tipo de cambio no disponible</span></div>`;
+  }
+  const bcLabel=d.tasa_bc>0?`Tasa BC: ${d.tasa_bc}%`:'Dolarizado';
+  const fecha=d.fecha?new Date(d.fecha).toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric'}):null;
+  const srcLinks=(SOURCES[tabId]||[]).map(([n,u])=>`<a href="${u}" target="_blank">${n}</a>`).join(' · ');
+  const showUsd=!cur.dol&&rate;
+  const usdTh=showUsd?`<th>ACM (USD M)</th>`:'';
+  const rows=d.actors.map(a=>{
+    const usdTd=showUsd?`<td class="usd-col">$${fmt(Math.round(a.acm/rate))}</td>`:'';
+    return`<tr><td>${a.nombre}</td><td>${fmt(a.vista)}</td><td>${fmt(a.plazo)}</td><td>${fmt(a.acm)}</td>${usdTd}<td>${a.cuota}%</td></tr>`;
+  }).join('');
+  el.innerHTML=`
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">PIB</div><div class="kpi-value">$${fmt(d.pib)}B</div><div class="kpi-sub up">+${d.pib_crecimiento}% YoY</div></div>
+      <div class="kpi-card"><div class="kpi-label">Población</div><div class="kpi-value">${fmt(d.poblacion)}</div><div class="kpi-sub">habitantes</div></div>
+      <div class="kpi-card"><div class="kpi-label">Bancarización</div><div class="kpi-value">${d.bancarizacion}%</div><div class="kpi-sub">de la población</div></div>
+      <div class="kpi-card"><div class="kpi-label">Inflación</div><div class="kpi-value">${d.inflacion}%</div><div class="kpi-sub">${bcLabel}</div></div>
+      <div class="kpi-card"><div class="kpi-label">Desempleo</div><div class="kpi-value">${d.desempleo}%</div><div class="kpi-sub">tasa oficial</div></div>
+      <div class="kpi-card green-top"><div class="kpi-label">CAGR ACM 2023–26</div><div class="kpi-value">${d.cagr}%${parseFloat(d.cagr)>=30?'<div class="kpi-sub note">(nominal)</div>':''}</div><div class="kpi-sub">tendencia anual</div></div>
+    </div>
+    ${rateHtml}
+    <div class="detail-row">
+      <div class="chart-card" style="padding:16px">
+        <div class="chart-card-title">Ciclo Económico</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:6px">
+          <div id="gauge-local-${tabId}"></div>
+          <div id="gauge-local-phase-${tabId}" style="font-size:13px;font-weight:700;text-align:center;margin-top:2px"></div>
+          <div class="gauge-legend" style="margin-top:4px">
+            <span><i style="background:#ef4444"></i>Contracción</span>
+            <span><i style="background:#f97316"></i>Estancamiento</span>
+            <span><i style="background:#eab308"></i>Recuperación</span>
+            <span><i style="background:#22c55e"></i>Expansión</span>
+          </div>
+        </div>
+      </div>
+      <div class="evo-card">
+        <div class="evo-title">Evolución Depósitos — ${COUNTRY_MAP[tabId]} (mill. ${cur.code})</div>
+        <canvas id="evo-${tabId}" height="160"></canvas>
+        <p class="chart-note">*2023–2025 estimado con tendencia histórica · 2026 fuentes oficiales</p>
+      </div>
+    </div>
+    <div class="table-container">
+      <div class="table-header">
+        <h2>Principales Actores Bancarios</h2>
+        <div class="meta">${fecha?`Actualizado: ${fecha}<br>`:''}${srcLinks?`Fuentes: ${srcLinks}`:''}</div>
+      </div>
+      <table>
+        <thead><tr><th>Banco</th><th>Vista (${cur.code}M)</th><th>Plazo (${cur.code}M)</th><th>ACM (${cur.code}M)</th>${usdTh}<th>Cuota</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  renderEvoChart(tabId,d.history,cur.code);
+  // Local gauge
+  const score=econScore(d.pib_crecimiento,d.inflacion,d.desempleo);
+  const phase=phaseFromScore(score);
+  const lc=document.getElementById('gauge-local-'+tabId);
+  const lp=document.getElementById('gauge-local-phase-'+tabId);
+  if(lc)lc.innerHTML=buildGaugeSVG(score);
+  if(lp){lp.textContent=phase.name;lp.style.color=phase.color;}
+}
+
+/* ── Tab switch ─────────────────────────────────────────────────────── */
+window.showCountry=function(country,btn){
+  document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(country).classList.add('active');
+  (btn instanceof Element?btn:event.target).classList.add('active');
+  activeCountry=country;
+  if(dashboardData[country]!==undefined){
+    renderDashboard(country,dashboardData[country]);
+    updateGauge(country,dashboardData[country]);
+  }
 };
 
-// ---------- Init ----------
-async function init() {
-    await Promise.all([loadExchangeRates(), buildDashboardData()]);
-    renderDashboard(activeCountry, dashboardData[activeCountry]);
-    const now = new Date().toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
-    const el = document.getElementById('last-refresh');
-    if (el) el.textContent = `Cargado a las ${now}`;
+/* ── Data loading ───────────────────────────────────────────────────── */
+async function loadRates(){
+  try{
+    const r=await fetch('https://open.er-api.com/v6/latest/USD');
+    const j=await r.json();
+    if(j.result==='success'){
+      exchangeRates=j.rates;
+      rateDate=j.time_last_update_utc?new Date(j.time_last_update_utc).toLocaleDateString('es-MX'):null;
+    }
+  }catch(e){console.warn('FX fetch failed',e);}
+}
+async function loadSupabase(){
+  const [{data:countries},{data:actors}]=await Promise.all([
+    supabase.from('countries').select('*'),
+    supabase.from('actors').select('*'),
+  ]);
+  for(const[tabId,countryName]of Object.entries(COUNTRY_MAP)){
+    const c=countries?.find(x=>x.country===countryName);
+    if(!c)continue;
+    const ca=(actors||[]).filter(a=>a.country===countryName).map(a=>({
+      nombre:a.nombre_actor,vista:a.depositos_vista,plazo:a.depositos_plazo,acm:a.acm,cuota:a.cuota_mercado,
+    }));
+    const hist=buildHist(tabId,ca);
+    dashboardData[tabId]={
+      pib:c.pib,pib_crecimiento:c.pib_crecimiento,inflacion:c.inflacion,
+      tasa_bc:c.tasa_bc,desempleo:c.desempleo,poblacion:c.poblacion,bancarizacion:c.bancarizacion,
+      fecha:c.fecha_actualizacion,actors:ca,history:hist,
+      cagr:     cagr(hist[2023].acm,   hist[2026].acm),
+      cagr_vista:cagr(hist[2023].vista, hist[2026].vista),
+      cagr_plazo:cagr(hist[2023].plazo, hist[2026].plazo),
+    };
+  }
 }
 
+/* ── Init ───────────────────────────────────────────────────────────── */
+async function init(){
+  await Promise.all([loadRates(),loadSupabase()]);
+  renderRegionalCharts();
+  renderDashboard(activeCountry,dashboardData[activeCountry]);
+  updateGauge(activeCountry,dashboardData[activeCountry]);
+}
 init();
 </script>
 </body>
