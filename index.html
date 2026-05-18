@@ -328,7 +328,7 @@ tr:hover td{background:#f8fafc}
         <div id="news-country"><div class="news-loading">Cargando…</div></div>
       </div>
     </div>
-    <div class="news-footer">Fuente: Google News RSS · Actualización cada 30 min · <span id="news-last-update">—</span></div>
+    <div class="news-footer">Fuente: Google News RSS (rss2json / allorigins / corsproxy) · Actualización cada 30 min · <span id="news-last-update">—</span></div>
   </div>
 </div><!-- /pg-analytics -->
 
@@ -797,25 +797,58 @@ function setOnline(){
 }
 
 /* ── News ────────────────────────────────────────────────────────── */
+function _renderNewsItems(items,c){
+  if(!items||!items.length){c.innerHTML='<div class="news-loading">Sin resultados.</div>';return false;}
+  c.innerHTML=items.slice(0,8).map(({title,link,pub,src})=>{
+    const t=(title||'Sin título').replace(/<[^>]*>/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&#39;/g,"'").replace(/&quot;/g,'"');
+    const ds=pub?new Date(pub).toLocaleString('es-MX',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+    return`<div class="news-item"><div class="news-headline"><a href="${link||'#'}" target="_blank" rel="noopener">${t}</a></div><div class="news-meta">${src?src+' · ':''}${ds}</div></div>`;
+  }).join('');
+  return true;
+}
+function _xmlToItems(xmlStr){
+  const xml=new DOMParser().parseFromString(xmlStr,'text/xml');
+  return[...xml.querySelectorAll('item')].map(n=>({
+    title:n.querySelector('title')?.textContent||'',
+    link:n.querySelector('link')?.textContent||'#',
+    pub:n.querySelector('pubDate')?.textContent||'',
+    src:n.querySelector('source')?.textContent||''
+  }));
+}
 async function fetchNews(query,containerId){
   const c=document.getElementById(containerId);if(!c)return;
+  c.innerHTML='<div class="news-loading">Cargando…</div>';
   const rss=`https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=es-419&gl=US&ceid=US:es-419`;
-  const url=`https://api.allorigins.win/get?url=${encodeURIComponent(rss)}`;
+  const sig=()=>AbortSignal.timeout(9000);
+
+  // Source 1: rss2json.com — returns JSON, no XML parsing needed
   try{
-    const r=await fetch(url,{signal:AbortSignal.timeout(15000)});
+    const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rss)}&count=8`,{signal:sig()});
     const j=await r.json();
-    const xml=new DOMParser().parseFromString(j.contents,'text/xml');
-    const items=[...xml.querySelectorAll('item')].slice(0,8);
-    if(!items.length){c.innerHTML='<div class="news-loading">Sin resultados.</div>';return;}
-    c.innerHTML=items.map(item=>{
-      const title=(item.querySelector('title')?.textContent||'Sin título').replace(/<[^>]+>/g,'');
-      const link=item.querySelector('link')?.textContent||'#';
-      const pub=item.querySelector('pubDate')?.textContent||'';
-      const ds=pub?new Date(pub).toLocaleString('es-MX',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
-      const src=item.querySelector('source')?.textContent||'';
-      return`<div class="news-item"><div class="news-headline"><a href="${link}" target="_blank" rel="noopener">${title}</a></div><div class="news-meta">${src?src+' · ':''}${ds}</div></div>`;
-    }).join('');
-  }catch(e){c.innerHTML='<div class="news-loading">No disponible.</div>';}
+    if(j.status==='ok'&&j.items?.length){
+      const items=j.items.map(i=>({title:i.title,link:i.link,pub:i.pubDate,src:i.author||''}));
+      if(_renderNewsItems(items,c))return;
+    }
+  }catch(_){}
+
+  // Source 2: allorigins.win proxy
+  try{
+    const r=await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(rss)}`,{signal:sig()});
+    const j=await r.json();
+    const items=_xmlToItems(j.contents||'');
+    if(_renderNewsItems(items,c))return;
+  }catch(_){}
+
+  // Source 3: corsproxy.io
+  try{
+    const r=await fetch(`https://corsproxy.io/?${encodeURIComponent(rss)}`,{signal:sig()});
+    const text=await r.text();
+    const items=_xmlToItems(text);
+    if(_renderNewsItems(items,c))return;
+  }catch(_){}
+
+  // Final fallback: link to Google News search
+  c.innerHTML=`<div class="news-loading">Feed no disponible · <a href="https://news.google.com/search?q=${encodeURIComponent(query)}" target="_blank" rel="noopener" style="color:#4f46e5">Ver en Google News →</a></div>`;
 }
 async function refreshNews(){
   const ct=document.getElementById('news-country-title');
