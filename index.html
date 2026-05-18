@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,viewport-fit=cover">
 <title>SynerGy — Dashboard LATAM</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
 <style>
@@ -137,30 +137,37 @@ tr:hover td{background:#f8fafc}
 .pill-value{font-weight:700;color:#0f172a}
 .pill-value.green{color:#10b981}.pill-value.red{color:#ef4444}.pill-value.amber{color:#f59e0b}
 
-/* ═══ SPARKLINE GRID (top macro section) ═══════════════════════════ */
-.macro-spark-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:14px}
-@media(max-width:1200px){.macro-spark-grid{grid-template-columns:repeat(4,1fr)}}
-@media(max-width:600px){.macro-spark-grid{grid-template-columns:repeat(2,1fr)}}
-.spark-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;box-shadow:0 1px 3px rgba(0,0,0,.05);min-width:0}
-.spark-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#94a3b8;margin-bottom:2px}
-.spark-val{font-size:16px;font-weight:800;color:#0f172a;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.spark-sub{font-size:9.5px;color:#94a3b8;margin-bottom:5px;display:flex;align-items:center;gap:4px}
-.spark-up{color:#10b981}.spark-dn{color:#ef4444}
-.spark-chart-wrap{height:52px;position:relative}
+/* ═══ SPARKLINE GRID — mobile-first 6 cards ════════════════════════ */
+.macro-spark-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+@media(min-width:480px){.macro-spark-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:900px){.macro-spark-grid{grid-template-columns:repeat(6,1fr)}}
+.spark-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px 14px 10px;box-shadow:0 1px 4px rgba(0,0,0,.06);min-width:0;transition:box-shadow .15s}
+.spark-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.spark-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:4px}
+.spark-val{font-size:20px;font-weight:800;color:#0f172a;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spark-sub{font-size:10px;color:#94a3b8;margin-bottom:8px;display:flex;align-items:center;gap:4px;min-height:14px}
+.spark-up{color:#10b981;font-weight:600}.spark-dn{color:#ef4444;font-weight:600}
+.spark-chart-wrap{height:64px;position:relative}
 
-/* ═══ BOTTOM 2-COL (gauge left / deposits right) ════════════════════ */
-.row-bottom{display:grid;grid-template-columns:300px 1fr;gap:14px;margin-bottom:14px}
-@media(max-width:860px){.row-bottom{grid-template-columns:1fr}}
+/* ═══ BOTTOM 2-COL — mobile-first ══════════════════════════════════ */
+.row-bottom{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:14px}
+@media(min-width:860px){.row-bottom{grid-template-columns:320px 1fr}}
+
+/* ═══ BANCARIZACIÓN BELOW GAUGE ════════════════════════════════════ */
+.banc-block{margin-top:12px;padding:12px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;text-align:center}
+.banc-block-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:4px}
+.banc-block-val{font-size:26px;font-weight:800;color:#4f46e5}
+.banc-block-sub{font-size:10px;color:#94a3b8;margin-top:2px}
 
 /* ═══ GAUGE CALC LEGEND ════════════════════════════════════════════ */
 .gauge-calc{margin-top:10px;border-top:1px solid #f1f5f9;padding-top:8px}
 .gauge-calc-title{font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
 .gauge-calc-tbl{width:100%;border-collapse:collapse;font-size:10.5px}
-.gauge-calc-tbl td{padding:2px 4px;color:#475569}
+.gauge-calc-tbl td{padding:3px 4px;color:#475569}
 .gauge-calc-tbl td:last-child{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
-.gauge-bands{margin-top:7px;display:flex;flex-direction:column;gap:3px}
-.gauge-band-row{display:flex;align-items:center;gap:5px;font-size:9.5px;color:#64748b}
-.gauge-band-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.gauge-bands{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+.gauge-band-row{display:flex;align-items:center;gap:6px;font-size:10px;color:#64748b}
+.gauge-band-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -706,63 +713,116 @@ function buildMacroHistory(d){
   return{pibData,popData,inflData,tasaData,desempData,bancData};
 }
 
-/* ── Sparkline (small line chart) ───────────────────────────────── */
+/* ── Sparkline with year labels ─────────────────────────────────── */
 function renderSparkline(cid,data,hexColor){
   destroyChart(cid);
   const canvas=document.getElementById(cid);if(!canvas)return;
   charts[cid]=new Chart(canvas.getContext('2d'),{
     type:'line',
     data:{
-      labels:['2021','2022','2023','2024','2025','2026'],
+      labels:['21','22','23','24','25','26'],
       datasets:[{
         data,
         borderColor:hexColor,
         borderWidth:2,
-        backgroundColor:hexColor+'22',
+        backgroundColor:hexColor+'1a',
         fill:true,
         pointRadius:0,
+        pointHoverRadius:3,
         tension:0.4,
       }],
     },
     options:{
       responsive:true,
       maintainAspectRatio:false,
-      animation:{duration:300},
-      plugins:{legend:{display:false},tooltip:{enabled:false}},
-      scales:{x:{display:false},y:{display:false}},
+      animation:{duration:350},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          enabled:true,
+          backgroundColor:'#1e293b',
+          titleColor:'#94a3b8',
+          bodyColor:'#f1f5f9',
+          padding:6,
+          displayColors:false,
+          callbacks:{title:ctx=>"'"+ctx[0].label,label:ctx=>ctx.formattedValue},
+        },
+      },
+      scales:{
+        x:{
+          display:true,
+          ticks:{color:'#cbd5e1',font:{size:8},maxRotation:0,padding:0},
+          grid:{display:false},
+          border:{display:false},
+        },
+        y:{display:false},
+      },
     },
   });
 }
 
-/* ── Deposits bar chart (Vista + Plazo, 2021-2026) ──────────────── */
+/* ── Dual-line deposits chart (Plazo + Inversión/AUM) ───────────── */
 function renderDepositsChart(tabId,history,currCode){
   const cid='dep-'+tabId;
   destroyChart(cid);
   const canvas=document.getElementById(cid);if(!canvas)return;
   const yrs=[2021,2022,2023,2024,2025,2026];
+  const labels=yrs.map(y=>y===2026?'2026':y+'*');
   charts[cid]=new Chart(canvas.getContext('2d'),{
-    type:'bar',
+    type:'line',
     data:{
-      labels:yrs.map(y=>y===2026?'2026':y+'*'),
+      labels,
       datasets:[
-        {label:'Vista',data:yrs.map(y=>history[y].vista),backgroundColor:'rgba(79,70,229,0.78)',borderRadius:4,borderWidth:0},
-        {label:'Plazo',data:yrs.map(y=>history[y].plazo),backgroundColor:'rgba(16,185,129,0.78)',borderRadius:4,borderWidth:0},
+        {
+          label:'Dep. Plazo',
+          data:yrs.map(y=>history[y].plazo),
+          borderColor:'#10b981',
+          backgroundColor:'rgba(16,185,129,0.10)',
+          borderWidth:2.5,
+          fill:true,
+          tension:0.35,
+          pointRadius:yrs.map(y=>y===2026?5:0),
+          pointBackgroundColor:'#10b981',
+        },
+        {
+          label:'Inversión / AUM',
+          data:yrs.map(y=>history[y].acm),
+          borderColor:'#f59e0b',
+          backgroundColor:'rgba(245,158,11,0.08)',
+          borderWidth:2.5,
+          fill:true,
+          tension:0.35,
+          pointRadius:yrs.map(y=>y===2026?5:0),
+          pointBackgroundColor:'#f59e0b',
+          borderDash:[],
+        },
       ],
     },
     options:{
       responsive:true,
+      maintainAspectRatio:false,
       interaction:{mode:'index',intersect:false},
       plugins:{
-        legend:{labels:{color:'#64748b',font:{size:11},boxWidth:10,padding:10}},
+        legend:{
+          position:'top',
+          labels:{color:'#64748b',font:{size:11},boxWidth:12,padding:14,usePointStyle:true,pointStyleWidth:8},
+        },
         tooltip:{
-          backgroundColor:'#1e293b',titleColor:'#f8fafc',bodyColor:'#94a3b8',
+          backgroundColor:'#1e293b',titleColor:'#f8fafc',bodyColor:'#94a3b8',padding:10,
           callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmtAx(ctx.raw)} M ${currCode}`},
         },
-        title:{display:true,text:`Vista + Plazo · mill. ${currCode} · *est.`,color:'#94a3b8',font:{size:10},padding:{bottom:6}},
+        title:{display:true,text:`Depósitos Plazo + Inversión/AUM · mill. ${currCode} · *est.`,color:'#94a3b8',font:{size:10},padding:{bottom:8}},
       },
       scales:{
-        x:{ticks:{color:'#94a3b8',font:{size:10}},grid:{display:false}},
-        y:{ticks:{color:'#94a3b8',font:{size:10},callback:fmtAx},grid:{color:'rgba(0,0,0,0.04)'}},
+        x:{
+          ticks:{color:'#94a3b8',font:{size:10}},
+          grid:{color:'rgba(0,0,0,0.03)'},
+          border:{dash:[3,3]},
+        },
+        y:{
+          ticks:{color:'#94a3b8',font:{size:10},callback:fmtAx},
+          grid:{color:'rgba(0,0,0,0.04)'},
+        },
       },
     },
   });
@@ -822,7 +882,7 @@ function renderDashboard(tabId,d){
       <div class="spark-card">
         <div class="spark-label">Población</div>
         <div class="spark-val">${fmtAx(d.poblacion)}</div>
-        <div class="spark-sub">hab.</div>
+        <div class="spark-sub">habitantes</div>
         <div class="spark-chart-wrap"><canvas id="sp-pop-${tabId}"></canvas></div>
       </div>
       <div class="spark-card">
@@ -834,7 +894,7 @@ function renderDashboard(tabId,d){
       <div class="spark-card">
         <div class="spark-label">Tasa BC</div>
         <div class="spark-val">${d.tasa_bc>0?d.tasa_bc+'%':'—'}</div>
-        <div class="spark-sub">pol. monetaria</div>
+        <div class="spark-sub">política monetaria</div>
         <div class="spark-chart-wrap"><canvas id="sp-tasa-${tabId}"></canvas></div>
       </div>
       <div class="spark-card">
@@ -844,15 +904,9 @@ function renderDashboard(tabId,d){
         <div class="spark-chart-wrap"><canvas id="sp-desemp-${tabId}"></canvas></div>
       </div>
       <div class="spark-card">
-        <div class="spark-label">Bancarización</div>
-        <div class="spark-val">${d.bancarizacion}%</div>
-        <div class="spark-sub">pobl. con cuenta</div>
-        <div class="spark-chart-wrap"><canvas id="sp-banc-${tabId}"></canvas></div>
-      </div>
-      <div class="spark-card">
         <div class="spark-label">CAGR 5Y</div>
         <div class="spark-val spark-up">${cagr5y}%</div>
-        <div class="spark-sub">depósitos vista+plazo</div>
+        <div class="spark-sub">depósitos totales</div>
         <div class="spark-chart-wrap"><canvas id="sp-cagr-${tabId}"></canvas></div>
       </div>
     </div>
@@ -864,16 +918,21 @@ function renderDashboard(tabId,d){
           <div id="gphase-${tabId}" class="gauge-phase"></div>
           <div id="gpct-${tabId}" class="gauge-pct"></div>
         </div>
+        <div class="banc-block">
+          <div class="banc-block-label">Bancarización</div>
+          <div class="banc-block-val">${d.bancarizacion}%</div>
+          <div class="banc-block-sub">población con cuenta bancaria</div>
+        </div>
         <div class="gauge-calc">
           <div class="gauge-calc-title">Cálculo del índice</div>
           <table class="gauge-calc-tbl">
             <tr><td>Base</td><td>0.50</td></tr>
-            <tr><td>PIB growth ${d.pib_crecimiento}%</td><td>${pibC}</td></tr>
+            <tr><td>PIB crecimiento ${d.pib_crecimiento}%</td><td>${pibC}</td></tr>
             <tr><td>Inflación ${d.inflacion}%</td><td>${inflC}</td></tr>
             <tr><td>Desempleo ${d.desempleo}%</td><td>${unempC}</td></tr>
             <tr style="border-top:1px solid #f1f5f9"><td><b>Score</b></td><td><b>${phase.pct}/100</b></td></tr>
           </table>
-          <div class="gauge-bands" style="margin-top:8px">
+          <div class="gauge-bands">
             <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#ef4444"></span>0–22 · Contracción</div>
             <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#f97316"></span>22–44 · Estancamiento</div>
             <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#eab308"></span>44–62 · Recuperación</div>
@@ -883,8 +942,8 @@ function renderDashboard(tabId,d){
         </div>
       </div>
       <div class="card">
-        <div class="card-title">Evolución Depósitos Vista + Plazo · 2021–2026</div>
-        <canvas id="dep-${tabId}" height="200"></canvas>
+        <div class="card-title">Depósitos Plazo + Inversión / AUM · 2021–2026</div>
+        <canvas id="dep-${tabId}" height="260"></canvas>
       </div>
     </div>
     <div class="card" style="margin-bottom:14px">
@@ -909,19 +968,18 @@ function renderDashboard(tabId,d){
   if(gpEl){gpEl.textContent=phase.name;gpEl.style.color=phase.color;}
   if(gpcEl)gpcEl.textContent=`Índice: ${phase.pct}/100`;
 
-  /* Sparklines */
+  /* Sparklines (6 indicators) */
   const mh=buildMacroHistory(d);
   const yrs=[2021,2022,2023,2024,2025,2026];
   const cagrLine=yrs.map(y=>d.history[y].vista+d.history[y].plazo);
-  renderSparkline(`sp-pib-${tabId}`,  mh.pibData,   '#4f46e5');
-  renderSparkline(`sp-pop-${tabId}`,  mh.popData,   '#6366f1');
-  renderSparkline(`sp-infl-${tabId}`, mh.inflData,  '#ef4444');
-  renderSparkline(`sp-tasa-${tabId}`, mh.tasaData,  '#f97316');
-  renderSparkline(`sp-desemp-${tabId}`,mh.desempData,'#f59e0b');
-  renderSparkline(`sp-banc-${tabId}`, mh.bancData,  '#10b981');
-  renderSparkline(`sp-cagr-${tabId}`, cagrLine,     '#22c55e');
+  renderSparkline(`sp-pib-${tabId}`,   mh.pibData,    '#4f46e5');
+  renderSparkline(`sp-pop-${tabId}`,   mh.popData,    '#6366f1');
+  renderSparkline(`sp-infl-${tabId}`,  mh.inflData,   '#ef4444');
+  renderSparkline(`sp-tasa-${tabId}`,  mh.tasaData,   '#f97316');
+  renderSparkline(`sp-desemp-${tabId}`,mh.desempData, '#f59e0b');
+  renderSparkline(`sp-cagr-${tabId}`,  cagrLine,      '#22c55e');
 
-  /* Deposits bar */
+  /* Dual-line deposits chart */
   renderDepositsChart(tabId,d.history,cur.code);
 }
 
