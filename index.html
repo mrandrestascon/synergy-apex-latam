@@ -137,26 +137,27 @@ tr:hover td{background:#f8fafc}
 .pill-value{font-weight:700;color:#0f172a}
 .pill-value.green{color:#10b981}.pill-value.red{color:#ef4444}.pill-value.amber{color:#f59e0b}
 
-/* ═══ SPARKLINE GRID — mobile-first 6 cards ════════════════════════ */
+/* ═══ SPARKLINE GRID — mobile-first 3×2 ════════════════════════════ */
 .macro-spark-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
 @media(min-width:480px){.macro-spark-grid{grid-template-columns:repeat(3,1fr)}}
-@media(min-width:900px){.macro-spark-grid{grid-template-columns:repeat(6,1fr)}}
-.spark-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px 14px 10px;box-shadow:0 1px 4px rgba(0,0,0,.06);min-width:0;transition:box-shadow .15s}
-.spark-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.spark-card{position:relative;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px 14px 10px;box-shadow:0 1px 4px rgba(0,0,0,.06);min-width:0;transition:box-shadow .15s}
+.spark-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.spark-tip{position:absolute;top:6px;right:8px;background:#1e293b;color:#f1f5f9;font-size:9px;padding:2px 7px;border-radius:4px;opacity:0;pointer-events:none;transition:opacity .15s;white-space:nowrap;z-index:10}
+.spark-card:hover .spark-tip{opacity:1}
 .spark-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:4px}
 .spark-val{font-size:20px;font-weight:800;color:#0f172a;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .spark-sub{font-size:10px;color:#94a3b8;margin-bottom:8px;display:flex;align-items:center;gap:4px;min-height:14px}
-.spark-up{color:#10b981;font-weight:600}.spark-dn{color:#ef4444;font-weight:600}
+.spark-up{color:#34d399;font-weight:600}.spark-dn{color:#f87171;font-weight:600}
 .spark-chart-wrap{height:64px;position:relative}
 
 /* ═══ BOTTOM 2-COL — mobile-first ══════════════════════════════════ */
 .row-bottom{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:14px}
-@media(min-width:860px){.row-bottom{grid-template-columns:320px 1fr}}
+@media(min-width:860px){.row-bottom{grid-template-columns:1fr 25%}}
 
 /* ═══ BANCARIZACIÓN BELOW GAUGE ════════════════════════════════════ */
 .banc-block{margin-top:12px;padding:12px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;text-align:center}
 .banc-block-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:4px}
-.banc-block-val{font-size:26px;font-weight:800;color:#4f46e5}
+.banc-block-val{font-size:26px;font-weight:800;color:#3b82f6}
 .banc-block-sub{font-size:10px;color:#94a3b8;margin-top:2px}
 
 /* ═══ GAUGE CALC LEGEND ════════════════════════════════════════════ */
@@ -629,11 +630,11 @@ function econScore(pibG,infl,unemp){
   return Math.max(0.02,Math.min(0.98,s));
 }
 function phaseFromScore(s){
-  if(s<0.22)return{name:'Contracción',  color:'#ef4444',pct:Math.round(s*100)};
-  if(s<0.44)return{name:'Estancamiento',color:'#f97316',pct:Math.round(s*100)};
-  if(s<0.62)return{name:'Recuperación', color:'#eab308',pct:Math.round(s*100)};
-  if(s<0.80)return{name:'Crecimiento',  color:'#84cc16',pct:Math.round(s*100)};
-  return              {name:'Expansión',  color:'#22c55e',pct:Math.round(s*100)};
+  if(s<0.22)return{name:'Contracción',  color:'#f87171',pct:Math.round(s*100)};
+  if(s<0.44)return{name:'Estancamiento',color:'#fb923c',pct:Math.round(s*100)};
+  if(s<0.62)return{name:'Recuperación', color:'#fbbf24',pct:Math.round(s*100)};
+  if(s<0.80)return{name:'Crecimiento',  color:'#a3e635',pct:Math.round(s*100)};
+  return              {name:'Expansión',  color:'#34d399',pct:Math.round(s*100)};
 }
 
 /* ── 360° Gauge SVG (270° arc with 90° gap at bottom) ─────────── */
@@ -651,10 +652,10 @@ function buildGauge360(score){
   const cx=110,cy=110,ro=90,ri=58;
   // 270° arc from 225° to -45° (=315°), 4 sectors of 67.5° each
   const sectors=[
-    {a1:225,a2:157.5,fill:'#ef4444',label:'C'},  // Contracción
-    {a1:157.5,a2:90, fill:'#f97316',label:'E'},  // Estancamiento
-    {a1:90,  a2:22.5,fill:'#eab308',label:'R'},  // Recuperación
-    {a1:22.5,a2:-45, fill:'#22c55e',label:'X'},  // Expansión
+    {a1:225,a2:157.5,fill:'#fca5a5',label:'C'},
+    {a1:157.5,a2:90, fill:'#fdba74',label:'E'},
+    {a1:90,  a2:22.5,fill:'#fde68a',label:'R'},
+    {a1:22.5,a2:-45, fill:'#86efac',label:'X'},
   ];
   const arcs=sectors.map(s=>{
     const lg=(s.a1-s.a2)>180?1:0;
@@ -761,30 +762,20 @@ function renderSparkline(cid,data,hexColor){
   });
 }
 
-/* ── Dual-line deposits chart (Plazo + Inversión/AUM) ───────────── */
-/* ── Static SVG deposits chart (Plazo + Inversión/AUM) ──────────── */
+/* ── Static SVG deposits chart — narrow column (Plazo + AUM) ────── */
 function buildDepositsSVG(history,currCode){
   const yrs=[2021,2022,2023,2024,2025,2026];
   const pl=yrs.map(y=>history[y].plazo);
   const au=yrs.map(y=>history[y].acm);
   const maxV=Math.max(...pl,...au)||1;
 
-  // Layout constants
-  const W=480,H=180,pL=50,pR=14,pT=26,pB=26;
-  const pw=W-pL-pR, ph=H-pT-pB; // plot area: 416 × 128
-  const bY=pT+ph;                 // baseline y = 154
+  const W=280,H=230,pL=38,pR=8,pT=46,pB=22;
+  const pw=W-pL-pR, ph=H-pT-pB;
+  const bY=pT+ph;
 
-  // Coordinate helpers
   const xp=i=>(pL+i*pw/5).toFixed(1);
-  const yp=v=>(pT+ph*(1-v/maxV*0.9)).toFixed(1); // 10% headroom at top
+  const yp=v=>(pT+ph*(1-v/maxV*0.9)).toFixed(1);
 
-  // Polyline points
-  const pts=arr=>arr.map((v,i)=>`${xp(i)},${yp(v)}`).join(' ');
-
-  // Closed area polygon
-  const area=arr=>pts(arr)+` ${xp(5)},${bY} ${xp(0)},${bY}`;
-
-  // Smooth cubic bezier path through points
   const smooth=arr=>{
     let d=`M${xp(0)} ${yp(arr[0])}`;
     for(let i=1;i<arr.length;i++){
@@ -800,38 +791,35 @@ function buildDepositsSVG(history,currCode){
     return d;
   };
 
-  // Y-axis ticks at 0 / 25 / 50 / 75 % of maxV
   const gridSvg=[0,0.25,0.5,0.75].map(f=>{
     const v=maxV*f, y=yp(v);
     return `<line x1="${pL}" y1="${y}" x2="${W-pR}" y2="${y}" stroke="#f1f5f9" stroke-width="1"/>
-<text x="${pL-4}" y="${y}" fill="#94a3b8" font-size="9" text-anchor="end" dominant-baseline="middle">${fmtAx(v)}</text>`;
+<text x="${pL-3}" y="${y}" fill="#94a3b8" font-size="9" text-anchor="end" dominant-baseline="middle">${fmtAx(v)}</text>`;
   }).join('');
 
-  // X-axis year labels
   const xLabels=['21*','22*','23*','24*','25*','26'].map((l,i)=>
-    `<text x="${xp(i)}" y="${H-8}" fill="#94a3b8" font-size="9" text-anchor="middle">${l}</text>`
+    `<text x="${xp(i)}" y="${H-5}" fill="#94a3b8" font-size="9" text-anchor="middle">${l}</text>`
   ).join('');
 
-  // Smooth area fills (AUM first so Plazo renders on top)
   const auPath=smooth(au);
   const plPath=smooth(pl);
   const auArea=`${auPath} L${xp(5)} ${bY} L${xp(0)} ${bY} Z`;
   const plArea=`${plPath} L${xp(5)} ${bY} L${xp(0)} ${bY} Z`;
 
-  return `<svg viewBox="0 0 ${W} ${H}" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" style="display:block">
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
   ${gridSvg}
-  <path d="${auArea}" fill="rgba(245,158,11,.09)"/>
-  <path d="${plArea}" fill="rgba(16,185,129,.12)"/>
-  <path d="${auPath}" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-  <path d="${plPath}" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-  <circle cx="${xp(5)}" cy="${yp(au[5])}" r="4.5" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
-  <circle cx="${xp(5)}" cy="${yp(pl[5])}" r="4.5" fill="#10b981" stroke="#fff" stroke-width="2"/>
+  <path d="${auArea}" fill="rgba(147,197,253,.12)"/>
+  <path d="${plArea}" fill="rgba(110,231,183,.15)"/>
+  <path d="${auPath}" fill="none" stroke="#93c5fd" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="${plPath}" fill="none" stroke="#6ee7b7" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+  <circle cx="${xp(5)}" cy="${yp(au[5])}" r="3.5" fill="#93c5fd" stroke="#fff" stroke-width="1.5"/>
+  <circle cx="${xp(5)}" cy="${yp(pl[5])}" r="3.5" fill="#6ee7b7" stroke="#fff" stroke-width="1.5"/>
   ${xLabels}
-  <rect x="${pL}" y="8" width="9" height="9" rx="2" fill="#10b981"/>
-  <text x="${pL+12}" y="16" fill="#475569" font-size="10" font-weight="600">Dep. Plazo</text>
-  <rect x="${pL+90}" y="8" width="9" height="9" rx="2" fill="#f59e0b"/>
-  <text x="${pL+102}" y="16" fill="#475569" font-size="10" font-weight="600">Inversión / AUM</text>
-  <text x="${W-pR}" y="16" fill="#cbd5e1" font-size="8" text-anchor="end">mill. ${currCode} · *est.</text>
+  <rect x="${pL}" y="6" width="8" height="8" rx="2" fill="#6ee7b7"/>
+  <text x="${pL+11}" y="13" fill="#475569" font-size="10" font-weight="600">Dep. Plazo</text>
+  <rect x="${pL}" y="20" width="8" height="8" rx="2" fill="#93c5fd"/>
+  <text x="${pL+11}" y="27" fill="#475569" font-size="10" font-weight="600">Inversión/AUM</text>
+  <text x="${W-pR}" y="13" fill="#cbd5e1" font-size="8" text-anchor="end">mill.${currCode}·*est.</text>
 </svg>`;
 }
 
@@ -881,36 +869,42 @@ function renderDashboard(tabId,d){
     ${rateHtml}
     <div class="macro-spark-grid">
       <div class="spark-card">
+        <div class="spark-tip">$${d.pib}B · ${d.pib_crecimiento>=0?'+':''}${d.pib_crecimiento}%</div>
         <div class="spark-label">PIB</div>
         <div class="spark-val">$${d.pib}B</div>
         <div class="spark-sub"><span class="${pibClass}">${d.pib_crecimiento>=0?'▲':'▼'}${Math.abs(d.pib_crecimiento)}%</span> crec. anual</div>
         <div class="spark-chart-wrap"><canvas id="sp-pib-${tabId}"></canvas></div>
       </div>
       <div class="spark-card">
+        <div class="spark-tip">${fmtAx(d.poblacion)} hab.</div>
         <div class="spark-label">Población</div>
         <div class="spark-val">${fmtAx(d.poblacion)}</div>
         <div class="spark-sub">habitantes</div>
         <div class="spark-chart-wrap"><canvas id="sp-pop-${tabId}"></canvas></div>
       </div>
       <div class="spark-card">
+        <div class="spark-tip">${d.inflacion}% IPC anual</div>
         <div class="spark-label">Inflación</div>
         <div class="spark-val">${d.inflacion}%</div>
         <div class="spark-sub"><span class="${inflClass}">IPC anual</span></div>
         <div class="spark-chart-wrap"><canvas id="sp-infl-${tabId}"></canvas></div>
       </div>
       <div class="spark-card">
+        <div class="spark-tip">${d.tasa_bc>0?d.tasa_bc+'%':'—'} pol. monetaria</div>
         <div class="spark-label">Tasa BC</div>
         <div class="spark-val">${d.tasa_bc>0?d.tasa_bc+'%':'—'}</div>
         <div class="spark-sub">política monetaria</div>
         <div class="spark-chart-wrap"><canvas id="sp-tasa-${tabId}"></canvas></div>
       </div>
       <div class="spark-card">
+        <div class="spark-tip">${d.desempleo}% tasa nacional</div>
         <div class="spark-label">Desempleo</div>
         <div class="spark-val">${d.desempleo}%</div>
         <div class="spark-sub">tasa nacional</div>
         <div class="spark-chart-wrap"><canvas id="sp-desemp-${tabId}"></canvas></div>
       </div>
       <div class="spark-card">
+        <div class="spark-tip">${cagr5y}% depósitos 5Y</div>
         <div class="spark-label">CAGR 5Y</div>
         <div class="spark-val spark-up">${cagr5y}%</div>
         <div class="spark-sub">depósitos totales</div>
@@ -940,16 +934,16 @@ function renderDashboard(tabId,d){
             <tr style="border-top:1px solid #f1f5f9"><td><b>Score</b></td><td><b>${phase.pct}/100</b></td></tr>
           </table>
           <div class="gauge-bands">
-            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#ef4444"></span>0–22 · Contracción</div>
-            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#f97316"></span>22–44 · Estancamiento</div>
-            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#eab308"></span>44–62 · Recuperación</div>
-            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#84cc16"></span>62–80 · Crecimiento</div>
-            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#22c55e"></span>80–100 · Expansión</div>
+            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#fca5a5"></span>0–22 · Contracción</div>
+            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#fdba74"></span>22–44 · Estancamiento</div>
+            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#fde68a"></span>44–62 · Recuperación</div>
+            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#bef264"></span>62–80 · Crecimiento</div>
+            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#86efac"></span>80–100 · Expansión</div>
           </div>
         </div>
       </div>
-      <div class="card">
-        <div class="card-title">Depósitos Plazo + Inversión / AUM · 2021–2026</div>
+      <div class="card" style="min-width:0;overflow:hidden">
+        <div class="card-title" style="font-size:10px">Depósitos · 2021–2026</div>
         <div id="dep-${tabId}"></div>
       </div>
     </div>
@@ -979,12 +973,12 @@ function renderDashboard(tabId,d){
   const mh=buildMacroHistory(d);
   const yrs=[2021,2022,2023,2024,2025,2026];
   const cagrLine=yrs.map(y=>d.history[y].vista+d.history[y].plazo);
-  renderSparkline(`sp-pib-${tabId}`,   mh.pibData,    '#4f46e5');
-  renderSparkline(`sp-pop-${tabId}`,   mh.popData,    '#6366f1');
-  renderSparkline(`sp-infl-${tabId}`,  mh.inflData,   '#ef4444');
-  renderSparkline(`sp-tasa-${tabId}`,  mh.tasaData,   '#f97316');
-  renderSparkline(`sp-desemp-${tabId}`,mh.desempData, '#f59e0b');
-  renderSparkline(`sp-cagr-${tabId}`,  cagrLine,      '#22c55e');
+  renderSparkline(`sp-pib-${tabId}`,   mh.pibData,    '#60a5fa');
+  renderSparkline(`sp-pop-${tabId}`,   mh.popData,    '#94a3b8');
+  renderSparkline(`sp-infl-${tabId}`,  mh.inflData,   '#f87171');
+  renderSparkline(`sp-tasa-${tabId}`,  mh.tasaData,   '#fb923c');
+  renderSparkline(`sp-desemp-${tabId}`,mh.desempData, '#fbbf24');
+  renderSparkline(`sp-cagr-${tabId}`,  cagrLine,      '#34d399');
 
   /* SVG deposits chart */
   destroyChart('dep-'+tabId); // clean up any leftover Chart.js instance
