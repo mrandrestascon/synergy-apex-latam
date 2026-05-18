@@ -78,18 +78,23 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f8fafc;color:#0f172
 
 /* ═══ ANALYTICS NAV ════════════════════════════════════════════════ */
 #pg-analytics{min-height:100vh;background:#f8fafc}
-.an-nav{background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 60%,#312e81 100%);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:2px solid #4f46e5;position:sticky;top:36px;z-index:100}
-.an-nav-left{display:flex;align-items:center;gap:16px}
-.back-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#94a3b8;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;transition:all .15s}
-.back-btn:hover{background:rgba(255,255,255,.14);color:#f1f5f9}
-.nav-logo{height:36px;filter:brightness(0) invert(1);opacity:.9}
-.nav-title{font-size:14px;font-weight:600;color:#e2e8f0;letter-spacing:-.2px}
-.nav-clocks{display:flex;gap:12px;flex-wrap:wrap}
-.nclock{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:5px 10px;min-width:108px}
-.nclock-city{font-size:8.5px;color:#64748b;text-transform:uppercase;letter-spacing:.08em}
-.nclock-time{font-size:14px;font-weight:700;color:#e0f2fe;font-variant-numeric:tabular-nums}
-.nav-online{display:flex;align-items:center;gap:6px;font-size:10px;color:#4ade80;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);padding:4px 10px;border-radius:12px}
+.an-nav{background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 60%,#312e81 100%);padding:14px 28px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;border-bottom:2px solid #4b5563;position:sticky;top:36px;z-index:100}
+@media(max-width:700px){.an-nav{grid-template-columns:auto auto;gap:10px}}
+.an-nav-left{display:flex;align-items:center}
+.an-nav-center{display:flex;align-items:center;justify-content:center;gap:14px}
+.an-nav-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.back-btn{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.2);color:#e2e8f0;padding:9px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s;white-space:nowrap}
+.back-btn:hover{background:rgba(255,255,255,.18);color:#fff}
+.nav-logo{height:44px;filter:brightness(0) invert(1);opacity:.92}
+.nav-title{font-size:18px;font-weight:800;color:#e2e8f0;letter-spacing:-.3px;white-space:nowrap}
+.nav-clocks{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.nclock{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:5px 10px;min-width:100px}
+.nclock-city{font-size:8px;color:#64748b;text-transform:uppercase;letter-spacing:.08em}
+.nclock-time{font-size:13px;font-weight:700;color:#e0f2fe;font-variant-numeric:tabular-nums}
+.nav-bottom-row{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.nav-online{display:flex;align-items:center;gap:5px;font-size:10px;color:#4ade80;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);padding:3px 8px;border-radius:10px}
 .nav-dot{width:6px;height:6px;background:#22c55e;border-radius:50%;animation:pulse 2s infinite}
+.nav-date{font-size:9.5px;color:#475569}
 
 /* ═══ CONTAINER ════════════════════════════════════════════════════ */
 .container{max-width:1440px;margin:0 auto;padding:20px 20px 32px}
@@ -169,8 +174,11 @@ tr:hover td{background:#f8fafc}
 @media(min-width:480px){.macro-spark-grid{grid-template-columns:repeat(3,1fr)}}
 .spark-card{position:relative;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px 14px 10px;box-shadow:0 1px 4px rgba(0,0,0,.06);min-width:0;transition:box-shadow .15s}
 .spark-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.08)}
-.spark-tip{position:absolute;top:6px;right:8px;background:#1e293b;color:#f1f5f9;font-size:9px;padding:2px 7px;border-radius:4px;opacity:0;pointer-events:none;transition:opacity .15s;white-space:nowrap;z-index:10}
+.spark-tip{position:absolute;bottom:calc(100% + 6px);left:0;right:0;background:#1e293b;border-radius:7px;padding:7px 9px;opacity:0;pointer-events:none;transition:opacity .18s;z-index:30;display:flex;flex-wrap:wrap;gap:3px 8px;box-shadow:0 4px 14px rgba(0,0,0,.28)}
 .spark-card:hover .spark-tip{opacity:1}
+.strow{display:flex;gap:4px;align-items:baseline;white-space:nowrap}
+.styr{font-size:8px;color:#64748b;font-weight:600}
+.stv{font-size:9px;color:#f1f5f9;font-weight:700;font-variant-numeric:tabular-nums}
 .spark-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:4px}
 .spark-val{font-size:20px;font-weight:800;color:#0f172a;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .spark-sub{font-size:10px;color:#94a3b8;margin-bottom:8px;display:flex;align-items:center;gap:4px;min-height:14px}
@@ -179,7 +187,7 @@ tr:hover td{background:#f8fafc}
 
 /* ═══ BOTTOM 2-COL — mobile-first ══════════════════════════════════ */
 .row-bottom{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:14px}
-@media(min-width:860px){.row-bottom{grid-template-columns:70% 30%}}
+@media(min-width:860px){.row-bottom{grid-template-columns:30% 70%}}
 
 /* ═══ BANCARIZACIÓN BELOW GAUGE ════════════════════════════════════ */
 .banc-block{margin-top:12px;padding:12px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;text-align:center}
@@ -196,6 +204,20 @@ tr:hover td{background:#f8fafc}
 .gauge-bands{margin-top:8px;display:flex;flex-direction:column;gap:4px}
 .gauge-band-row{display:flex;align-items:center;gap:6px;font-size:10px;color:#64748b}
 .gauge-band-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+.gauge-letter-legend{margin-top:8px;padding:8px;background:#f8fafc;border-radius:6px;display:flex;flex-direction:column;gap:3px}
+.gll-row{display:flex;gap:6px;align-items:baseline;font-size:10px;color:#475569}
+.gll-letter{font-weight:800;font-size:11px;min-width:14px;color:#4b5563}
+/* ═══ HOME MAP ══════════════════════════════════════════════════════ */
+.home-countries-inner{display:grid;grid-template-columns:280px 1fr;gap:32px;align-items:start}
+@media(max-width:960px){.home-countries-inner{grid-template-columns:1fr}}
+.home-map-col{display:flex;flex-direction:column;align-items:center}
+.home-map-title{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;text-align:center}
+.home-map-legend{display:flex;align-items:center;gap:8px;justify-content:center;margin-top:6px;font-size:10px;color:#64748b}
+.home-map-legend-dot{width:8px;height:8px;background:#4b5563;border-radius:50%;display:inline-block}
+.home-grid-col{display:flex;flex-direction:column;gap:8px}
+.hcty-btn{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 6px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .15s;color:#374151;font-weight:500;line-height:1}
+.hcty-btn span{font-size:10.5px;color:#4b5563;text-align:center;line-height:1.2;font-weight:600}
+.hcty-btn:hover{background:#f1f5f9;border-color:#9ca3af;transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.07)}
 </style>
 </head>
 <body>
@@ -254,30 +276,94 @@ tr:hover td{background:#f8fafc}
     </div>
   </div>
 
-  <!-- COUNTRIES GRID: 9 top + 9 bottom -->
+  <!-- COUNTRIES GRID: SVG map + 9+9 grid -->
   <div class="home-countries">
-    <div class="home-countries-label">18 mercados activos — selecciona un país</div>
-    <div class="home-cty-grid">
-      <button class="hcty-btn" onclick="window.goCountry('Mexico')">🇲🇽<span>México</span></button>
-      <button class="hcty-btn" onclick="window.goCountry('Chile')">🇨🇱<span>Chile</span></button>
-      <button class="hcty-btn" onclick="window.goCountry('Colombia')">🇨🇴<span>Colombia</span></button>
-      <button class="hcty-btn" onclick="window.goCountry('Brasil')">🇧🇷<span>Brasil</span></button>
-      <button class="hcty-btn" onclick="window.goCountry('Argentina')">🇦🇷<span>Argentina</span></button>
-      <button class="hcty-btn" onclick="window.goCountry('Peru')">🇵🇪<span>Perú</span></button>
-      <button class="hcty-btn" onclick="window.goCountry('Ecuador')">🇪🇨<span>Ecuador</span></button>
-      <button class="hcty-btn" onclick="window.goCountry('Bolivia')">🇧🇴<span>Bolivia</span></button>
-      <button class="hcty-btn" onclick="window.goCountry('Paraguay')">🇵🇾<span>Paraguay</span></button>
-    </div>
-    <div class="home-cty-grid">
-      <button class="hcty-btn" onclick="window.goCountry('Uruguay')">🇺🇾<span>Uruguay</span></button>
-      <button class="hcty-btn" onclick="window.goCountry('Venezuela')">🇻🇪<span>Venezuela</span></button>
-      <button class="hcty-btn" onclick="window.goCountry('Guatemala')">🇬🇹<span>Guatemala</span></button>
-      <button class="hcty-btn" onclick="window.goCountry('Honduras')">🇭🇳<span>Honduras</span></button>
-      <button class="hcty-btn" onclick="window.goCountry('ElSalvador')">🇸🇻<span>El Salvador</span></button>
-      <button class="hcty-btn" onclick="window.goCountry('Nicaragua')">🇳🇮<span>Nicaragua</span></button>
-      <button class="hcty-btn" onclick="window.goCountry('Panama')">🇵🇦<span>Panamá</span></button>
-      <button class="hcty-btn" onclick="window.goCountry('CostaRica')">🇨🇷<span>Costa Rica</span></button>
-      <button class="hcty-btn" onclick="window.goCountry('RepDominicana')">🇩🇴<span>Rep. Dom.</span></button>
+    <div class="home-countries-inner">
+      <!-- SVG LATAM MAP -->
+      <div class="home-map-col">
+        <div class="home-map-title">Presencia SynerGy en LATAM</div>
+        <svg viewBox="0 0 300 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px">
+          <defs>
+            <filter id="sh2"><feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-color="#0f172a" flood-opacity="0.10"/></filter>
+            <radialGradient id="glow2" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#6b7a94" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#4b5563" stop-opacity="0.6"/>
+            </radialGradient>
+          </defs>
+          <rect width="300" height="420" fill="#f0f4f8" rx="12"/>
+          <!-- Mexico -->
+          <path filter="url(#sh2)" fill="#dde4ec" stroke="#c8d4e0" stroke-width="0.7"
+            d="M 22,28 Q 55,20 90,26 Q 108,32 112,48 Q 116,62 108,76 Q 98,90 82,94 Q 64,96 44,80 Q 24,64 20,44 Z"/>
+          <!-- Central America -->
+          <path fill="#dde4ec" stroke="#c8d4e0" stroke-width="0.5"
+            d="M 82,94 Q 96,90 112,96 Q 122,104 120,118 Q 116,130 106,135 Q 94,138 84,130 Q 76,120 78,108 Z"/>
+          <!-- South America -->
+          <path filter="url(#sh2)" fill="#dde4ec" stroke="#c8d4e0" stroke-width="0.7"
+            d="M 120,100 Q 145,90 168,94 Q 195,98 218,110 Q 245,124 255,150 Q 265,178 258,208
+               Q 248,238 230,258 Q 210,278 192,292 Q 172,308 158,328 Q 142,350 134,372
+               Q 124,388 112,380 Q 100,370 94,350 Q 86,328 86,302 Q 86,275 88,250
+               Q 90,224 86,200 Q 82,176 88,153 Q 94,130 108,114 Q 114,106 120,100 Z"/>
+          <!-- Ecuador highlight -->
+          <path fill="url(#glow2)" stroke="#6b7a94" stroke-width="1" opacity="0.85"
+            d="M 106,112 Q 120,106 128,116 Q 134,126 130,140 Q 124,150 112,150 Q 100,148 96,138 Q 92,126 106,112 Z"/>
+          <!-- Peru highlight -->
+          <path fill="url(#glow2)" stroke="#6b7a94" stroke-width="1" opacity="0.65"
+            d="M 96,138 Q 110,132 122,140 Q 132,150 132,168 Q 130,185 118,190 Q 104,192 96,182 Q 86,170 88,154 Z"/>
+          <!-- Colombia faint -->
+          <path fill="#a8d5ba" stroke="#6b7a94" stroke-width="0.5" opacity="0.3"
+            d="M 106,112 Q 120,106 140,105 Q 155,108 162,118 Q 165,128 155,136 Q 142,142 126,140 Q 116,138 108,130 Z"/>
+          <!-- Miami dot -->
+          <circle cx="155" cy="36" r="5.5" fill="#4b5563" stroke="#fff" stroke-width="1.5" opacity="0.9"/>
+          <circle cx="155" cy="36" r="10" fill="#4b5563" opacity="0.12"/>
+          <text x="163" y="40" fill="#4b5563" font-size="8.5" font-weight="700" font-family="Segoe UI,system-ui,sans-serif">Miami</text>
+          <text x="163" y="50" fill="#94a3b8" font-size="7" font-family="Segoe UI,system-ui,sans-serif">EE.UU.</text>
+          <!-- Quito dot -->
+          <circle cx="111" cy="130" r="5" fill="#4b5563" stroke="#fff" stroke-width="1.5"/>
+          <circle cx="111" cy="130" r="9" fill="#4b5563" opacity="0.12"/>
+          <text x="120" y="134" fill="#4b5563" font-size="8.5" font-weight="700" font-family="Segoe UI,system-ui,sans-serif">Quito</text>
+          <text x="120" y="144" fill="#94a3b8" font-size="7" font-family="Segoe UI,system-ui,sans-serif">Ecuador</text>
+          <!-- Lima dot -->
+          <circle cx="109" cy="165" r="5" fill="#4b5563" stroke="#fff" stroke-width="1.5"/>
+          <circle cx="109" cy="165" r="9" fill="#4b5563" opacity="0.12"/>
+          <text x="118" y="169" fill="#4b5563" font-size="8.5" font-weight="700" font-family="Segoe UI,system-ui,sans-serif">Lima</text>
+          <text x="118" y="179" fill="#94a3b8" font-size="7" font-family="Segoe UI,system-ui,sans-serif">Perú</text>
+          <!-- Connection lines -->
+          <line x1="155" y1="42" x2="120" y2="115" stroke="#6b7a94" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.45"/>
+          <line x1="111" y1="135" x2="109" y2="158" stroke="#6b7a94" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.45"/>
+        </svg>
+        <div class="home-map-legend">
+          <span class="home-map-legend-dot"></span> Oficinas SynerGy
+          &nbsp;·&nbsp;
+          <span style="width:8px;height:8px;background:#dde4ec;border:1px solid #c8d4e0;border-radius:2px;display:inline-block"></span>
+          18 mercados
+        </div>
+      </div>
+      <!-- COUNTRY GRID -->
+      <div class="home-grid-col">
+        <div class="home-countries-label">18 mercados activos — selecciona un país</div>
+        <div class="home-cty-grid">
+          <button class="hcty-btn" onclick="window.goCountry('Mexico')"><span>México</span></button>
+          <button class="hcty-btn" onclick="window.goCountry('Chile')"><span>Chile</span></button>
+          <button class="hcty-btn" onclick="window.goCountry('Colombia')"><span>Colombia</span></button>
+          <button class="hcty-btn" onclick="window.goCountry('Brasil')"><span>Brasil</span></button>
+          <button class="hcty-btn" onclick="window.goCountry('Argentina')"><span>Argentina</span></button>
+          <button class="hcty-btn" onclick="window.goCountry('Peru')"><span>Perú</span></button>
+          <button class="hcty-btn" onclick="window.goCountry('Ecuador')"><span>Ecuador</span></button>
+          <button class="hcty-btn" onclick="window.goCountry('Bolivia')"><span>Bolivia</span></button>
+          <button class="hcty-btn" onclick="window.goCountry('Paraguay')"><span>Paraguay</span></button>
+        </div>
+        <div class="home-cty-grid">
+          <button class="hcty-btn" onclick="window.goCountry('Uruguay')"><span>Uruguay</span></button>
+          <button class="hcty-btn" onclick="window.goCountry('Venezuela')"><span>Venezuela</span></button>
+          <button class="hcty-btn" onclick="window.goCountry('Guatemala')"><span>Guatemala</span></button>
+          <button class="hcty-btn" onclick="window.goCountry('Honduras')"><span>Honduras</span></button>
+          <button class="hcty-btn" onclick="window.goCountry('ElSalvador')"><span>El Salvador</span></button>
+          <button class="hcty-btn" onclick="window.goCountry('Nicaragua')"><span>Nicaragua</span></button>
+          <button class="hcty-btn" onclick="window.goCountry('Panama')"><span>Panamá</span></button>
+          <button class="hcty-btn" onclick="window.goCountry('CostaRica')"><span>Costa Rica</span></button>
+          <button class="hcty-btn" onclick="window.goCountry('RepDominicana')"><span>Rep. Dom.</span></button>
+        </div>
+      </div>
     </div>
   </div>
 </div><!-- /pg-home -->
@@ -329,15 +415,22 @@ tr:hover td{background:#f8fafc}
   <nav class="an-nav">
     <div class="an-nav-left">
       <button class="back-btn" onclick="window.showHome()">← Inicio</button>
+    </div>
+    <div class="an-nav-center">
       <img src="logo_cropped.png" alt="SynerGy" class="nav-logo">
       <span class="nav-title">Dashboard LATAM</span>
     </div>
-    <div class="nav-clocks">
-      <div class="nclock"><div class="nclock-city">Nueva York</div><div class="nclock-time" id="nclock-ny">--:--:--</div></div>
-      <div class="nclock"><div class="nclock-city">Quito</div><div class="nclock-time" id="nclock-quito">--:--:--</div></div>
-      <div class="nclock"><div class="nclock-city">Londres</div><div class="nclock-time" id="nclock-london">--:--:--</div></div>
+    <div class="an-nav-right">
+      <div class="nav-clocks">
+        <div class="nclock"><div class="nclock-city">Nueva York</div><div class="nclock-time" id="nclock-ny">--:--:--</div></div>
+        <div class="nclock"><div class="nclock-city">Quito</div><div class="nclock-time" id="nclock-quito">--:--:--</div></div>
+        <div class="nclock"><div class="nclock-city">Londres</div><div class="nclock-time" id="nclock-london">--:--:--</div></div>
+      </div>
+      <div class="nav-bottom-row">
+        <div class="nav-online"><span class="nav-dot"></span><span id="online-ts-nav">En línea</span></div>
+        <span class="nav-date" id="nav-date">—</span>
+      </div>
     </div>
-    <div class="nav-online"><span class="nav-dot"></span><span id="online-ts-nav">En línea</span></div>
   </nav>
 
   <div class="container">
@@ -877,51 +970,68 @@ function renderDashboard(tabId,d){
   const inflC=d.inflacion<50?(d.inflacion<=3.5?'+0.08':d.inflacion<=5?'+0.04':d.inflacion<=8?'-0.02':d.inflacion<=15?'-0.08':'-0.14'):'-0.12';
   const unempC=d.desempleo<=3?'+0.08':d.desempleo<=5?'+0.04':d.desempleo<=7?'-0.02':d.desempleo<=10?'-0.07':'-0.13';
 
-  /* Macro sparkline values */
+  /* Pre-compute sparkline data before template */
+  const mh=buildMacroHistory(d);
+  const yrs=[2021,2022,2023,2024,2025,2026];
+  const yrL=["'21","'22","'23","'24","'25","'26"];
+  const cagrLine=yrs.map(y=>d.history[y].vista+d.history[y].plazo);
+  const cagr5y=d.cagr5y||'—';
+
+  /* Per-year tooltip builder */
+  function tipH(arr,fmt){
+    return arr.map((v,i)=>`<span class="strow"><span class="styr">${yrL[i]}</span><span class="stv">${fmt(v)}</span></span>`).join('');
+  }
+  const tipPib   =tipH(mh.pibData,  v=>`$${v}B`);
+  const tipPop   =tipH(mh.popData,  v=>fmtAx(v));
+  const tipInfl  =tipH(mh.inflData, v=>`${v}%`);
+  const tipTasa  =tipH(mh.tasaData, v=>`${v}%`);
+  const tipDesemp=tipH(mh.desempData,v=>`${v}%`);
+  const tipCagr  =tipH(cagrLine,    v=>fmtAx(v));
+
+  /* CSS classes */
   const pibClass=d.pib_crecimiento>=3?'spark-up':d.pib_crecimiento>=0?'':'spark-dn';
   const inflClass=d.inflacion<=5?'spark-up':d.inflacion>10?'spark-dn':'';
-  const cagr5y=d.cagr5y||'—';
 
   el.innerHTML=`
     ${rateHtml}
     <div class="macro-spark-grid">
       <div class="spark-card">
-        <div class="spark-tip">$${d.pib}B · ${d.pib_crecimiento>=0?'+':''}${d.pib_crecimiento}%</div>
+        <div class="spark-tip">${tipPib}</div>
         <div class="spark-label">PIB</div>
         <div class="spark-val">$${d.pib}B</div>
         <div class="spark-sub"><span class="${pibClass}">${d.pib_crecimiento>=0?'▲':'▼'}${Math.abs(d.pib_crecimiento)}%</span> crec. anual</div>
         <div class="spark-chart-wrap"><canvas id="sp-pib-${tabId}"></canvas></div>
       </div>
       <div class="spark-card">
-        <div class="spark-tip">${fmtAx(d.poblacion)} hab.</div>
+        <div class="spark-tip">${tipPop}</div>
         <div class="spark-label">Población</div>
         <div class="spark-val">${fmtAx(d.poblacion)}</div>
         <div class="spark-sub">habitantes</div>
         <div class="spark-chart-wrap"><canvas id="sp-pop-${tabId}"></canvas></div>
       </div>
       <div class="spark-card">
-        <div class="spark-tip">${d.inflacion}% IPC anual</div>
+        <div class="spark-tip">${tipInfl}</div>
         <div class="spark-label">Inflación</div>
         <div class="spark-val">${d.inflacion}%</div>
         <div class="spark-sub"><span class="${inflClass}">IPC anual</span></div>
         <div class="spark-chart-wrap"><canvas id="sp-infl-${tabId}"></canvas></div>
       </div>
       <div class="spark-card">
-        <div class="spark-tip">${d.tasa_bc>0?d.tasa_bc+'%':'—'} pol. monetaria</div>
+        <div class="spark-tip">${tipTasa}</div>
         <div class="spark-label">Tasa BC</div>
         <div class="spark-val">${d.tasa_bc>0?d.tasa_bc+'%':'—'}</div>
         <div class="spark-sub">política monetaria</div>
         <div class="spark-chart-wrap"><canvas id="sp-tasa-${tabId}"></canvas></div>
       </div>
       <div class="spark-card">
-        <div class="spark-tip">${d.desempleo}% tasa nacional</div>
+        <div class="spark-tip">${tipDesemp}</div>
         <div class="spark-label">Desempleo</div>
         <div class="spark-val">${d.desempleo}%</div>
         <div class="spark-sub">tasa nacional</div>
         <div class="spark-chart-wrap"><canvas id="sp-desemp-${tabId}"></canvas></div>
       </div>
       <div class="spark-card">
-        <div class="spark-tip">${cagr5y}% depósitos 5Y</div>
+        <div class="spark-tip">${tipCagr}</div>
         <div class="spark-label">CAGR 5Y</div>
         <div class="spark-val spark-up">${cagr5y}%</div>
         <div class="spark-sub">depósitos totales</div>
@@ -930,22 +1040,22 @@ function renderDashboard(tabId,d){
     </div>
     <div class="row-bottom">
       <div class="card">
+        <div class="banc-block" style="margin-top:0;margin-bottom:12px">
+          <div class="banc-block-label">Bancarización</div>
+          <div class="banc-block-val">${d.bancarizacion}%</div>
+          <div class="banc-block-sub">población con cuenta bancaria</div>
+        </div>
         <div class="card-title">Ciclo Económico</div>
         <div class="gauge-wrap">
           <div id="gauge-${tabId}"></div>
           <div id="gphase-${tabId}" class="gauge-phase"></div>
           <div id="gpct-${tabId}" class="gauge-pct"></div>
         </div>
-        <div class="banc-block">
-          <div class="banc-block-label">Bancarización</div>
-          <div class="banc-block-val">${d.bancarizacion}%</div>
-          <div class="banc-block-sub">población con cuenta bancaria</div>
-        </div>
         <div class="gauge-calc">
           <div class="gauge-calc-title">Cálculo del índice</div>
           <table class="gauge-calc-tbl">
             <tr><td>Base</td><td>0.50</td></tr>
-            <tr><td>PIB crecimiento ${d.pib_crecimiento}%</td><td>${pibC}</td></tr>
+            <tr><td>PIB ${d.pib_crecimiento}%</td><td>${pibC}</td></tr>
             <tr><td>Inflación ${d.inflacion}%</td><td>${inflC}</td></tr>
             <tr><td>Desempleo ${d.desempleo}%</td><td>${unempC}</td></tr>
             <tr style="border-top:1px solid #f1f5f9"><td><b>Score</b></td><td><b>${phase.pct}/100</b></td></tr>
@@ -957,10 +1067,17 @@ function renderDashboard(tabId,d){
             <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#d9f99d"></span>62–80 Crecimiento</div>
             <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#86efac"></span>80–100 Expansión</div>
           </div>
+          <div class="gauge-letter-legend">
+            <div class="gll-row"><span class="gll-letter">C</span>= Contracción</div>
+            <div class="gll-row"><span class="gll-letter">E</span>= Estancamiento</div>
+            <div class="gll-row"><span class="gll-letter">R</span>= Recuperación</div>
+            <div class="gll-row"><span class="gll-letter">G</span>= Crecimiento</div>
+            <div class="gll-row"><span class="gll-letter">X</span>= Expansión</div>
+          </div>
         </div>
       </div>
       <div class="card" style="min-width:0;overflow:hidden">
-        <div class="card-title" style="font-size:10px">Depósitos · 2021–2026</div>
+        <div class="card-title">Depósitos · 2021–2026</div>
         <div id="dep-${tabId}"></div>
       </div>
     </div>
@@ -996,10 +1113,7 @@ function renderDashboard(tabId,d){
   if(gpEl){gpEl.textContent=phase.name;gpEl.style.color=phase.color;}
   if(gpcEl)gpcEl.textContent=`Índice: ${phase.pct}/100`;
 
-  /* Sparklines (6 indicators) */
-  const mh=buildMacroHistory(d);
-  const yrs=[2021,2022,2023,2024,2025,2026];
-  const cagrLine=yrs.map(y=>d.history[y].vista+d.history[y].plazo);
+  /* Sparklines */
   renderSparkline(`sp-pib-${tabId}`,   mh.pibData,    '#6b7a94');
   renderSparkline(`sp-pop-${tabId}`,   mh.popData,    '#94a3b8');
   renderSparkline(`sp-infl-${tabId}`,  mh.inflData,   '#f87171');
@@ -1115,6 +1229,7 @@ function setOnline(){
   const text='Actualizado: '+ts;
   ['online-ts','online-ts-nav'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=text;});
   const hu=document.getElementById('home-updated');if(hu)hu.textContent=text;
+  const nd=document.getElementById('nav-date');if(nd)nd.textContent=text;
 }
 
 /* ── News source URL map ─────────────────────────────────────────── */
