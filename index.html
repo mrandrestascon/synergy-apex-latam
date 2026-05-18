@@ -136,6 +136,31 @@ tr:hover td{background:#f8fafc}
 .pill-label{color:#94a3b8;text-transform:uppercase;font-size:9px;letter-spacing:.06em;display:block;margin-bottom:1px}
 .pill-value{font-weight:700;color:#0f172a}
 .pill-value.green{color:#10b981}.pill-value.red{color:#ef4444}.pill-value.amber{color:#f59e0b}
+
+/* ═══ SPARKLINE GRID (top macro section) ═══════════════════════════ */
+.macro-spark-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:1200px){.macro-spark-grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:600px){.macro-spark-grid{grid-template-columns:repeat(2,1fr)}}
+.spark-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;box-shadow:0 1px 3px rgba(0,0,0,.05);min-width:0}
+.spark-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#94a3b8;margin-bottom:2px}
+.spark-val{font-size:16px;font-weight:800;color:#0f172a;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spark-sub{font-size:9.5px;color:#94a3b8;margin-bottom:5px;display:flex;align-items:center;gap:4px}
+.spark-up{color:#10b981}.spark-dn{color:#ef4444}
+.spark-chart-wrap{height:52px;position:relative}
+
+/* ═══ BOTTOM 2-COL (gauge left / deposits right) ════════════════════ */
+.row-bottom{display:grid;grid-template-columns:300px 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:860px){.row-bottom{grid-template-columns:1fr}}
+
+/* ═══ GAUGE CALC LEGEND ════════════════════════════════════════════ */
+.gauge-calc{margin-top:10px;border-top:1px solid #f1f5f9;padding-top:8px}
+.gauge-calc-title{font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.gauge-calc-tbl{width:100%;border-collapse:collapse;font-size:10.5px}
+.gauge-calc-tbl td{padding:2px 4px;color:#475569}
+.gauge-calc-tbl td:last-child{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.gauge-bands{margin-top:7px;display:flex;flex-direction:column;gap:3px}
+.gauge-band-row{display:flex;align-items:center;gap:5px;font-size:9.5px;color:#64748b}
+.gauge-band-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -664,25 +689,64 @@ function buildGauge360(score){
   </svg>`;
 }
 
-/* ── Per-country CAGR grouped bar chart (2021-2026) ─────────────── */
-function renderCAGRChart(tabId,history,currCode){
-  const cid='cagr-'+tabId;
+/* ── 5-year macro history (estimated back-projection) ───────────── */
+function buildMacroHistory(d){
+  const yrs=[2021,2022,2023,2024,2025,2026];
+  const gr=(d.pib_crecimiento||2)/100;
+  const pibData=yrs.map(y=>+(d.pib/Math.pow(1+gr,2026-y)).toFixed(1));
+  const popData=yrs.map(y=>Math.round((d.poblacion||0)/Math.pow(1.012,2026-y)));
+  const i0=d.inflacion||4;
+  const inflData=[1.10,1.85,1.55,1.25,1.08,1].map(f=>+(i0*f).toFixed(1));
+  const t0=d.tasa_bc||4;
+  const tasaData=[0.55,0.85,1.45,1.35,1.10,1].map(f=>+(t0*f).toFixed(2));
+  const u0=d.desempleo||5;
+  const desempData=[1.48,1.30,1.18,1.10,1.04,1].map(f=>+(u0*f).toFixed(1));
+  const b0=d.bancarizacion||50;
+  const bancData=yrs.map(y=>+(b0/Math.pow(1.025,2026-y)).toFixed(1));
+  return{pibData,popData,inflData,tasaData,desempData,bancData};
+}
+
+/* ── Sparkline (small line chart) ───────────────────────────────── */
+function renderSparkline(cid,data,hexColor){
   destroyChart(cid);
-  const canvas=document.getElementById(cid);
-  if(!canvas)return;
-  const years=[2021,2022,2023,2024,2025,2026];
-  const labels=years.map(y=>y===2026?'2026':y+'*');
+  const canvas=document.getElementById(cid);if(!canvas)return;
+  charts[cid]=new Chart(canvas.getContext('2d'),{
+    type:'line',
+    data:{
+      labels:['2021','2022','2023','2024','2025','2026'],
+      datasets:[{
+        data,
+        borderColor:hexColor,
+        borderWidth:2,
+        backgroundColor:hexColor+'22',
+        fill:true,
+        pointRadius:0,
+        tension:0.4,
+      }],
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      animation:{duration:300},
+      plugins:{legend:{display:false},tooltip:{enabled:false}},
+      scales:{x:{display:false},y:{display:false}},
+    },
+  });
+}
+
+/* ── Deposits bar chart (Vista + Plazo, 2021-2026) ──────────────── */
+function renderDepositsChart(tabId,history,currCode){
+  const cid='dep-'+tabId;
+  destroyChart(cid);
+  const canvas=document.getElementById(cid);if(!canvas)return;
+  const yrs=[2021,2022,2023,2024,2025,2026];
   charts[cid]=new Chart(canvas.getContext('2d'),{
     type:'bar',
     data:{
-      labels,
+      labels:yrs.map(y=>y===2026?'2026':y+'*'),
       datasets:[
-        {label:'Vista',data:years.map(y=>history[y].vista),
-         backgroundColor:'rgba(79,70,229,0.75)',borderRadius:3,borderWidth:0},
-        {label:'Plazo',data:years.map(y=>history[y].plazo),
-         backgroundColor:'rgba(16,185,129,0.75)',borderRadius:3,borderWidth:0},
-        {label:'AUM',data:years.map(y=>history[y].acm),
-         backgroundColor:'rgba(245,158,11,0.65)',borderRadius:3,borderWidth:0},
+        {label:'Vista',data:yrs.map(y=>history[y].vista),backgroundColor:'rgba(79,70,229,0.78)',borderRadius:4,borderWidth:0},
+        {label:'Plazo',data:yrs.map(y=>history[y].plazo),backgroundColor:'rgba(16,185,129,0.78)',borderRadius:4,borderWidth:0},
       ],
     },
     options:{
@@ -694,7 +758,7 @@ function renderCAGRChart(tabId,history,currCode){
           backgroundColor:'#1e293b',titleColor:'#f8fafc',bodyColor:'#94a3b8',
           callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmtAx(ctx.raw)} M ${currCode}`},
         },
-        title:{display:true,text:`Tendencia 5 años — mill. ${currCode} (*est.)`,color:'#94a3b8',font:{size:10},padding:{bottom:8}},
+        title:{display:true,text:`Vista + Plazo · mill. ${currCode} · *est.`,color:'#94a3b8',font:{size:10},padding:{bottom:6}},
       },
       scales:{
         x:{ticks:{color:'#94a3b8',font:{size:10}},grid:{display:false}},
@@ -702,44 +766,6 @@ function renderCAGRChart(tabId,history,currCode){
       },
     },
   });
-}
-
-/* ── Market share pie chart ─────────────────────────────────────── */
-function renderPieChart(tabId,actors){
-  const cid='pie-'+tabId;
-  destroyChart(cid);
-  const canvas=document.getElementById(cid);
-  if(!canvas)return;
-  const top10=actors.slice(0,10);
-  const COLORS=['#4f46e5','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#84cc16','#f97316','#ec4899','#6366f1'];
-  charts[cid]=new Chart(canvas.getContext('2d'),{
-    type:'doughnut',
-    data:{
-      labels:top10.map(a=>a.nombre),
-      datasets:[{data:top10.map(a=>a.cuota),backgroundColor:COLORS,borderWidth:2,borderColor:'#fff'}],
-    },
-    options:{
-      responsive:true,
-      plugins:{
-        legend:{display:false},
-        tooltip:{
-          backgroundColor:'#1e293b',titleColor:'#f8fafc',bodyColor:'#94a3b8',
-          callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw}%`},
-        },
-      },
-      cutout:'60%',
-    },
-  });
-  // Custom legend below canvas
-  const legendEl=document.getElementById('pie-legend-'+tabId);
-  if(legendEl){
-    legendEl.innerHTML=top10.map((a,i)=>
-      `<div style="display:flex;align-items:center;gap:5px;font-size:10.5px;color:#475569">
-         <span style="width:9px;height:9px;background:${COLORS[i]};border-radius:2px;flex-shrink:0"></span>
-         <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.nombre} <b>${a.cuota}%</b></span>
-       </div>`
-    ).join('');
-  }
 }
 
 /* ── Per-country render ─────────────────────────────────────────── */
@@ -756,27 +782,11 @@ function renderDashboard(tabId,d){
   }else if(rate){
     const fmtR=Number(rate).toLocaleString('es-MX',{maximumFractionDigits:2});
     const rds=exchangeRateDates[cur.code]||rateDate;
-    const fromSB=!!exchangeRateDates[cur.code];
-    const srcHtml=fromSB?'Banco Central (Supabase)':`<a href="https://open.er-api.com" target="_blank">open.er-api.com</a>`;
+    const srcHtml=exchangeRateDates[cur.code]?'Banco Central (Supabase)':`<a href="https://open.er-api.com" target="_blank">open.er-api.com</a>`;
     rateHtml=`<div class="rate-bar"><span class="rate-label">💱 1 USD = <strong>${fmtR} ${cur.code}</strong></span><span class="rate-source">Fuente: ${srcHtml}${rds?' · '+rds:''}</span></div>`;
   }else{
     rateHtml=`<div class="rate-bar"><span class="rate-label">💱 ${cur.code}</span><span class="rate-source">Tipo de cambio no disponible</span></div>`;
   }
-
-  /* Macro pills */
-  const bcLabel=d.tasa_bc>0?`${d.tasa_bc}%`:'—';
-  const pibClass=d.pib_crecimiento>=3?'green':d.pib_crecimiento>=0?'amber':'red';
-  const inflClass=d.inflacion<=5?'green':d.inflacion<=10?'amber':'red';
-  const macroHtml=`<div class="macro-pills">
-    <div class="pill"><span class="pill-label">PIB</span><span class="pill-value">$${fmt(d.pib)}B USD</span></div>
-    <div class="pill"><span class="pill-label">Crec. PIB</span><span class="pill-value ${pibClass}">${d.pib_crecimiento}%</span></div>
-    <div class="pill"><span class="pill-label">Inflación</span><span class="pill-value ${inflClass}">${d.inflacion}%</span></div>
-    <div class="pill"><span class="pill-label">Tasa BC</span><span class="pill-value">${bcLabel}</span></div>
-    <div class="pill"><span class="pill-label">Desempleo</span><span class="pill-value">${d.desempleo}%</span></div>
-    <div class="pill"><span class="pill-label">Bancarización</span><span class="pill-value">${d.bancarizacion}%</span></div>
-    <div class="pill"><span class="pill-label">Población</span><span class="pill-value">${fmtAx(d.poblacion)}</span></div>
-    <div class="pill"><span class="pill-label">CAGR 5Y</span><span class="pill-value green">${d.cagr5y||'—'}%</span></div>
-  </div>`;
 
   /* Table rows */
   const fecha=d.fecha?new Date(d.fecha).toLocaleDateString('es-MX',{year:'numeric',month:'short',day:'numeric'}):null;
@@ -788,53 +798,110 @@ function renderDashboard(tabId,d){
     return`<tr><td>${a.nombre}</td><td>${fmt(a.vista)}</td><td>${fmt(a.plazo)}</td><td>${fmt(a.acm)}</td>${usdTd}<td><b>${a.cuota}%</b></td></tr>`;
   }).join('');
 
+  /* Score for gauge + calc breakdown */
+  const score=econScore(d.pib_crecimiento,d.inflacion,d.desempleo);
+  const phase=phaseFromScore(score);
+  const pibC=d.pib_crecimiento>=4.5?'+0.30':d.pib_crecimiento>=3?'+0.18':d.pib_crecimiento>=1.5?'+0.08':d.pib_crecimiento>=-1?'-0.12':'-0.25';
+  const inflC=d.inflacion<50?(d.inflacion<=3.5?'+0.08':d.inflacion<=5?'+0.04':d.inflacion<=8?'-0.02':d.inflacion<=15?'-0.08':'-0.14'):'-0.12';
+  const unempC=d.desempleo<=3?'+0.08':d.desempleo<=5?'+0.04':d.desempleo<=7?'-0.02':d.desempleo<=10?'-0.07':'-0.13';
+
+  /* Macro sparkline values */
+  const pibClass=d.pib_crecimiento>=3?'spark-up':d.pib_crecimiento>=0?'':'spark-dn';
+  const inflClass=d.inflacion<=5?'spark-up':d.inflacion>10?'spark-dn':'';
+  const cagr5y=d.cagr5y||'—';
+
   el.innerHTML=`
     ${rateHtml}
-    ${macroHtml}
-    <div class="row-charts">
+    <div class="macro-spark-grid">
+      <div class="spark-card">
+        <div class="spark-label">PIB</div>
+        <div class="spark-val">$${d.pib}B</div>
+        <div class="spark-sub"><span class="${pibClass}">${d.pib_crecimiento>=0?'▲':'▼'}${Math.abs(d.pib_crecimiento)}%</span> crec. anual</div>
+        <div class="spark-chart-wrap"><canvas id="sp-pib-${tabId}"></canvas></div>
+      </div>
+      <div class="spark-card">
+        <div class="spark-label">Población</div>
+        <div class="spark-val">${fmtAx(d.poblacion)}</div>
+        <div class="spark-sub">hab.</div>
+        <div class="spark-chart-wrap"><canvas id="sp-pop-${tabId}"></canvas></div>
+      </div>
+      <div class="spark-card">
+        <div class="spark-label">Inflación</div>
+        <div class="spark-val">${d.inflacion}%</div>
+        <div class="spark-sub"><span class="${inflClass}">IPC anual</span></div>
+        <div class="spark-chart-wrap"><canvas id="sp-infl-${tabId}"></canvas></div>
+      </div>
+      <div class="spark-card">
+        <div class="spark-label">Tasa BC</div>
+        <div class="spark-val">${d.tasa_bc>0?d.tasa_bc+'%':'—'}</div>
+        <div class="spark-sub">pol. monetaria</div>
+        <div class="spark-chart-wrap"><canvas id="sp-tasa-${tabId}"></canvas></div>
+      </div>
+      <div class="spark-card">
+        <div class="spark-label">Desempleo</div>
+        <div class="spark-val">${d.desempleo}%</div>
+        <div class="spark-sub">tasa nacional</div>
+        <div class="spark-chart-wrap"><canvas id="sp-desemp-${tabId}"></canvas></div>
+      </div>
+      <div class="spark-card">
+        <div class="spark-label">Bancarización</div>
+        <div class="spark-val">${d.bancarizacion}%</div>
+        <div class="spark-sub">pobl. con cuenta</div>
+        <div class="spark-chart-wrap"><canvas id="sp-banc-${tabId}"></canvas></div>
+      </div>
+      <div class="spark-card">
+        <div class="spark-label">CAGR 5Y</div>
+        <div class="spark-val spark-up">${cagr5y}%</div>
+        <div class="spark-sub">depósitos vista+plazo</div>
+        <div class="spark-chart-wrap"><canvas id="sp-cagr-${tabId}"></canvas></div>
+      </div>
+    </div>
+    <div class="row-bottom">
       <div class="card">
         <div class="card-title">Ciclo Económico</div>
         <div class="gauge-wrap">
           <div id="gauge-${tabId}"></div>
           <div id="gphase-${tabId}" class="gauge-phase"></div>
           <div id="gpct-${tabId}" class="gauge-pct"></div>
-          <div class="gauge-legend">
-            <span><i style="background:#ef4444"></i>Contracción</span>
-            <span><i style="background:#f97316"></i>Estancamiento</span>
-            <span><i style="background:#eab308"></i>Recuperación</span>
-            <span><i style="background:#22c55e"></i>Expansión</span>
+        </div>
+        <div class="gauge-calc">
+          <div class="gauge-calc-title">Cálculo del índice</div>
+          <table class="gauge-calc-tbl">
+            <tr><td>Base</td><td>0.50</td></tr>
+            <tr><td>PIB growth ${d.pib_crecimiento}%</td><td>${pibC}</td></tr>
+            <tr><td>Inflación ${d.inflacion}%</td><td>${inflC}</td></tr>
+            <tr><td>Desempleo ${d.desempleo}%</td><td>${unempC}</td></tr>
+            <tr style="border-top:1px solid #f1f5f9"><td><b>Score</b></td><td><b>${phase.pct}/100</b></td></tr>
+          </table>
+          <div class="gauge-bands" style="margin-top:8px">
+            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#ef4444"></span>0–22 · Contracción</div>
+            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#f97316"></span>22–44 · Estancamiento</div>
+            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#eab308"></span>44–62 · Recuperación</div>
+            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#84cc16"></span>62–80 · Crecimiento</div>
+            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#22c55e"></span>80–100 · Expansión</div>
           </div>
         </div>
       </div>
       <div class="card">
-        <div class="card-title">Evolución Depósitos 2021–2026 · Vista / Plazo / AUM</div>
-        <canvas id="cagr-${tabId}" height="175"></canvas>
+        <div class="card-title">Evolución Depósitos Vista + Plazo · 2021–2026</div>
+        <canvas id="dep-${tabId}" height="200"></canvas>
       </div>
     </div>
-    <div class="row-table">
-      <div class="card">
-        <div class="table-hdr">
-          <h2>Actores del Sistema Bancario</h2>
-          <div class="meta-box">${fecha?`Act: ${fecha}<br>`:''}${srcLinks?`Fuentes: ${srcLinks}`:''}</div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Institución</th><th>Vista (${cur.code}M)</th><th>Plazo (${cur.code}M)</th><th>AUM (${cur.code}M)</th>${usdTh}<th>Cuota</th></tr></thead>
-            <tbody>${rows}</tbody>
-          </table>
-        </div>
-        <p class="chart-note">Incluye bancos, cooperativas y fondos de ahorro · *2021–2025 est. con tendencia histórica</p>
+    <div class="card" style="margin-bottom:14px">
+      <div class="table-hdr">
+        <h2>Actores del Sistema Bancario</h2>
+        <div class="meta-box">${fecha?`Act: ${fecha}<br>`:''}${srcLinks?`Fuentes: ${srcLinks}`:''}</div>
       </div>
-      <div class="card pie-card">
-        <div class="card-title">Cuota de Mercado (AUM)</div>
-        <canvas id="pie-${tabId}" height="190"></canvas>
-        <div id="pie-legend-${tabId}" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin-top:10px;width:100%"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Institución</th><th>Vista (${cur.code}M)</th><th>Plazo (${cur.code}M)</th><th>AUM (${cur.code}M)</th>${usdTh}<th>Cuota</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
       </div>
+      <p class="chart-note">Incluye bancos, cooperativas y fondos de ahorro · *2021–2025 est. con tendencia histórica</p>
     </div>`;
 
-  /* Render charts */
-  const score=econScore(d.pib_crecimiento,d.inflacion,d.desempleo);
-  const phase=phaseFromScore(score);
+  /* Gauge */
   const gEl=document.getElementById('gauge-'+tabId);
   const gpEl=document.getElementById('gphase-'+tabId);
   const gpcEl=document.getElementById('gpct-'+tabId);
@@ -842,8 +909,20 @@ function renderDashboard(tabId,d){
   if(gpEl){gpEl.textContent=phase.name;gpEl.style.color=phase.color;}
   if(gpcEl)gpcEl.textContent=`Índice: ${phase.pct}/100`;
 
-  renderCAGRChart(tabId,d.history,cur.code);
-  renderPieChart(tabId,d.actors);
+  /* Sparklines */
+  const mh=buildMacroHistory(d);
+  const yrs=[2021,2022,2023,2024,2025,2026];
+  const cagrLine=yrs.map(y=>d.history[y].vista+d.history[y].plazo);
+  renderSparkline(`sp-pib-${tabId}`,  mh.pibData,   '#4f46e5');
+  renderSparkline(`sp-pop-${tabId}`,  mh.popData,   '#6366f1');
+  renderSparkline(`sp-infl-${tabId}`, mh.inflData,  '#ef4444');
+  renderSparkline(`sp-tasa-${tabId}`, mh.tasaData,  '#f97316');
+  renderSparkline(`sp-desemp-${tabId}`,mh.desempData,'#f59e0b');
+  renderSparkline(`sp-banc-${tabId}`, mh.bancData,  '#10b981');
+  renderSparkline(`sp-cagr-${tabId}`, cagrLine,     '#22c55e');
+
+  /* Deposits bar */
+  renderDepositsChart(tabId,d.history,cur.code);
 }
 
 /* ── Tab switch ─────────────────────────────────────────────────── */
