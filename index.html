@@ -23,31 +23,58 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f8fafc;color:#0f172
 .hidden{display:none!important}
 
 /* ═══ HOME ═══════════════════════════════════════════════════════════ */
-#pg-home{min-height:100vh;background:#fff;display:flex;align-items:stretch}
-.home-wrap{display:grid;grid-template-columns:1fr 1fr;width:100%;max-width:1400px;margin:auto;padding:48px 56px;gap:40px;align-items:center}
-@media(max-width:900px){.home-wrap{grid-template-columns:1fr;padding:32px 24px}}
-.home-left{display:flex;flex-direction:column;gap:22px;justify-content:center}
-.home-logo{height:60px;max-width:280px;object-fit:contain}
+#pg-home{min-height:100vh;background:#fff;display:flex;flex-direction:column}
+.home-hero{display:flex;align-items:center;justify-content:space-between;padding:52px 64px 28px;gap:32px;flex-wrap:wrap;border-bottom:1px solid #f1f5f9}
+@media(max-width:800px){.home-hero{padding:32px 24px 24px;flex-direction:column;align-items:center}}
+.home-hero-center{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;flex:1;min-width:260px}
+.home-logo{height:84px;max-width:380px;object-fit:contain}
 .home-title{font-size:2.8rem;font-weight:800;color:#0f172a;letter-spacing:-1px;line-height:1.1}
-.home-sub{font-size:1.1rem;color:#475569;font-weight:400;line-height:1.5}
+.home-sub{font-size:1rem;color:#475569;font-weight:400;line-height:1.5}
 .online-badge{display:inline-flex;align-items:center;gap:8px;background:#f0fdf4;border:1px solid #86efac;border-radius:20px;padding:7px 14px;width:fit-content}
 .online-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;box-shadow:0 0 0 3px rgba(34,197,94,0.25);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,0.25)}50%{box-shadow:0 0 0 6px rgba(34,197,94,0.1)}}
 .online-text{font-size:12px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.06em}
 .online-ts{font-size:11px;color:#4ade80}
-.home-clocks{display:flex;gap:12px;flex-wrap:wrap}
-.hclock{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 16px;min-width:120px}
-.hclock-city{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px}
-.hclock-time{font-size:17px;font-weight:700;color:#0f172a;font-variant-numeric:tabular-nums;letter-spacing:1px}
-.hclock-zone{font-size:8.5px;color:#cbd5e1;margin-top:1px}
-.enter-btn{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border:none;border-radius:10px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.02em;width:fit-content;transition:all .2s;box-shadow:0 4px 14px rgba(79,70,229,.35)}
-.enter-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(79,70,229,.45)}
+.enter-btn{background:linear-gradient(135deg,#4b5563,#374151);color:#fff;border:none;border-radius:10px;padding:17px 38px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.02em;width:fit-content;transition:all .2s;box-shadow:0 4px 14px rgba(75,85,99,.3)}
+.enter-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(75,85,99,.4)}
 .home-footer{font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em}
-.home-right{display:flex;align-items:center;justify-content:center}
-.map-wrap{width:100%;max-width:380px;position:relative}
-.map-title{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;text-align:center;margin-bottom:8px}
-.map-legend{display:flex;align-items:center;gap:8px;justify-content:center;margin-top:10px;font-size:10px;color:#64748b}
-.map-legend-dot{width:8px;height:8px;background:#4f46e5;border-radius:50%;display:inline-block}
+.home-hero-clocks{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+@media(max-width:800px){.home-hero-clocks{align-items:center}}
+.home-clocks{display:flex;gap:8px;flex-wrap:wrap}
+.hclock{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 14px;min-width:106px}
+.hclock-city{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px}
+.hclock-time{font-size:16px;font-weight:700;color:#0f172a;font-variant-numeric:tabular-nums;letter-spacing:1px}
+.hclock-zone{font-size:8px;color:#cbd5e1;margin-top:1px}
+.home-updated{font-size:10px;color:#94a3b8}
+/* ═══ COUNTRIES GRID ════════════════════════════════════════════════ */
+.home-countries{padding:28px 48px 48px;max-width:1300px;margin:0 auto;width:100%}
+.home-countries-label{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;text-align:center}
+.home-cty-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:8px;margin-bottom:8px}
+@media(max-width:1100px){.home-cty-grid{grid-template-columns:repeat(6,1fr)}}
+@media(max-width:640px){.home-cty-grid{grid-template-columns:repeat(3,1fr)}}
+.hcty-btn{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 4px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:all .15s;font-size:20px;color:#374151;font-weight:500;line-height:1}
+.hcty-btn span{font-size:10px;color:#64748b;text-align:center;line-height:1.2;font-weight:500}
+.hcty-btn:hover{background:#f1f5f9;border-color:#94a3b8;transform:translateY(-2px);box-shadow:0 4px 10px rgba(0,0,0,.07)}
+/* ═══ ACTORS SPLIT ══════════════════════════════════════════════════ */
+.actors-split{display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start}
+@media(max-width:860px){.actors-split{grid-template-columns:1fr}}
+.actors-pie-wrap{display:flex;flex-direction:column;align-items:center;padding-top:4px}
+.actors-pie-title{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;text-align:center}
+/* ═══ NEWS AMPLIAR ══════════════════════════════════════════════════ */
+.news-ampliar{color:#6b7a94;font-size:10px;text-decoration:none;font-weight:600}
+.news-ampliar:hover{color:#4b5563;text-decoration:underline}
+.fuentes-link{color:#6b7a94;font-weight:600;text-decoration:none}
+.fuentes-link:hover{text-decoration:underline}
+/* ═══ FUENTES MODAL ═════════════════════════════════════════════════ */
+#pg-fuentes{position:fixed;inset:0;background:rgba(15,23,42,.65);z-index:500;display:flex;align-items:center;justify-content:center}
+.fuentes-modal{background:#fff;border-radius:14px;padding:32px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.fuentes-modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;border-bottom:1px solid #f1f5f9;padding-bottom:16px}
+.fuentes-modal-close{background:none;border:1px solid #e2e8f0;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:14px;color:#94a3b8}
+.fuentes-modal-close:hover{background:#f8fafc;color:#475569}
+.fuentes-src-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;margin-top:14px}
+.fuentes-src-item{font-size:12px;color:#475569;display:flex;flex-direction:column;gap:2px}
+.fuentes-src-item a{color:#6b7a94;text-decoration:none;font-size:11px}
+.fuentes-src-item a:hover{text-decoration:underline}
 
 /* ═══ ANALYTICS NAV ════════════════════════════════════════════════ */
 #pg-analytics{min-height:100vh;background:#f8fafc}
@@ -152,7 +179,7 @@ tr:hover td{background:#f8fafc}
 
 /* ═══ BOTTOM 2-COL — mobile-first ══════════════════════════════════ */
 .row-bottom{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:14px}
-@media(min-width:860px){.row-bottom{grid-template-columns:1fr 25%}}
+@media(min-width:860px){.row-bottom{grid-template-columns:70% 30%}}
 
 /* ═══ BANCARIZACIÓN BELOW GAUGE ════════════════════════════════════ */
 .banc-block{margin-top:12px;padding:12px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;text-align:center}
@@ -191,126 +218,107 @@ tr:hover td{background:#f8fafc}
      HOME PAGE
 ══════════════════════════════════════════════════════════════════════ -->
 <div id="pg-home">
-<div class="home-wrap">
-  <div class="home-left">
-    <img src="logo_cropped.png" alt="SynerGy Apex" class="home-logo">
-    <h1 class="home-title">Dashboard<br>LATAM</h1>
-    <p class="home-sub">Inteligencia bancaria en tiempo real</p>
-
-    <div class="online-badge">
-      <span class="online-dot"></span>
-      <span class="online-text">En línea</span>
-      <span class="online-ts" id="online-ts">cargando…</span>
+  <!-- HERO: Logo centered + clocks right -->
+  <div class="home-hero">
+    <div class="home-hero-center">
+      <img src="logo_cropped.png" alt="SynerGy Apex" class="home-logo">
+      <h1 class="home-title">Dashboard LATAM</h1>
+      <p class="home-sub">Inteligencia bancaria en tiempo real</p>
+      <div class="online-badge">
+        <span class="online-dot"></span>
+        <span class="online-text">En línea</span>
+        <span class="online-ts" id="online-ts">cargando…</span>
+      </div>
+      <button class="enter-btn" onclick="window.showAnalytics()">Explorar Dashboard →</button>
+      <p class="home-footer">Dirección de Expansión &nbsp;·&nbsp; 18 países &nbsp;·&nbsp; 2026</p>
     </div>
-
-    <div class="home-clocks">
-      <div class="hclock">
-        <div class="hclock-city">Nueva York</div>
-        <div class="hclock-time" id="hclock-ny">--:--:--</div>
-        <div class="hclock-zone">ET</div>
+    <div class="home-hero-clocks">
+      <div class="home-clocks">
+        <div class="hclock">
+          <div class="hclock-city">Nueva York</div>
+          <div class="hclock-time" id="hclock-ny">--:--:--</div>
+          <div class="hclock-zone">ET</div>
+        </div>
+        <div class="hclock">
+          <div class="hclock-city">Quito</div>
+          <div class="hclock-time" id="hclock-quito">--:--:--</div>
+          <div class="hclock-zone">ECT</div>
+        </div>
+        <div class="hclock">
+          <div class="hclock-city">Londres</div>
+          <div class="hclock-time" id="hclock-london">--:--:--</div>
+          <div class="hclock-zone">BST/GMT</div>
+        </div>
       </div>
-      <div class="hclock">
-        <div class="hclock-city">Quito</div>
-        <div class="hclock-time" id="hclock-quito">--:--:--</div>
-        <div class="hclock-zone">ECT</div>
-      </div>
-      <div class="hclock">
-        <div class="hclock-city">Londres</div>
-        <div class="hclock-time" id="hclock-london">--:--:--</div>
-        <div class="hclock-zone">BST/GMT</div>
-      </div>
+      <div class="home-updated" id="home-updated">Actualizado: cargando…</div>
     </div>
-
-    <button class="enter-btn" onclick="window.showAnalytics()">Explorar Dashboard →</button>
-    <p class="home-footer">Dirección de Expansión &nbsp;·&nbsp; 18 países &nbsp;·&nbsp; 2026</p>
   </div>
 
-  <div class="home-right">
-    <div class="map-wrap">
-      <div class="map-title">Presencia SynerGy en LATAM</div>
-      <!-- SVG LATAM Map -->
-      <svg viewBox="0 0 300 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;drop-shadow:0 4px 16px rgba(15,23,42,.08)">
-        <defs>
-          <filter id="sh"><feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-color="#0f172a" flood-opacity="0.12"/></filter>
-          <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#818cf8" stop-opacity="0.9"/>
-            <stop offset="100%" stop-color="#4f46e5" stop-opacity="0.6"/>
-          </radialGradient>
-        </defs>
-
-        <!-- Ocean background -->
-        <rect width="300" height="420" fill="#f0f4f8" rx="12"/>
-
-        <!-- MEXICO -->
-        <path filter="url(#sh)" fill="#dde4ec" stroke="#c8d4e0" stroke-width="0.7"
-          d="M 22,28 Q 55,20 90,26 Q 108,32 112,48 Q 116,62 108,76 Q 98,90 82,94 Q 64,96 44,80 Q 24,64 20,44 Z"/>
-
-        <!-- CENTRAL AMERICA -->
-        <path fill="#dde4ec" stroke="#c8d4e0" stroke-width="0.5"
-          d="M 82,94 Q 96,90 112,96 Q 122,104 120,118 Q 116,130 106,135 Q 94,138 84,130 Q 76,120 78,108 Z"/>
-
-        <!-- SOUTH AMERICA main -->
-        <path filter="url(#sh)" fill="#dde4ec" stroke="#c8d4e0" stroke-width="0.7"
-          d="M 120,100 Q 145,90 168,94 Q 195,98 218,110
-             Q 245,124 255,150 Q 265,178 258,208
-             Q 248,238 230,258 Q 210,278 192,292
-             Q 172,308 158,328 Q 142,350 134,372
-             Q 124,388 112,380 Q 100,370 94,350
-             Q 86,328 86,302 Q 86,275 88,250
-             Q 90,224 86,200 Q 82,176 88,153
-             Q 94,130 108,114 Q 114,106 120,100 Z"/>
-
-        <!-- ECUADOR highlight (SynerGy presence) -->
-        <path fill="url(#glow)" stroke="#4f46e5" stroke-width="1" opacity="0.88"
-          d="M 106,112 Q 120,106 128,116 Q 134,126 130,140
-             Q 124,150 112,150 Q 100,148 96,138 Q 92,126 106,112 Z"/>
-
-        <!-- PERU highlight (SynerGy presence) -->
-        <path fill="url(#glow)" stroke="#4f46e5" stroke-width="1" opacity="0.72"
-          d="M 96,138 Q 110,132 122,140 Q 132,150 132,168
-             Q 130,185 118,190 Q 104,192 96,182
-             Q 86,170 88,154 Z"/>
-
-        <!-- COLOMBIA faint highlight -->
-        <path fill="#a5b4fc" stroke="#818cf8" stroke-width="0.6" opacity="0.35"
-          d="M 106,112 Q 120,106 140,105 Q 155,108 162,118
-             Q 165,128 155,136 Q 142,142 126,140
-             Q 116,138 108,130 Z"/>
-
-        <!-- MIAMI dot + flag (USA presence, top) -->
-        <circle cx="155" cy="36" r="6" fill="#4f46e5" stroke="#fff" stroke-width="1.5" opacity="0.95"/>
-        <circle cx="155" cy="36" r="11" fill="#4f46e5" opacity="0.15"/>
-        <text x="164" y="40" fill="#4f46e5" font-size="9" font-weight="700" font-family="Segoe UI,system-ui,sans-serif">Miami</text>
-        <text x="164" y="50" fill="#94a3b8" font-size="7.5" font-family="Segoe UI,system-ui,sans-serif">🇺🇸 EE.UU.</text>
-
-        <!-- QUITO dot -->
-        <circle cx="111" cy="130" r="5.5" fill="#4f46e5" stroke="#fff" stroke-width="1.5"/>
-        <circle cx="111" cy="130" r="10" fill="#4f46e5" opacity="0.12"/>
-        <text x="120" y="134" fill="#4f46e5" font-size="9" font-weight="700" font-family="Segoe UI,system-ui,sans-serif">Quito</text>
-        <text x="120" y="144" fill="#94a3b8" font-size="7.5" font-family="Segoe UI,system-ui,sans-serif">🇪🇨 Ecuador</text>
-
-        <!-- LIMA dot -->
-        <circle cx="109" cy="165" r="5.5" fill="#4f46e5" stroke="#fff" stroke-width="1.5"/>
-        <circle cx="109" cy="165" r="10" fill="#4f46e5" opacity="0.12"/>
-        <text x="118" y="169" fill="#4f46e5" font-size="9" font-weight="700" font-family="Segoe UI,system-ui,sans-serif">Lima</text>
-        <text x="118" y="179" fill="#94a3b8" font-size="7.5" font-family="Segoe UI,system-ui,sans-serif">🇵🇪 Perú</text>
-
-        <!-- Dotted line connecting offices -->
-        <line x1="155" y1="42" x2="120" y2="115" stroke="#818cf8" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.5"/>
-        <line x1="111" y1="135" x2="109" y2="158" stroke="#818cf8" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.5"/>
-      </svg>
-
-      <div class="map-legend">
-        <span class="map-legend-dot"></span>
-        Oficinas SynerGy
-        &nbsp;·&nbsp;
-        <span style="width:8px;height:8px;background:#dde4ec;border:1px solid #c8d4e0;border-radius:2px;display:inline-block"></span>
-        18 mercados activos
-      </div>
+  <!-- COUNTRIES GRID: 9 top + 9 bottom -->
+  <div class="home-countries">
+    <div class="home-countries-label">18 mercados activos — selecciona un país</div>
+    <div class="home-cty-grid">
+      <button class="hcty-btn" onclick="window.goCountry('Mexico')">🇲🇽<span>México</span></button>
+      <button class="hcty-btn" onclick="window.goCountry('Chile')">🇨🇱<span>Chile</span></button>
+      <button class="hcty-btn" onclick="window.goCountry('Colombia')">🇨🇴<span>Colombia</span></button>
+      <button class="hcty-btn" onclick="window.goCountry('Brasil')">🇧🇷<span>Brasil</span></button>
+      <button class="hcty-btn" onclick="window.goCountry('Argentina')">🇦🇷<span>Argentina</span></button>
+      <button class="hcty-btn" onclick="window.goCountry('Peru')">🇵🇪<span>Perú</span></button>
+      <button class="hcty-btn" onclick="window.goCountry('Ecuador')">🇪🇨<span>Ecuador</span></button>
+      <button class="hcty-btn" onclick="window.goCountry('Bolivia')">🇧🇴<span>Bolivia</span></button>
+      <button class="hcty-btn" onclick="window.goCountry('Paraguay')">🇵🇾<span>Paraguay</span></button>
     </div>
+    <div class="home-cty-grid">
+      <button class="hcty-btn" onclick="window.goCountry('Uruguay')">🇺🇾<span>Uruguay</span></button>
+      <button class="hcty-btn" onclick="window.goCountry('Venezuela')">🇻🇪<span>Venezuela</span></button>
+      <button class="hcty-btn" onclick="window.goCountry('Guatemala')">🇬🇹<span>Guatemala</span></button>
+      <button class="hcty-btn" onclick="window.goCountry('Honduras')">🇭🇳<span>Honduras</span></button>
+      <button class="hcty-btn" onclick="window.goCountry('ElSalvador')">🇸🇻<span>El Salvador</span></button>
+      <button class="hcty-btn" onclick="window.goCountry('Nicaragua')">🇳🇮<span>Nicaragua</span></button>
+      <button class="hcty-btn" onclick="window.goCountry('Panama')">🇵🇦<span>Panamá</span></button>
+      <button class="hcty-btn" onclick="window.goCountry('CostaRica')">🇨🇷<span>Costa Rica</span></button>
+      <button class="hcty-btn" onclick="window.goCountry('RepDominicana')">🇩🇴<span>Rep. Dom.</span></button>
+    </div>
+  </div>
+</div><!-- /pg-home -->
+
+<!-- ═══ FUENTES MODAL ════════════════════════════════════════════════ -->
+<div id="pg-fuentes" class="hidden">
+  <div class="fuentes-modal">
+    <div class="fuentes-modal-hdr">
+      <div style="display:flex;align-items:center;gap:12px">
+        <img src="logo_cropped.png" style="height:36px;object-fit:contain">
+        <div>
+          <div style="font-size:16px;font-weight:800;color:#0f172a">Dashboard LATAM</div>
+          <div style="font-size:11px;color:#94a3b8">Fuentes de datos oficiales</div>
+        </div>
+      </div>
+      <button class="fuentes-modal-close" onclick="document.getElementById('pg-fuentes').classList.add('hidden')">✕ Cerrar</button>
+    </div>
+    <p style="font-size:11px;color:#64748b;margin-bottom:12px">Los datos financieros y macroeconómicos provienen de las siguientes fuentes regulatorias y bancos centrales:</p>
+    <div class="fuentes-src-grid">
+      <div class="fuentes-src-item"><strong>México</strong><a href="https://cnbv.gob.mx" target="_blank">CNBV</a><a href="https://banxico.org.mx" target="_blank">Banxico</a></div>
+      <div class="fuentes-src-item"><strong>Chile</strong><a href="https://cmfchile.cl" target="_blank">CMF</a><a href="https://bcentral.cl" target="_blank">BCCh</a></div>
+      <div class="fuentes-src-item"><strong>Colombia</strong><a href="https://superfinanciera.gov.co" target="_blank">SFC</a><a href="https://banrep.gov.co" target="_blank">Banrep</a></div>
+      <div class="fuentes-src-item"><strong>Brasil</strong><a href="https://bcb.gov.br" target="_blank">BCB</a><a href="https://ibge.gov.br" target="_blank">IBGE</a></div>
+      <div class="fuentes-src-item"><strong>Argentina</strong><a href="https://bcra.gob.ar" target="_blank">BCRA</a><a href="https://indec.gob.ar" target="_blank">INDEC</a></div>
+      <div class="fuentes-src-item"><strong>Perú</strong><a href="https://sbs.gob.pe" target="_blank">SBS</a><a href="https://bcrp.gob.pe" target="_blank">BCRP</a></div>
+      <div class="fuentes-src-item"><strong>Ecuador</strong><a href="https://superbancos.gob.ec" target="_blank">Superbancos</a><a href="https://bce.fin.ec" target="_blank">BCE</a></div>
+      <div class="fuentes-src-item"><strong>Bolivia</strong><a href="https://asfi.gob.bo" target="_blank">ASFI</a><a href="https://bcb.gob.bo" target="_blank">BCB-BO</a></div>
+      <div class="fuentes-src-item"><strong>Paraguay</strong><a href="https://bcp.gov.py" target="_blank">BCP</a></div>
+      <div class="fuentes-src-item"><strong>Uruguay</strong><a href="https://bcu.gub.uy" target="_blank">BCU</a></div>
+      <div class="fuentes-src-item"><strong>Venezuela</strong><a href="https://sudeban.gob.ve" target="_blank">SUDEBAN</a><a href="https://bcv.org.ve" target="_blank">BCV</a></div>
+      <div class="fuentes-src-item"><strong>Guatemala</strong><a href="https://sib.gob.gt" target="_blank">SIB</a><a href="https://banguat.gob.gt" target="_blank">Banguat</a></div>
+      <div class="fuentes-src-item"><strong>Honduras</strong><a href="https://cnbs.gob.hn" target="_blank">CNBS</a><a href="https://bch.hn" target="_blank">BCH</a></div>
+      <div class="fuentes-src-item"><strong>El Salvador</strong><a href="https://ssf.gob.sv" target="_blank">SSF</a><a href="https://bcr.gob.sv" target="_blank">BCR</a></div>
+      <div class="fuentes-src-item"><strong>Nicaragua</strong><a href="https://siboif.gob.ni" target="_blank">SIBOIF</a><a href="https://bcn.gob.ni" target="_blank">BCN</a></div>
+      <div class="fuentes-src-item"><strong>Panamá</strong><a href="https://superbancos.gob.pa" target="_blank">SBP</a></div>
+      <div class="fuentes-src-item"><strong>Costa Rica</strong><a href="https://sugef.fi.cr" target="_blank">SUGEF</a><a href="https://bccr.fi.cr" target="_blank">BCCR</a></div>
+      <div class="fuentes-src-item"><strong>Rep. Dominicana</strong><a href="https://sb.gob.do" target="_blank">SB</a><a href="https://bancentral.gov.do" target="_blank">BCRD</a></div>
+    </div>
+    <p style="font-size:10px;color:#94a3b8;margin-top:16px;border-top:1px solid #f1f5f9;padding-top:10px">Tipos de cambio: open.er-api.com / Banxico / BCRP / BCB · Indicadores macroeconómicos: FMI, bancos centrales · Datos bancarios: reguladores locales</p>
   </div>
 </div>
-</div><!-- /pg-home -->
 
 
 <!-- ═══════════════════════════════════════════════════════════════════
@@ -387,7 +395,7 @@ tr:hover td{background:#f8fafc}
         <div id="news-country"><div class="news-loading">Cargando…</div></div>
       </div>
     </div>
-    <div class="news-footer">Noticias financieras 2025–2026 · Fuentes: bancos centrales, reguladores y medios financieros · <span id="news-last-update">—</span></div>
+    <div class="news-footer">Noticias financieras 2025–2026 · <a href="#" class="fuentes-link" onclick="window.showFuentes();return false">Fuentes →</a> · <span id="news-last-update">—</span></div>
   </div>
 </div><!-- /pg-analytics -->
 
@@ -418,6 +426,18 @@ window.showAnalytics=function(){
   document.getElementById('pg-home').classList.add('hidden');
   document.getElementById('pg-analytics').classList.remove('hidden');
 };
+window.goCountry=function(country){
+  window.showAnalytics();
+  const btn=document.querySelector(`.tab-btn[onclick*="'${country}'"]`);
+  setTimeout(()=>window.showCountry(country,btn),60);
+};
+window.showFuentes=function(){
+  document.getElementById('pg-fuentes').classList.remove('hidden');
+};
+document.addEventListener('click',function(e){
+  const m=document.getElementById('pg-fuentes');
+  if(m&&!m.classList.contains('hidden')&&e.target===m)m.classList.add('hidden');
+});
 </script>
 
 
@@ -637,63 +657,60 @@ function phaseFromScore(s){
   return              {name:'Expansión',  color:'#34d399',pct:Math.round(s*100)};
 }
 
-/* ── 360° Gauge SVG (270° arc with 90° gap at bottom) ─────────── */
+/* ── Semicircle Gauge SVG (180° arc, left→right) ──────────────── */
 function makePt(cx,cy,r,deg){
   const rad=deg*Math.PI/180;
   return{x:+(cx+r*Math.cos(rad)).toFixed(2),y:+(cy-r*Math.sin(rad)).toFixed(2)};
 }
-function arcPath(cx,cy,ro,ri,a1,a2){
+function sectorPathSemi(cx,cy,ro,ri,a1,a2){
   const s=makePt(cx,cy,ro,a1),e=makePt(cx,cy,ro,a2);
   const si=makePt(cx,cy,ri,a2),ei=makePt(cx,cy,ri,a1);
   const lg=(a1-a2)>180?1:0;
-  return`M${s.x},${s.y} A${ro},${ro},0,${lg},0,${e.x},${e.y} L${si.x},${si.y} A${ri},${ri},0,${lg},1,${ei.x},${ei.y}Z`;
+  return`M${s.x},${s.y} A${ro},${ro},0,${lg},1,${e.x},${e.y} L${si.x},${si.y} A${ri},${ri},0,${lg},0,${ei.x},${ei.y}Z`;
 }
-function buildGauge360(score){
-  const cx=110,cy=110,ro=90,ri=58;
-  // 270° arc from 225° to -45° (=315°), 4 sectors of 67.5° each
-  const sectors=[
-    {a1:225,a2:157.5,fill:'#fca5a5',label:'C'},
-    {a1:157.5,a2:90, fill:'#fdba74',label:'E'},
-    {a1:90,  a2:22.5,fill:'#fde68a',label:'R'},
-    {a1:22.5,a2:-45, fill:'#86efac',label:'X'},
+function buildSemiGauge(score){
+  const cx=122,cy=112,ro=88,ri=55;
+  // score 0→angle 180°, score 1→angle 0°
+  const sToA=p=>180-p*180;
+  const bands=[
+    {p1:0,   p2:0.22,fill:'#fca5a5'},
+    {p1:0.22,p2:0.44,fill:'#fdba74'},
+    {p1:0.44,p2:0.62,fill:'#fde68a'},
+    {p1:0.62,p2:0.80,fill:'#d9f99d'},
+    {p1:0.80,p2:1.00,fill:'#86efac'},
   ];
-  const arcs=sectors.map(s=>{
-    const lg=(s.a1-s.a2)>180?1:0;
-    return`<path d="${arcPath(cx,cy,ro,ri,s.a1,s.a2)}" fill="${s.fill}" opacity="0.85"/>`;
+  const labels=['C','E','R','G','X'];
+  const arcs=bands.map((b,i)=>{
+    const a1=sToA(b.p1),a2=sToA(b.p2);
+    const mid=sToA((b.p1+b.p2)/2);
+    const lp=makePt(cx,cy,(ro+ri)/2,mid);
+    return`<path d="${sectorPathSemi(cx,cy,ro,ri,a1,a2)}" fill="${b.fill}" opacity="0.9"/>
+<text x="${lp.x}" y="${lp.y}" fill="#1e293b" font-size="10" font-weight="700" text-anchor="middle" dominant-baseline="middle">${labels[i]}</text>`;
   }).join('');
   // Dividers
-  const divAngles=[225,157.5,90,22.5,-45];
-  const divs=divAngles.map(deg=>{
+  const divA=[0,0.22,0.44,0.62,0.80,1].map(p=>sToA(p));
+  const divs=divA.map(deg=>{
     const p=makePt(cx,cy,ri-1,deg),q=makePt(cx,cy,ro+1,deg);
-    return`<line x1="${p.x}" y1="${p.y}" x2="${q.x}" y2="${q.y}" stroke="#f8fafc" stroke-width="2"/>`;
+    return`<line x1="${p.x}" y1="${p.y}" x2="${q.x}" y2="${q.y}" stroke="#fff" stroke-width="2"/>`;
   }).join('');
-  // Percentage ticks
-  const tickData=[
-    {a:225,pct:'0%'},{a:157.5,pct:'25%'},{a:90,pct:'50%'},{a:22.5,pct:'75%'},{a:-45,pct:'100%'}
-  ];
-  const ticks=tickData.map(({a,pct})=>{
-    const p=makePt(cx,cy,ro+9,a);
-    return`<text x="${p.x}" y="${p.y}" fill="#94a3b8" font-size="7" text-anchor="middle" dominant-baseline="middle">${pct}</text>`;
+  // % tick labels — black, +2pt larger
+  const tickPts=[{p:0,l:'0%'},{p:0.22,l:'22'},{p:0.44,l:'44'},{p:0.62,l:'62'},{p:0.80,l:'80'},{p:1,l:'100%'}];
+  const ticks=tickPts.map(({p,l})=>{
+    const pt=makePt(cx,cy,ro+14,sToA(p));
+    return`<text x="${pt.x}" y="${pt.y}" fill="#1e293b" font-size="9" font-weight="600" text-anchor="middle" dominant-baseline="middle">${l}</text>`;
   }).join('');
-  // Phase labels inside sectors
-  const phaseLabels=sectors.map(s=>{
-    const mid=(s.a1+s.a2)/2;
-    const p=makePt(cx,cy,(ro+ri)/2,mid);
-    return`<text x="${p.x}" y="${p.y}" fill="#fff" font-size="7.5" font-weight="700" text-anchor="middle" dominant-baseline="middle">${s.label}</text>`;
-  }).join('');
-  // Needle: angle = 225 - score*270
-  const ndeg=225-score*270;
+  // Needle
+  const ndeg=sToA(score);
   const nr=ndeg*Math.PI/180;
-  const tip={x:+(cx+78*Math.cos(nr)).toFixed(2),y:+(cy-78*Math.sin(nr)).toFixed(2)};
+  const tip={x:+(cx+76*Math.cos(nr)).toFixed(2),y:+(cy-76*Math.sin(nr)).toFixed(2)};
   const pr=nr+Math.PI/2;
   const n1={x:+(cx+5*Math.cos(pr)).toFixed(2),y:+(cy-5*Math.sin(pr)).toFixed(2)};
   const n2={x:+(cx-5*Math.cos(pr)).toFixed(2),y:+(cy+5*Math.sin(pr)).toFixed(2)};
   const needle=`<polygon points="${tip.x},${tip.y} ${n1.x},${n1.y} ${n2.x},${n2.y}" fill="#1e293b"/>`;
-  const hub=`<circle cx="${cx}" cy="${cy}" r="7" fill="#1e293b"/><circle cx="${cx}" cy="${cy}" r="3" fill="#f8fafc"/>`;
-  // Score % in center
-  const scoreTxt=`<text x="${cx}" y="${cy+22}" fill="#64748b" font-size="9" text-anchor="middle">${Math.round(score*100)}%</text>`;
-  return`<svg viewBox="0 0 220 145" width="100%" style="max-width:230px">
-    ${arcs}${divs}${ticks}${phaseLabels}${needle}${hub}${scoreTxt}
+  const hub=`<circle cx="${cx}" cy="${cy}" r="8" fill="#1e293b"/><circle cx="${cx}" cy="${cy}" r="3.5" fill="#f8fafc"/>`;
+  const scoreTxt=`<text x="${cx}" y="${cy+18}" fill="#4b5563" font-size="13" font-weight="800" text-anchor="middle">${Math.round(score*100)}%</text>`;
+  return`<svg viewBox="0 0 244 134" width="100%" xmlns="http://www.w3.org/2000/svg">
+    ${arcs}${divs}${ticks}${needle}${hub}${scoreTxt}
   </svg>`;
 }
 
@@ -934,11 +951,11 @@ function renderDashboard(tabId,d){
             <tr style="border-top:1px solid #f1f5f9"><td><b>Score</b></td><td><b>${phase.pct}/100</b></td></tr>
           </table>
           <div class="gauge-bands">
-            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#fca5a5"></span>0–22 · Contracción</div>
-            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#fdba74"></span>22–44 · Estancamiento</div>
-            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#fde68a"></span>44–62 · Recuperación</div>
-            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#bef264"></span>62–80 · Crecimiento</div>
-            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#86efac"></span>80–100 · Expansión</div>
+            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#fca5a5"></span>0–22 Contracción</div>
+            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#fdba74"></span>22–44 Estancamiento</div>
+            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#fde68a"></span>44–62 Recuperación</div>
+            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#d9f99d"></span>62–80 Crecimiento</div>
+            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#86efac"></span>80–100 Expansión</div>
           </div>
         </div>
       </div>
@@ -952,20 +969,30 @@ function renderDashboard(tabId,d){
         <h2>Actores del Sistema Bancario</h2>
         <div class="meta-box">${fecha?`Act: ${fecha}<br>`:''}${srcLinks?`Fuentes: ${srcLinks}`:''}</div>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Institución</th><th>Vista (${cur.code}M)</th><th>Plazo (${cur.code}M)</th><th>AUM (${cur.code}M)</th>${usdTh}<th>Cuota</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
+      <div class="actors-split">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Institución</th><th>Vista (USD M)</th><th>Plazo (USD M)</th><th>Cuota</th></tr></thead>
+            <tbody>${d.actors.map(a=>{
+              const vUsd=showUsd?Math.round(a.vista/rate):a.vista;
+              const pUsd=showUsd?Math.round(a.plazo/rate):a.plazo;
+              return`<tr><td>${a.nombre}</td><td>${fmt(vUsd)}</td><td>${fmt(pUsd)}</td><td><b>${a.cuota}%</b></td></tr>`;
+            }).join('')}</tbody>
+          </table>
+        </div>
+        <div class="actors-pie-wrap">
+          <div class="actors-pie-title">Cuota de mercado</div>
+          <canvas id="pie-${tabId}" style="max-width:260px;max-height:260px"></canvas>
+        </div>
       </div>
-      <p class="chart-note">Incluye bancos, cooperativas y fondos de ahorro · *2021–2025 est. con tendencia histórica</p>
+      <p class="chart-note">*Vista/Plazo en USD equivalente · Incluye bancos, cooperativas y fondos de ahorro</p>
     </div>`;
 
   /* Gauge */
   const gEl=document.getElementById('gauge-'+tabId);
   const gpEl=document.getElementById('gphase-'+tabId);
   const gpcEl=document.getElementById('gpct-'+tabId);
-  if(gEl)gEl.innerHTML=buildGauge360(score);
+  if(gEl)gEl.innerHTML=buildSemiGauge(score);
   if(gpEl){gpEl.textContent=phase.name;gpEl.style.color=phase.color;}
   if(gpcEl)gpcEl.textContent=`Índice: ${phase.pct}/100`;
 
@@ -973,17 +1000,20 @@ function renderDashboard(tabId,d){
   const mh=buildMacroHistory(d);
   const yrs=[2021,2022,2023,2024,2025,2026];
   const cagrLine=yrs.map(y=>d.history[y].vista+d.history[y].plazo);
-  renderSparkline(`sp-pib-${tabId}`,   mh.pibData,    '#60a5fa');
+  renderSparkline(`sp-pib-${tabId}`,   mh.pibData,    '#6b7a94');
   renderSparkline(`sp-pop-${tabId}`,   mh.popData,    '#94a3b8');
   renderSparkline(`sp-infl-${tabId}`,  mh.inflData,   '#f87171');
-  renderSparkline(`sp-tasa-${tabId}`,  mh.tasaData,   '#fb923c');
-  renderSparkline(`sp-desemp-${tabId}`,mh.desempData, '#fbbf24');
-  renderSparkline(`sp-cagr-${tabId}`,  cagrLine,      '#34d399');
+  renderSparkline(`sp-tasa-${tabId}`,  mh.tasaData,   '#a8d5ba');
+  renderSparkline(`sp-desemp-${tabId}`,mh.desempData, '#f5deb3');
+  renderSparkline(`sp-cagr-${tabId}`,  cagrLine,      '#a8d5ba');
 
   /* SVG deposits chart */
-  destroyChart('dep-'+tabId); // clean up any leftover Chart.js instance
+  destroyChart('dep-'+tabId);
   const depEl=document.getElementById('dep-'+tabId);
   if(depEl)depEl.innerHTML=buildDepositsSVG(d.history,cur.code);
+
+  /* Actors pie chart */
+  renderActorsPie(tabId,d.actors);
 }
 
 /* ── Tab switch ─────────────────────────────────────────────────── */
@@ -1044,19 +1074,60 @@ async function loadSupabase(){
   }
 }
 
+/* ── Actors Pie Chart ────────────────────────────────────────────── */
+const PIE_COLORS=['#a8d5ba','#6b7a94','#f5deb3','#c8d8e8','#d4c5b0','#b8d4c0','#8fa8be','#e8d5a0','#9bbfab','#7a90a8'];
+function renderActorsPie(tabId,actors){
+  if(!actors||!actors.length)return;
+  destroyChart('pie-'+tabId);
+  const canvas=document.getElementById('pie-'+tabId);if(!canvas)return;
+  const labels=actors.map(a=>a.nombre);
+  const data=actors.map(a=>a.cuota||0);
+  const colors=actors.map((_,i)=>PIE_COLORS[i%PIE_COLORS.length]);
+  charts['pie-'+tabId]=new Chart(canvas.getContext('2d'),{
+    type:'doughnut',
+    data:{labels,datasets:[{data,backgroundColor:colors,borderColor:'#fff',borderWidth:2,hoverOffset:8}]},
+    options:{
+      responsive:true,
+      maintainAspectRatio:true,
+      cutout:'58%',
+      animation:{duration:400},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          enabled:true,
+          backgroundColor:'#1e293b',
+          titleColor:'#f1f5f9',
+          bodyColor:'#94a3b8',
+          padding:8,
+          displayColors:true,
+          callbacks:{
+            label:ctx=>`${ctx.label}: ${ctx.parsed.toFixed(1)}%`,
+          },
+        },
+      },
+    },
+  });
+}
+
 /* ── Online indicator ────────────────────────────────────────────── */
 function setOnline(){
   const ts=new Date().toLocaleString('es-MX',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-  ['online-ts','online-ts-nav'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='Actualizado: '+ts;});
+  const text='Actualizado: '+ts;
+  ['online-ts','online-ts-nav'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=text;});
+  const hu=document.getElementById('home-updated');if(hu)hu.textContent=text;
 }
+
+/* ── News source URL map ─────────────────────────────────────────── */
+const NEWS_URLS={Banxico:'https://banxico.org.mx',BBVA:'https://bbvaresearch.com',CNBV:'https://cnbv.gob.mx',BanRep:'https://banrep.gov.co',Bancolombia:'https://bancolombia.com',Superfinanciera:'https://superfinanciera.gov.co',BCRP:'https://bcrp.gob.pe',BCP:'https://viabcp.com',SBS:'https://sbs.gob.pe',BCCh:'https://bcentral.cl',Santander:'https://santander.cl',CMF:'https://cmfchile.cl',BCB:'https://bcb.gov.br',Itaú:'https://itau.com.br',BCRA:'https://bcra.gob.ar',BNA:'https://bna.com.ar',BCE:'https://bce.fin.ec',SB:'https://superbancos.gob.ec',MinFinanzas:'https://finanzas.gob.ec',ASFI:'https://asfi.gob.bo',BCP_PY:'https://bcp.gov.py',BCU:'https://bcu.gub.uy',BROU:'https://brou.com.uy',BCV:'https://bcv.org.ve',SUDEBAN:'https://sudeban.gob.ve',Banguat:'https://banguat.gob.gt',SIB:'https://sib.gob.gt',BCH:'https://bch.hn',FICOHSA:'https://ficohsa.com',CNBS:'https://cnbs.gob.hn',BCR:'https://bcr.gob.sv',SSF:'https://ssf.gob.sv',BCN:'https://bcn.gob.ni',SIBOIF:'https://siboif.gob.ni',BANPRO:'https://banpro.com.ni',SBP:'https://superbancos.gob.pa',BGP:'https://bgeneral.com',BCCR:'https://bccr.fi.cr',SUGEF:'https://sugef.fi.cr',MinHacienda:'https://hacienda.go.cr',BCRD:'https://bancentral.gov.do',Reuters:'https://reuters.com',FMI:'https://imf.org','S&P Global':'https://spglobal.com',};
 
 /* ── News ────────────────────────────────────────────────────────── */
 function renderNewsSection(key,containerId){
   const c=document.getElementById(containerId);if(!c)return;
   const items=(HEADLINES[key]||HEADLINES._global).slice(0,3);
-  c.innerHTML=items.map(({t,s,d})=>
-    `<div class="news-item"><div class="news-headline"><span style="color:#0f172a;font-size:12.5px;font-weight:500;line-height:1.4;display:block">${t}</span></div><div class="news-meta">${s?s+' · ':''}${d}</div></div>`
-  ).join('');
+  c.innerHTML=items.map(({t,s,d})=>{
+    const url=NEWS_URLS[s]||'#';
+    return`<div class="news-item"><div class="news-headline"><span style="color:#0f172a;font-size:12.5px;font-weight:500;line-height:1.4;display:block">${t}</span></div><div class="news-meta">${s?s+' · ':''}${d} · <a href="${url}" target="_blank" rel="noopener" class="news-ampliar">Ampliar noticia →</a></div></div>`;
+  }).join('');
 }
 function refreshNews(){
   const ct=document.getElementById('news-country-title');
