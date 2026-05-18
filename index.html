@@ -805,13 +805,13 @@ function renderDepositsChart(tabId,history,currCode){
       plugins:{
         legend:{
           position:'top',
-          labels:{color:'#64748b',font:{size:11},boxWidth:12,padding:14,usePointStyle:true,pointStyleWidth:8},
+          labels:{color:'#64748b',font:{size:10},boxWidth:10,padding:10,usePointStyle:true,pointStyleWidth:7},
         },
         tooltip:{
-          backgroundColor:'#1e293b',titleColor:'#f8fafc',bodyColor:'#94a3b8',padding:10,
+          backgroundColor:'#1e293b',titleColor:'#f8fafc',bodyColor:'#94a3b8',padding:8,
           callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmtAx(ctx.raw)} M ${currCode}`},
         },
-        title:{display:true,text:`Depósitos Plazo + Inversión/AUM · mill. ${currCode} · *est.`,color:'#94a3b8',font:{size:10},padding:{bottom:8}},
+        title:{display:false},
       },
       scales:{
         x:{
@@ -820,7 +820,9 @@ function renderDepositsChart(tabId,history,currCode){
           border:{dash:[3,3]},
         },
         y:{
-          ticks:{color:'#94a3b8',font:{size:10},callback:fmtAx},
+          beginAtZero:true,
+          grace:'8%',
+          ticks:{color:'#94a3b8',font:{size:10},callback:fmtAx,maxTicksLimit:5},
           grid:{color:'rgba(0,0,0,0.04)'},
         },
       },
@@ -943,7 +945,7 @@ function renderDashboard(tabId,d){
       </div>
       <div class="card">
         <div class="card-title">Depósitos Plazo + Inversión / AUM · 2021–2026</div>
-        <canvas id="dep-${tabId}" height="260"></canvas>
+        <canvas id="dep-${tabId}" style="height:180px;max-height:180px"></canvas>
       </div>
     </div>
     <div class="card" style="margin-bottom:14px">
