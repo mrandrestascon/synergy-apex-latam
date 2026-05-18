@@ -7,7 +7,19 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;padding-top:36px}
+
+/* ═══ TICKER BAR ════════════════════════════════════════════════════ */
+#ticker-bar{position:fixed;top:0;left:0;right:0;z-index:300;height:36px;background:#0f172a;border-bottom:1px solid #1e293b;display:flex;align-items:center;padding:0 16px;gap:0;overflow:hidden}
+.ticker-label{font-size:9px;font-weight:800;letter-spacing:.12em;color:#4f46e5;text-transform:uppercase;padding-right:14px;border-right:1px solid #1e293b;margin-right:14px;white-space:nowrap;flex-shrink:0}
+.ticker-items{display:flex;align-items:center;gap:0;overflow:hidden;flex:1}
+.ticker-item{display:flex;align-items:center;gap:5px;padding:0 18px;border-right:1px solid #1e293b;white-space:nowrap;flex-shrink:0}
+.ticker-item:first-child{padding-left:0}
+.ticker-name{font-size:10px;color:#64748b;font-weight:600;letter-spacing:.02em}
+.ticker-price{font-size:12px;color:#f1f5f9;font-weight:700;font-variant-numeric:tabular-nums}
+.ticker-chg{font-size:10px;font-weight:600}
+.ticker-chg.up{color:#22c55e}.ticker-chg.down{color:#ef4444}.ticker-chg.flat{color:#64748b}
+.ticker-dot{width:4px;height:4px;border-radius:50%;background:#1e293b;margin:0 4px;flex-shrink:0}
 .hidden{display:none!important}
 
 /* ═══ HOME ═══════════════════════════════════════════════════════════ */
@@ -39,7 +51,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f8fafc;color:#0f172
 
 /* ═══ ANALYTICS NAV ════════════════════════════════════════════════ */
 #pg-analytics{min-height:100vh;background:#f8fafc}
-.an-nav{background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 60%,#312e81 100%);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:2px solid #4f46e5;position:sticky;top:0;z-index:100}
+.an-nav{background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 60%,#312e81 100%);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:2px solid #4f46e5;position:sticky;top:36px;z-index:100}
 .an-nav-left{display:flex;align-items:center;gap:16px}
 .back-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#94a3b8;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;transition:all .15s}
 .back-btn:hover{background:rgba(255,255,255,.14);color:#f1f5f9}
@@ -127,6 +139,19 @@ tr:hover td{background:#f8fafc}
 </style>
 </head>
 <body>
+
+<!-- ═══ TICKER BAR ═══════════════════════════════════════════════════ -->
+<div id="ticker-bar">
+  <span class="ticker-label">Mercados</span>
+  <div class="ticker-items" id="ticker-items">
+    <div class="ticker-item"><span class="ticker-name">S&amp;P 500</span><span class="ticker-price" id="tk-spx">—</span><span class="ticker-chg flat" id="tkc-spx">—</span></div>
+    <div class="ticker-item"><span class="ticker-name">BTC/USD</span><span class="ticker-price" id="tk-btc">—</span><span class="ticker-chg flat" id="tkc-btc">—</span></div>
+    <div class="ticker-item"><span class="ticker-name">XRP/USD</span><span class="ticker-price" id="tk-xrp">—</span><span class="ticker-chg flat" id="tkc-xrp">—</span></div>
+    <div class="ticker-item"><span class="ticker-name">EUR/USD</span><span class="ticker-price" id="tk-eur">—</span><span class="ticker-chg flat" id="tkc-eur">—</span></div>
+    <div class="ticker-item"><span class="ticker-name">USD/COP</span><span class="ticker-price" id="tk-cop">—</span><span class="ticker-chg flat" id="tkc-cop">—</span></div>
+    <div class="ticker-item"><span class="ticker-name">XAU/USD</span><span class="ticker-price" id="tk-xau">—</span><span class="ticker-chg flat" id="tkc-xau">—</span></div>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════════════════════════════════
      HOME PAGE
@@ -426,154 +451,96 @@ const HEADLINES={
   _global:[
     {t:'Fed mantiene tasas; señala dos posibles recortes para el segundo semestre 2026',s:'Reuters',d:'16 May 2026'},
     {t:'FMI revisa al alza proyección de crecimiento de LATAM a 2.4% para 2026',s:'FMI',d:'14 May 2026'},
-    {t:'Banco Mundial alerta sobre impacto de aranceles en economías emergentes de la región',s:'World Bank',d:'12 May 2026'},
-    {t:'BCE reduce tasas por cuarta vez; euro alcanza mínimo de 8 meses frente al dólar',s:'Bloomberg',d:'9 May 2026'},
-    {t:'BIS advierte sobre riesgos de concentración en banca digital y fintechs sistémicas',s:'BIS',d:'7 May 2026'},
     {t:'S&P mejora perspectiva crediticia de cuatro economías latinoamericanas a positiva',s:'S&P Global',d:'5 May 2026'},
-    {t:'Inflación global continúa desaceleración; emergentes lideran ajuste de política monetaria',s:'FT',d:'2 May 2026'},
   ],
   Mexico:[
     {t:'Banxico reduce tasa de referencia a 8.50%; señala convergencia gradual a meta de inflación',s:'Banxico',d:'16 May 2026'},
     {t:'BBVA México reporta utilidad neta récord de $52,400 MDP en ejercicio 2025',s:'BBVA',d:'14 May 2026'},
     {t:'CNBV: cartera de crédito al consumo crece 14% en el primer trimestre 2026',s:'CNBV',d:'10 May 2026'},
-    {t:'Sistema bancario mantiene ICAP de 18.2%; muy por encima del mínimo regulatorio del 10.5%',s:'CNBV',d:'8 May 2026'},
-    {t:'Reforma fiscal 2026 incluye incentivos para bancarización en municipios rurales',s:'SHCP',d:'5 May 2026'},
-    {t:'Depósitos bancarios totales superan $11.5 billones MXN al cierre de primer trimestre',s:'ABM',d:'2 May 2026'},
   ],
   Colombia:[
     {t:'Banco de la República recorta tasa al 9.25% en línea con desaceleración inflacionaria',s:'BanRep',d:'15 May 2026'},
     {t:'Bancolombia reporta ROE del 17.8% y utilidades de COP 4,800 millones en 1T 2026',s:'Bancolombia',d:'13 May 2026'},
     {t:'Cartera de microcrédito crece 22% interanual; Fondo Nacional de Garantías impulsa acceso',s:'Superfinanciera',d:'10 May 2026'},
-    {t:'Superfinanciera aprueba fusión entre dos cooperativas de ahorro y crédito de Antioquia',s:'SFC',d:'7 May 2026'},
-    {t:'IED en sector financiero colombiano suma USD 2,300 millones en 2025, máximo histórico',s:'Bancóldex',d:'4 May 2026'},
-    {t:'Colombia emite primer bono soberano verde por USD 750 millones; sobresuscripción de 4x',s:'MinHacienda',d:'1 May 2026'},
   ],
   Peru:[
     {t:'BCRP mantiene tasa en 5.75%; inflación converge al rango meta de 1%–3%',s:'BCRP',d:'16 May 2026'},
     {t:'BCP reporta utilidades de S/ 4,180 millones en 2025; ROE alcanza el 20.3%',s:'BCP',d:'12 May 2026'},
-    {t:'Créditos hipotecarios crecen 11.4% en Lima Metropolitana durante el primer trimestre 2026',s:'SBS',d:'9 May 2026'},
     {t:'SBS aprueba marco regulatorio para banca digital y neobancos con capital mínimo reducido',s:'SBS',d:'6 May 2026'},
-    {t:'AFP peruanas administran S/ 220,000 millones; rentabilidad media anual a 5 años: 9.1%',s:'SBS',d:'3 May 2026'},
-    {t:'Fitch mejora rating crediticio de Perú a BBB+; perspectiva estable',s:'Fitch',d:'30 Abr 2026'},
   ],
   Chile:[
     {t:'Banco Central de Chile mantiene TPM en 5.0% tras moderación de presiones inflacionarias',s:'BCCh',d:'16 May 2026'},
     {t:'Santander Chile reporta utilidad neta de CLP 810,000 millones en ejercicio 2025',s:'Santander',d:'13 May 2026'},
     {t:'CMF implementa nuevas normas de liquidez Basilea III para bancos de importancia sistémica',s:'CMF',d:'10 May 2026'},
-    {t:'Créditos de vivienda con subsidio estatal aumentan 18% en el primer semestre 2026',s:'MINVU',d:'7 May 2026'},
-    {t:'Sistema bancario chileno: razón de capital Tier 1 promedia 12.7% al primer trimestre 2026',s:'CMF',d:'4 May 2026'},
-    {t:'Chile coloca USD 2,000 millones en bonos a 10 y 30 años; demanda 5x superior a oferta',s:'MinHacienda',d:'1 May 2026'},
   ],
   Brasil:[
     {t:'Banco Central mantiene SELIC en 10.75% ante presiones inflacionarias persistentes',s:'BCB',d:'16 May 2026'},
     {t:'Itaú Unibanco reporta lucro líquido récord de R$ 38,800 millones en 2025',s:'Itaú',d:'14 May 2026'},
     {t:'Pix supera 4,500 millones de transacciones en 2025; consolida liderazgo en pagos instantáneos',s:'BCB',d:'11 May 2026'},
-    {t:'Nubank alcanza 100 millones de clientes; valuación supera USD 62,000 millones',s:'Nubank',d:'8 May 2026'},
-    {t:'Bradesco anuncia plan de digitalización con inversión de R$ 8,500 millones en tres años',s:'Bradesco',d:'5 May 2026'},
-    {t:'Tesoro brasileño coloca BRL 45,000 millones en LTN; demanda externa crece 31%',s:'Tesouro',d:'2 May 2026'},
   ],
   Argentina:[
     {t:'BCRA: IPC desacelera a 3.2% mensual en abril 2026; desinflación continúa',s:'BCRA',d:'15 May 2026'},
     {t:'Banco Nación Argentina registra depósitos en pesos por $18.5 billones al primer trimestre',s:'BNA',d:'12 May 2026'},
-    {t:'BYMA registra volumen operado récord; acciones bancarias lideran rally bursátil',s:'BYMA',d:'9 May 2026'},
-    {t:'BCRA flexibiliza normativa para créditos UVA en zonas con déficit habitacional crítico',s:'BCRA',d:'6 May 2026'},
     {t:'Reservas internacionales superan USD 32,000 millones tras desembolso del FMI',s:'BCRA',d:'3 May 2026'},
-    {t:'Grupo Galicia reporta ROE del 28.4% en 2025; cartera dolarizada crece 47%',s:'Galicia',d:'30 Abr 2026'},
   ],
   Ecuador:[
     {t:'BCE publica informe de estabilidad financiera 2026; sistema bancario privado sólido',s:'BCE',d:'15 May 2026'},
     {t:'Banco Pichincha lidera depósitos con $8,200 millones; cuota de mercado del 30.4%',s:'SB',d:'12 May 2026'},
-    {t:'Superintendencia de Bancos aprueba normativa de open banking para el sector cooperativo',s:'SB',d:'9 May 2026'},
-    {t:'Crédito productivo crece 9.8% interanual impulsado por sector agropecuario y manufactura',s:'BCE',d:'6 May 2026'},
     {t:'Ecuador coloca USD 1,200 millones en bonos a 7 años con tasa de 7.85%',s:'MinFinanzas',d:'3 May 2026'},
-    {t:'Fondo de Liquidez del Sistema Financiero alcanza USD 2,100 millones de cobertura',s:'COSEDE',d:'30 Abr 2026'},
   ],
   Bolivia:[
     {t:'BCB mantiene política monetaria expansiva; encaje reducido al 8% para créditos productivos',s:'BCB',d:'14 May 2026'},
     {t:'BNB y Banco Mercantil Santa Cruz reportan crecimiento en cartera de créditos del 6.2%',s:'ASFI',d:'11 May 2026'},
     {t:'Sistema financiero boliviano: depósitos totales superan Bs 130,000 millones',s:'ASFI',d:'8 May 2026'},
-    {t:'ASFI aprueba nuevas licencias para entidades de intermediación financiera digital',s:'ASFI',d:'5 May 2026'},
-    {t:'Cartera de créditos al sector productivo representa el 62% del total del sistema financiero',s:'BCB',d:'2 May 2026'},
-    {t:'Bolivia emite deuda interna por Bs 8,500 millones para financiar inversión en infraestructura',s:'MinEco',d:'29 Abr 2026'},
   ],
   Paraguay:[
     {t:'BCP reduce tasa de política monetaria al 6.0% ante baja inflación del 3.1%',s:'BCP',d:'15 May 2026'},
     {t:'Sistema bancario paraguayo registra ratio de capitalización del 17.8% al primer trimestre',s:'BCP',d:'12 May 2026'},
     {t:'Itaú Paraguay reporta utilidad de G/ 980,000 millones; créditos crecen 13% interanual',s:'Itaú',d:'9 May 2026'},
-    {t:'SNC aprueba marco normativo para corresponsalías financieras en zonas rurales',s:'SNC',d:'6 May 2026'},
-    {t:'Cartera hipotecaria crece 19.2% impulsada por programa de vivienda social del gobierno',s:'BCP',d:'3 May 2026'},
-    {t:'Depósitos en guaraníes crecen 11.4%; dolarización del sistema financiero baja al 42%',s:'BCP',d:'30 Abr 2026'},
   ],
   Uruguay:[
     {t:'BCU mantiene tasa de política monetaria en 8.5%; inflación anualizada en 4.8%',s:'BCU',d:'16 May 2026'},
     {t:'BROU lidera sistema bancario con depósitos de UYU 180,000 millones al cierre de 2025',s:'BROU',d:'13 May 2026'},
     {t:'Sistema bancario uruguayo registra índice de morosidad históricamente bajo del 1.9%',s:'BCU',d:'10 May 2026'},
-    {t:'Banco Santander Uruguay anuncia inversión de USD 60 millones en infraestructura digital',s:'Santander',d:'7 May 2026'},
-    {t:'BCU aprueba primer sandbox regulatorio para fintechs en pagos transfronterizos',s:'BCU',d:'4 May 2026'},
-    {t:'Uruguay emite bonos en UI por UYU 15,000 millones; demanda triplica la oferta',s:'MinEco',d:'1 May 2026'},
   ],
   Venezuela:[
     {t:'BCV publica tipo de cambio oficial: 1 USD = 48.2 VES; brecha cambiaria en mínimos recientes',s:'BCV',d:'16 May 2026'},
     {t:'Banesco Venezuela mantiene liderazgo con depósitos de VES 3.8 billones al 1T 2026',s:'SUDEBAN',d:'13 May 2026'},
     {t:'Sistema bancario venezolano registra índice de capitalización del 23.1%',s:'SUDEBAN',d:'10 May 2026'},
-    {t:'SUDEBAN autoriza productos de crédito indexados en divisas para el sector productivo',s:'SUDEBAN',d:'7 May 2026'},
-    {t:'Bancos venezolanos amplían red de agencias en 8%; foco en inclusión financiera regional',s:'SUDEBAN',d:'4 May 2026'},
-    {t:'Cartera de microcrédito crece 34% interanual; cooperativas lideran expansión de base',s:'SUDEBAN',d:'1 May 2026'},
   ],
   Guatemala:[
     {t:'Banguat mantiene tasa de política monetaria en 4.5%; inflación converge al 3.8%',s:'Banguat',d:'15 May 2026'},
     {t:'Banco Industrial lidera con depósitos de GTQ 78,000 millones; cuota de mercado del 27%',s:'SIB',d:'12 May 2026'},
-    {t:'SIB aprueba regulación para plataformas de pagos móviles y billeteras digitales',s:'SIB',d:'9 May 2026'},
-    {t:'Créditos al sector agropecuario crecen 14% apoyados por fondo de garantías MIPYME',s:'Banguat',d:'6 May 2026'},
     {t:'Guatemala emite eurobonos por USD 500 millones a 12 años con tasa de 6.125%',s:'MinFinanzas',d:'3 May 2026'},
-    {t:'Banrural amplía red de atención en comunidades indígenas con 280 nuevas agencias',s:'Banrural',d:'30 Abr 2026'},
   ],
   Honduras:[
     {t:'BCH mantiene tasa de política monetaria en 3.0%; inflación desacelera al 4.1%',s:'BCH',d:'16 May 2026'},
     {t:'FICOHSA reporta utilidades de L 2,400 millones en 2025; ROE del 18.2%',s:'FICOHSA',d:'13 May 2026'},
-    {t:'CNBS aprueba normativa de crédito verde para el sector de energía renovable',s:'CNBS',d:'10 May 2026'},
     {t:'Créditos hipotecarios aceleran 16% gracias al Fondo Hondureño de Inversión Social',s:'CNBS',d:'7 May 2026'},
-    {t:'Sistema bancario: reservas de liquidez cubren el 38% de depósitos a la vista',s:'BCH',d:'4 May 2026'},
-    {t:'Depósitos del sistema financiero hondureño superan L 380,000 millones al 1T 2026',s:'BCH',d:'1 May 2026'},
   ],
   ElSalvador:[
     {t:'BCR: crédito al sector privado crece 8.4% interanual al primer trimestre 2026',s:'BCR',d:'15 May 2026'},
     {t:'Banco Agrícola lidera con activos de USD 4,200 millones; cuota de mercado del 26%',s:'SSF',d:'12 May 2026'},
-    {t:'Davivienda El Salvador anuncia fusión operativa con Banco Cuscatlán; proceso en 18 meses',s:'SSF',d:'9 May 2026'},
-    {t:'Sistema financiero salvadoreño opera con ratio de liquidez del 41.7%, sobre el mínimo',s:'SSF',d:'6 May 2026'},
-    {t:'SSF aprueba normativa para interoperabilidad de wallets digitales en el sistema de pagos',s:'SSF',d:'3 May 2026'},
     {t:'Remesas alcanzan USD 8,200 millones en 2025, equivalente al 23% del PIB nacional',s:'BCR',d:'30 Abr 2026'},
   ],
   Nicaragua:[
     {t:'BCN reduce encaje legal al 14% para estimular expansión crediticia del sistema',s:'BCN',d:'14 May 2026'},
     {t:'BANPRO lidera el sistema bancario con activos de NIO 68,000 millones al 1T 2026',s:'SIBOIF',d:'11 May 2026'},
-    {t:'Cartera de crédito agropecuario crece 17% apoyada por FND y PRODUZCAMOS',s:'BCN',d:'8 May 2026'},
-    {t:'SIBOIF aprueba regulación para emisión de valores por cooperativas de ahorro y crédito',s:'SIBOIF',d:'5 May 2026'},
     {t:'Sistema bancario nicaragüense: índice de morosidad del 1.7%, el más bajo en 10 años',s:'SIBOIF',d:'2 May 2026'},
-    {t:'Depósitos totales del sistema superan NIO 145,000 millones al primer trimestre 2026',s:'BCN',d:'29 Abr 2026'},
   ],
   Panama:[
     {t:'SBP: sistema bancario internacional registra activos totales de USD 142,000 millones',s:'SBP',d:'16 May 2026'},
     {t:'Banistmo lidera sector con activos de USD 12,800 millones; cartera crediticia crece 9.1%',s:'SBP',d:'13 May 2026'},
-    {t:'Panamá implementa piloto de banca abierta con participación de 8 entidades reguladas',s:'SBP',d:'10 May 2026'},
     {t:'Banco General reporta utilidades netas de USD 310 millones en ejercicio 2025',s:'BGP',d:'7 May 2026'},
-    {t:'SBP aprueba nuevas licencias bancarias internacionales para dos entidades asiáticas',s:'SBP',d:'4 May 2026'},
-    {t:'Centro Bancario Internacional crece 3.2% en activos; sector permanece en expansión',s:'SBP',d:'1 May 2026'},
   ],
   CostaRica:[
     {t:'BCCR reduce tasa de política monetaria al 4.5%; inflación dentro del objetivo del 3%',s:'BCCR',d:'15 May 2026'},
     {t:'BCR lidera con activos de ¢7,800,000 millones; captaciones crecen 9.2% interanual',s:'SUGEF',d:'12 May 2026'},
-    {t:'SUGEF aprueba normativa de gestión de riesgos ASG para bancos del sistema financiero',s:'SUGEF',d:'9 May 2026'},
-    {t:'Crédito hipotecario en colones crece 13.8% impulsado por tasas históricamente bajas',s:'BCCR',d:'6 May 2026'},
-    {t:'BAC San José reporta ROE del 22.1%; inversión en plataforma digital supera USD 80M',s:'BAC',d:'3 May 2026'},
     {t:'Costa Rica emite bono en euros por €700 millones con demanda 6x y tasa del 5.4%',s:'MinHacienda',d:'30 Abr 2026'},
   ],
   RepDominicana:[
     {t:'Banco Central RD mantiene tasa de referencia en 6.75%; economía crece 5.2% en 2025',s:'BCRD',d:'16 May 2026'},
     {t:'Banco Popular Dominicano lidera con activos de RD$ 740,000 millones al 1T 2026',s:'SB',d:'13 May 2026'},
-    {t:'SB aprueba nuevas normas prudenciales de Basilea III adaptadas al sistema dominicano',s:'SB',d:'10 May 2026'},
-    {t:'Banreservas anuncia programa de crédito MIPYME por RD$ 15,000 millones para 2026',s:'Banreservas',d:'7 May 2026'},
-    {t:'Sistema financiero: índice de solvencia promedia 18.6%; cartera sana al 97.2%',s:'SB',d:'4 May 2026'},
     {t:'Rep. Dominicana coloca USD 1,750 millones en bonos internacionales; demanda de 5.8x',s:'MinHacienda',d:'1 May 2026'},
   ],
 };
@@ -945,7 +912,7 @@ function setOnline(){
 /* ── News ────────────────────────────────────────────────────────── */
 function renderNewsSection(key,containerId){
   const c=document.getElementById(containerId);if(!c)return;
-  const items=(HEADLINES[key]||HEADLINES._global).slice(0,7);
+  const items=(HEADLINES[key]||HEADLINES._global).slice(0,3);
   c.innerHTML=items.map(({t,s,d})=>
     `<div class="news-item"><div class="news-headline"><span style="color:#0f172a;font-size:12.5px;font-weight:500;line-height:1.4;display:block">${t}</span></div><div class="news-meta">${s?s+' · ':''}${d}</div></div>`
   ).join('');
@@ -959,12 +926,70 @@ function refreshNews(){
   if(el)el.textContent=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
 }
 
+/* ── Ticker ──────────────────────────────────────────────────────── */
+const TICKER_FB={spx:{v:5840,c:0.42},btc:{v:103450,c:1.18},xrp:{v:2.42,c:-0.84},eur:{v:1.0834,c:0.09},cop:{v:4195,c:-0.31},xau:{v:3285,c:0.53}};
+
+function setTicker(id,price,chgPct,decimals,prefix){
+  const pEl=document.getElementById('tk-'+id);
+  const cEl=document.getElementById('tkc-'+id);
+  if(!pEl||!cEl)return;
+  const formatted=(prefix||'')+Number(price).toLocaleString('en-US',{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
+  pEl.textContent=formatted;
+  const c=+chgPct;
+  cEl.textContent=(c>=0?'▲':'▼')+Math.abs(c).toFixed(2)+'%';
+  cEl.className='ticker-chg '+(c>0?'up':c<0?'down':'flat');
+}
+
+async function loadTicker(){
+  const fb=TICKER_FB;
+  // Seed with fallback immediately so ticker shows values on load
+  setTicker('spx',fb.spx.v,fb.spx.c,2,'');
+  setTicker('btc',fb.btc.v,fb.btc.c,0,'$');
+  setTicker('xrp',fb.xrp.v,fb.xrp.c,4,'$');
+  setTicker('eur',fb.eur.v,fb.eur.c,4,'');
+  setTicker('cop',fb.cop.v,fb.cop.c,0,'');
+  setTicker('xau',fb.xau.v,fb.xau.c,0,'$');
+
+  // Crypto: Binance public API (no key, CORS enabled)
+  try{
+    const r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=["BTCUSDT","XRPUSDT"]',{signal:AbortSignal.timeout(7000)});
+    const arr=await r.json();
+    arr.forEach(t=>{
+      if(t.symbol==='BTCUSDT') setTicker('btc',+t.lastPrice,+t.priceChangePercent,0,'$');
+      if(t.symbol==='XRPUSDT') setTicker('xrp',+t.lastPrice,+t.priceChangePercent,4,'$');
+    });
+  }catch(_){}
+
+  // FX: reuse exchangeRates already loaded from Supabase/open.er-api.com
+  if(exchangeRates){
+    if(exchangeRates.EUR) setTicker('eur',+(1/exchangeRates.EUR).toFixed(4),0,4,'');
+    if(exchangeRates.COP) setTicker('cop',+exchangeRates.COP.toFixed(0),0,0,'');
+  }
+
+  // Gold: metals.live free endpoint
+  try{
+    const r=await fetch('https://api.metals.live/v1/spot/gold',{signal:AbortSignal.timeout(7000)});
+    const j=await r.json();
+    if(j.price) setTicker('xau',j.price,0,0,'$');
+  }catch(_){}
+
+  // S&P 500: stooq.com (free, no key)
+  try{
+    const r=await fetch('https://stooq.com/q/l/?s=^spx&f=sd2t2ohlc&h&e=json',{signal:AbortSignal.timeout(7000)});
+    const j=await r.json();
+    const q=j?.symbols?.[0];
+    if(q?.close&&q?.open) setTicker('spx',q.close,((q.close-q.open)/q.open*100),2,'');
+  }catch(_){}
+}
+
 /* ── Init ────────────────────────────────────────────────────────── */
 async function init(){
   await Promise.all([loadRates(),loadSupabase()]);
   setOnline();
   renderDashboard(activeCountry,dashboardData[activeCountry]);
   refreshNews();
+  loadTicker();
+  setInterval(loadTicker,60000);
 }
 init();
 </script>
