@@ -7,247 +7,362 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#0f172a}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh}
+.hidden{display:none!important}
 
-/* ─── Header ─────────────────────────────────────────────────────── */
-header{background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 60%,#312e81 100%);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;border-bottom:3px solid #4f46e5}
-.header-left{display:flex;flex-direction:column;gap:10px}
-.header-titles h1{font-size:1.75rem;font-weight:700;color:#f8fafc;letter-spacing:-0.5px}
-.header-titles p{font-size:12px;color:#94a3b8;letter-spacing:0.08em;text-transform:uppercase}
-.clocks{display:flex;gap:20px;flex-wrap:wrap}
-.clock-box{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 14px;min-width:130px}
-.clock-city{font-size:9.5px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px}
-.clock-time{font-size:19px;font-weight:700;color:#e0f2fe;font-variant-numeric:tabular-nums;letter-spacing:1px}
-.clock-zone{font-size:9px;color:#64748b;margin-top:1px}
-.header-logo{display:flex;align-items:center}
-.header-logo img{height:56px;filter:brightness(0) invert(1);opacity:0.92}
+/* ═══ HOME ═══════════════════════════════════════════════════════════ */
+#pg-home{min-height:100vh;background:#fff;display:flex;align-items:stretch}
+.home-wrap{display:grid;grid-template-columns:1fr 1fr;width:100%;max-width:1400px;margin:auto;padding:48px 56px;gap:40px;align-items:center}
+@media(max-width:900px){.home-wrap{grid-template-columns:1fr;padding:32px 24px}}
+.home-left{display:flex;flex-direction:column;gap:22px;justify-content:center}
+.home-logo{height:60px;max-width:280px;object-fit:contain}
+.home-title{font-size:2.8rem;font-weight:800;color:#0f172a;letter-spacing:-1px;line-height:1.1}
+.home-sub{font-size:1.1rem;color:#475569;font-weight:400;line-height:1.5}
+.online-badge{display:inline-flex;align-items:center;gap:8px;background:#f0fdf4;border:1px solid #86efac;border-radius:20px;padding:7px 14px;width:fit-content}
+.online-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;box-shadow:0 0 0 3px rgba(34,197,94,0.25);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,0.25)}50%{box-shadow:0 0 0 6px rgba(34,197,94,0.1)}}
+.online-text{font-size:12px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.06em}
+.online-ts{font-size:11px;color:#4ade80}
+.home-clocks{display:flex;gap:12px;flex-wrap:wrap}
+.hclock{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 16px;min-width:120px}
+.hclock-city{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px}
+.hclock-time{font-size:17px;font-weight:700;color:#0f172a;font-variant-numeric:tabular-nums;letter-spacing:1px}
+.hclock-zone{font-size:8.5px;color:#cbd5e1;margin-top:1px}
+.enter-btn{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border:none;border-radius:10px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.02em;width:fit-content;transition:all .2s;box-shadow:0 4px 14px rgba(79,70,229,.35)}
+.enter-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(79,70,229,.45)}
+.home-footer{font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em}
+.home-right{display:flex;align-items:center;justify-content:center}
+.map-wrap{width:100%;max-width:380px;position:relative}
+.map-title{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;text-align:center;margin-bottom:8px}
+.map-legend{display:flex;align-items:center;gap:8px;justify-content:center;margin-top:10px;font-size:10px;color:#64748b}
+.map-legend-dot{width:8px;height:8px;background:#4f46e5;border-radius:50%;display:inline-block}
 
-/* ─── Container ──────────────────────────────────────────────────── */
-.container{max-width:1460px;margin:0 auto;padding:24px 20px}
+/* ═══ ANALYTICS NAV ════════════════════════════════════════════════ */
+#pg-analytics{min-height:100vh;background:#f8fafc}
+.an-nav{background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 60%,#312e81 100%);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:2px solid #4f46e5;position:sticky;top:0;z-index:100}
+.an-nav-left{display:flex;align-items:center;gap:16px}
+.back-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#94a3b8;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;transition:all .15s}
+.back-btn:hover{background:rgba(255,255,255,.14);color:#f1f5f9}
+.nav-logo{height:36px;filter:brightness(0) invert(1);opacity:.9}
+.nav-title{font-size:14px;font-weight:600;color:#e2e8f0;letter-spacing:-.2px}
+.nav-clocks{display:flex;gap:12px;flex-wrap:wrap}
+.nclock{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:5px 10px;min-width:108px}
+.nclock-city{font-size:8.5px;color:#64748b;text-transform:uppercase;letter-spacing:.08em}
+.nclock-time{font-size:14px;font-weight:700;color:#e0f2fe;font-variant-numeric:tabular-nums}
+.nav-online{display:flex;align-items:center;gap:6px;font-size:10px;color:#4ade80;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);padding:4px 10px;border-radius:12px}
+.nav-dot{width:6px;height:6px;background:#22c55e;border-radius:50%;animation:pulse 2s infinite}
 
-/* ─── Section headers ─────────────────────────────────────────────── */
-.section-title{font-size:13px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #e2e8f0}
+/* ═══ CONTAINER ════════════════════════════════════════════════════ */
+.container{max-width:1440px;margin:0 auto;padding:20px 20px 32px}
 
-/* ─── Regional comparison ─────────────────────────────────────────── */
-.regional-grid{display:grid;grid-template-columns:1fr 1fr 1fr 260px;gap:16px;margin-bottom:28px}
-@media(max-width:1100px){.regional-grid{grid-template-columns:1fr 1fr;}}
-@media(max-width:680px){.regional-grid{grid-template-columns:1fr;}}
-.chart-card{background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,0.07);border:1px solid #e2e8f0}
-.chart-card-title{font-size:11.5px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px}
+/* ═══ SECTION TITLE ════════════════════════════════════════════════ */
+.sec-title{font-size:12px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;padding-bottom:7px;border-bottom:2px solid #e2e8f0}
 
-/* ─── Gauge dial ──────────────────────────────────────────────────── */
-.gauge-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%}
-.gauge-country{font-size:12px;font-weight:600;color:#475569;margin-bottom:6px}
-.gauge-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 12px;margin-top:6px}
-.gauge-legend span{font-size:10px;color:#64748b;display:flex;align-items:center;gap:4px}
-.gauge-legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
-.gauge-phase-label{margin-top:4px;font-size:13px;font-weight:700;text-align:center}
-
-/* ─── Tabs ─────────────────────────────────────────────────────────── */
-.country-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
-.tab-btn{padding:7px 13px;background:#fff;border:1px solid #e2e8f0;color:#64748b;cursor:pointer;border-radius:6px;font-size:12.5px;font-weight:500;white-space:nowrap;transition:all 0.15s;box-shadow:0 1px 2px rgba(0,0,0,0.04)}
-.tab-btn.active{background:#4f46e5;border-color:#4f46e5;color:#fff;box-shadow:0 2px 8px rgba(79,70,229,0.3)}
+/* ═══ TABS ═════════════════════════════════════════════════════════ */
+.country-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px;padding:12px;background:#fff;border-radius:10px;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.tab-btn{padding:6px 11px;background:transparent;border:1px solid #e2e8f0;color:#64748b;cursor:pointer;border-radius:6px;font-size:12px;font-weight:500;white-space:nowrap;transition:all .15s}
+.tab-btn.active{background:#4f46e5;border-color:#4f46e5;color:#fff;box-shadow:0 2px 6px rgba(79,70,229,.3)}
 .tab-btn:hover:not(.active){border-color:#a5b4fc;color:#4f46e5}
-
-/* ─── Content panels ──────────────────────────────────────────────── */
 .content{display:none}.content.active{display:block}
 .loading{color:#94a3b8;padding:60px;text-align:center}
+.no-data{color:#94a3b8;padding:40px;text-align:center}
 
-/* ─── KPI grid ────────────────────────────────────────────────────── */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:14px}
-.kpi-card{background:#fff;padding:16px 18px;border-radius:8px;border-top:3px solid #4f46e5;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
-.kpi-card.green-top{border-top-color:#10b981}
-.kpi-label{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px}
-.kpi-value{font-size:22px;font-weight:700;color:#0f172a;line-height:1.1}
-.kpi-sub{font-size:11px;color:#64748b;margin-top:4px}
-.kpi-sub.up{color:#10b981}.kpi-sub.warn{color:#f59e0b}.kpi-sub.note{font-size:9.5px;color:#f59e0b}
-
-/* ─── Rate bar ─────────────────────────────────────────────────────── */
-.rate-bar{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:9px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:12.5px}
-.rate-label{color:#1e40af}.rate-label strong{color:#1d4ed8;font-size:14px}
+/* ═══ RATE BAR ══════════════════════════════════════════════════════ */
+.rate-bar{background:linear-gradient(90deg,#eff6ff,#f0fdf4);border:1px solid #bfdbfe;border-radius:8px;padding:8px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:12.5px}
+.rate-label{color:#1e40af}.rate-label strong{color:#1d4ed8;font-size:13.5px}
 .rate-source{font-size:11px;color:#93c5fd}.rate-source a{color:#6366f1;text-decoration:none}
 
-/* ─── Detail row (gauge + evolution chart) ─────────────────────────── */
-.detail-row{display:grid;grid-template-columns:260px 1fr;gap:14px;margin-bottom:14px}
-@media(max-width:760px){.detail-row{grid-template-columns:1fr}}
+/* ═══ CHART ROW (gauge + CAGR bar) ════════════════════════════════ */
+.row-charts{display:grid;grid-template-columns:260px 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:820px){.row-charts{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.06);border:1px solid #e2e8f0}
+.card-title{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
 
-/* ─── Evolution chart card ──────────────────────────────────────────── */
-.evo-card{background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid #e2e8f0}
-.evo-title{font-size:11.5px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px}
-.chart-note{font-size:10px;color:#cbd5e1;margin-top:6px}
+/* ═══ GAUGE ════════════════════════════════════════════════════════ */
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;gap:4px}
+.gauge-phase{font-size:14px;font-weight:800;text-align:center;margin-top:-4px}
+.gauge-pct{font-size:11px;color:#94a3b8;text-align:center}
+.gauge-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:5px 10px;margin-top:6px}
+.gauge-legend span{font-size:9.5px;color:#64748b;display:flex;align-items:center;gap:3px}
+.gauge-legend i{width:8px;height:8px;border-radius:2px;display:inline-block}
 
-/* ─── Table ─────────────────────────────────────────────────────────── */
-.table-container{background:#fff;padding:20px;border-radius:10px;overflow-x:auto;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid #e2e8f0}
-.table-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap;gap:8px}
-.table-header h2{font-size:13px;font-weight:600;color:#0f172a}
-.meta{font-size:10.5px;color:#94a3b8;text-align:right;line-height:1.8}
-.meta a{color:#6366f1;text-decoration:none}.meta a:hover{text-decoration:underline}
-table{width:100%;border-collapse:collapse;min-width:580px}
-th{background:#f8fafc;padding:9px 12px;text-align:right;font-size:10.5px;font-weight:600;color:#94a3b8;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+/* ═══ TABLE ROW ════════════════════════════════════════════════════ */
+.row-table{display:grid;grid-template-columns:1fr 300px;gap:14px;margin-bottom:14px}
+@media(max-width:920px){.row-table{grid-template-columns:1fr}}
+.table-wrap{overflow-x:auto}
+.table-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap;gap:6px}
+.table-hdr h2{font-size:13px;font-weight:700;color:#0f172a}
+.meta-box{font-size:10px;color:#94a3b8;text-align:right;line-height:1.8}
+.meta-box a{color:#6366f1;text-decoration:none}
+table{width:100%;border-collapse:collapse;min-width:540px}
+th{background:#f8fafc;padding:8px 10px;text-align:right;font-size:10px;font-weight:700;color:#94a3b8;border-bottom:2px solid #e2e8f0;white-space:nowrap;text-transform:uppercase;letter-spacing:.05em}
 th:first-child{text-align:left}
-td{padding:9px 12px;border-bottom:1px solid #f1f5f9;font-size:12.5px;text-align:right;color:#334155}
-td:first-child{text-align:left;font-weight:500;color:#0f172a}
+td{padding:8px 10px;border-bottom:1px solid #f1f5f9;font-size:12px;text-align:right;color:#334155}
+td:first-child{text-align:left;font-weight:500;color:#0f172a;max-width:200px}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#f8fafc}
-.usd-col{color:#6366f1;font-size:11.5px}
-.no-data{color:#94a3b8;padding:60px;text-align:center}
+.usd-col{color:#6366f1;font-size:11px}
+.pie-card{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.chart-note{font-size:9.5px;color:#cbd5e1;margin-top:6px;text-align:center}
 
-/* ─── News feed ──────────────────────────────────────────────────────── */
-.news-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-@media(max-width:760px){.news-grid{grid-template-columns:1fr}}
-.news-col{background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,0.07);border:1px solid #e2e8f0}
-.news-col-title{font-size:12px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #f1f5f9}
-.news-item{padding:9px 0;border-bottom:1px solid #f8fafc}
+/* ═══ NEWS ══════════════════════════════════════════════════════════ */
+.news-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px}
+@media(max-width:720px){.news-grid{grid-template-columns:1fr}}
+.news-col{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.06);border:1px solid #e2e8f0}
+.news-col-title{font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid #f1f5f9}
+.news-item{padding:8px 0;border-bottom:1px solid #f8fafc}
 .news-item:last-child{border-bottom:none}
-.news-headline a{color:#0f172a;text-decoration:none;font-size:13px;font-weight:500;line-height:1.4;display:block}
+.news-headline a{color:#0f172a;text-decoration:none;font-size:12.5px;font-weight:500;line-height:1.4;display:block}
 .news-headline a:hover{color:#4f46e5;text-decoration:underline}
-.news-meta{font-size:10.5px;color:#94a3b8;margin-top:2px}
-.news-loading{color:#94a3b8;padding:20px;text-align:center;font-size:12px}
-.news-footer{font-size:10.5px;color:#94a3b8;margin-bottom:28px}
+.news-meta{font-size:10px;color:#94a3b8;margin-top:2px}
+.news-loading{color:#94a3b8;padding:16px;text-align:center;font-size:11px}
+.news-footer{font-size:10px;color:#94a3b8;margin-bottom:20px}
+
+/* ═══ MACRO PILLS ═══════════════════════════════════════════════════ */
+.macro-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.pill{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:6px 12px;font-size:11.5px}
+.pill-label{color:#94a3b8;text-transform:uppercase;font-size:9px;letter-spacing:.06em;display:block;margin-bottom:1px}
+.pill-value{font-weight:700;color:#0f172a}
+.pill-value.green{color:#10b981}.pill-value.red{color:#ef4444}.pill-value.amber{color:#f59e0b}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-left">
-    <div class="header-titles">
-      <h1>Dashboard LATAM</h1>
-      <p>Dirección de Expansión &nbsp;·&nbsp; 18 países &nbsp;·&nbsp; Actualización mensual</p>
-    </div>
-    <div class="clocks">
-      <div class="clock-box">
-        <div class="clock-city">Nueva York</div>
-        <div class="clock-time" id="clock-ny">--:--:--</div>
-        <div class="clock-zone">America/New_York</div>
-      </div>
-      <div class="clock-box">
-        <div class="clock-city">Quito</div>
-        <div class="clock-time" id="clock-quito">--:--:--</div>
-        <div class="clock-zone">America/Guayaquil</div>
-      </div>
-      <div class="clock-box">
-        <div class="clock-city">Londres</div>
-        <div class="clock-time" id="clock-london">--:--:--</div>
-        <div class="clock-zone">Europe/London</div>
-      </div>
-    </div>
-  </div>
-  <div class="header-logo">
-    <img src="logo_cropped.png" alt="SynerGy Apex">
-  </div>
-</header>
+<!-- ═══════════════════════════════════════════════════════════════════
+     HOME PAGE
+══════════════════════════════════════════════════════════════════════ -->
+<div id="pg-home">
+<div class="home-wrap">
+  <div class="home-left">
+    <img src="logo_cropped.png" alt="SynerGy Apex" class="home-logo">
+    <h1 class="home-title">Dashboard<br>LATAM</h1>
+    <p class="home-sub">Inteligencia bancaria en tiempo real</p>
 
-<div class="container">
+    <div class="online-badge">
+      <span class="online-dot"></span>
+      <span class="online-text">En línea</span>
+      <span class="online-ts" id="online-ts">cargando…</span>
+    </div>
 
-  <!-- ── Regional comparison ─────────────────────────────────────── -->
-  <div class="section-title">Comparativa Regional LATAM — CAGR Depósitos 2023–2026</div>
-  <div class="regional-grid">
-    <div class="chart-card">
-      <div class="chart-card-title">CAGR Depósitos Plazo</div>
-      <canvas id="chart-cagr-plazo" height="320"></canvas>
-    </div>
-    <div class="chart-card">
-      <div class="chart-card-title">CAGR Depósitos Vista</div>
-      <canvas id="chart-cagr-vista" height="320"></canvas>
-    </div>
-    <div class="chart-card">
-      <div class="chart-card-title">CAGR ACM / Sistema Bancario</div>
-      <canvas id="chart-cagr-acm" height="320"></canvas>
-    </div>
-    <div class="chart-card">
-      <div class="chart-card-title">Ciclo Económico</div>
-      <div class="gauge-wrap">
-        <div class="gauge-country" id="gauge-country-label">Selecciona un país</div>
-        <div id="gauge-svg-container"></div>
-        <div class="gauge-phase-label" id="gauge-phase-text"></div>
-        <div class="gauge-legend">
-          <span><i style="background:#ef4444"></i>Contracción</span>
-          <span><i style="background:#f97316"></i>Estancamiento</span>
-          <span><i style="background:#eab308"></i>Recuperación</span>
-          <span><i style="background:#22c55e"></i>Expansión</span>
-        </div>
+    <div class="home-clocks">
+      <div class="hclock">
+        <div class="hclock-city">Nueva York</div>
+        <div class="hclock-time" id="hclock-ny">--:--:--</div>
+        <div class="hclock-zone">ET</div>
+      </div>
+      <div class="hclock">
+        <div class="hclock-city">Quito</div>
+        <div class="hclock-time" id="hclock-quito">--:--:--</div>
+        <div class="hclock-zone">ECT</div>
+      </div>
+      <div class="hclock">
+        <div class="hclock-city">Londres</div>
+        <div class="hclock-time" id="hclock-london">--:--:--</div>
+        <div class="hclock-zone">BST/GMT</div>
       </div>
     </div>
+
+    <button class="enter-btn" onclick="window.showAnalytics()">Explorar Dashboard →</button>
+    <p class="home-footer">Dirección de Expansión &nbsp;·&nbsp; 18 países &nbsp;·&nbsp; 2026</p>
   </div>
 
-  <!-- ── Country tabs ──────────────────────────────────────────────── -->
-  <div class="country-tabs">
-    <button class="tab-btn active"  onclick="showCountry('Mexico',this)">🇲🇽 México</button>
-    <button class="tab-btn"         onclick="showCountry('Chile',this)">🇨🇱 Chile</button>
-    <button class="tab-btn"         onclick="showCountry('Colombia',this)">🇨🇴 Colombia</button>
-    <button class="tab-btn"         onclick="showCountry('Brasil',this)">🇧🇷 Brasil</button>
-    <button class="tab-btn"         onclick="showCountry('Argentina',this)">🇦🇷 Argentina</button>
-    <button class="tab-btn"         onclick="showCountry('Peru',this)">🇵🇪 Perú</button>
-    <button class="tab-btn"         onclick="showCountry('Ecuador',this)">🇪🇨 Ecuador</button>
-    <button class="tab-btn"         onclick="showCountry('Bolivia',this)">🇧🇴 Bolivia</button>
-    <button class="tab-btn"         onclick="showCountry('Paraguay',this)">🇵🇾 Paraguay</button>
-    <button class="tab-btn"         onclick="showCountry('Uruguay',this)">🇺🇾 Uruguay</button>
-    <button class="tab-btn"         onclick="showCountry('Venezuela',this)">🇻🇪 Venezuela</button>
-    <button class="tab-btn"         onclick="showCountry('Guatemala',this)">🇬🇹 Guatemala</button>
-    <button class="tab-btn"         onclick="showCountry('Honduras',this)">🇭🇳 Honduras</button>
-    <button class="tab-btn"         onclick="showCountry('ElSalvador',this)">🇸🇻 El Salvador</button>
-    <button class="tab-btn"         onclick="showCountry('Nicaragua',this)">🇳🇮 Nicaragua</button>
-    <button class="tab-btn"         onclick="showCountry('Panama',this)">🇵🇦 Panamá</button>
-    <button class="tab-btn"         onclick="showCountry('CostaRica',this)">🇨🇷 Costa Rica</button>
-    <button class="tab-btn"         onclick="showCountry('RepDominicana',this)">🇩🇴 Rep. Dominicana</button>
-  </div>
+  <div class="home-right">
+    <div class="map-wrap">
+      <div class="map-title">Presencia SynerGy en LATAM</div>
+      <!-- SVG LATAM Map -->
+      <svg viewBox="0 0 300 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;drop-shadow:0 4px 16px rgba(15,23,42,.08)">
+        <defs>
+          <filter id="sh"><feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-color="#0f172a" flood-opacity="0.12"/></filter>
+          <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#818cf8" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#4f46e5" stop-opacity="0.6"/>
+          </radialGradient>
+        </defs>
 
-  <div id="Mexico"        class="content active"><div class="loading">Cargando…</div></div>
-  <div id="Chile"         class="content"></div>
-  <div id="Colombia"      class="content"></div>
-  <div id="Brasil"        class="content"></div>
-  <div id="Argentina"     class="content"></div>
-  <div id="Peru"          class="content"></div>
-  <div id="Ecuador"       class="content"></div>
-  <div id="Bolivia"       class="content"></div>
-  <div id="Paraguay"      class="content"></div>
-  <div id="Uruguay"       class="content"></div>
-  <div id="Venezuela"     class="content"></div>
-  <div id="Guatemala"     class="content"></div>
-  <div id="Honduras"      class="content"></div>
-  <div id="ElSalvador"    class="content"></div>
-  <div id="Nicaragua"     class="content"></div>
-  <div id="Panama"        class="content"></div>
-  <div id="CostaRica"     class="content"></div>
-  <div id="RepDominicana" class="content"></div>
+        <!-- Ocean background -->
+        <rect width="300" height="420" fill="#f0f4f8" rx="12"/>
 
-  <!-- ── News Feed ────────────────────────────────────────────────── -->
-  <div class="section-title" style="margin-top:28px">Noticias de Economía — Actualización en tiempo real</div>
-  <div class="news-grid">
-    <div class="news-col">
-      <div class="news-col-title">Economía Global</div>
-      <div id="news-global" class="news-list"><div class="news-loading">Cargando noticias…</div></div>
+        <!-- MEXICO -->
+        <path filter="url(#sh)" fill="#dde4ec" stroke="#c8d4e0" stroke-width="0.7"
+          d="M 22,28 Q 55,20 90,26 Q 108,32 112,48 Q 116,62 108,76 Q 98,90 82,94 Q 64,96 44,80 Q 24,64 20,44 Z"/>
+
+        <!-- CENTRAL AMERICA -->
+        <path fill="#dde4ec" stroke="#c8d4e0" stroke-width="0.5"
+          d="M 82,94 Q 96,90 112,96 Q 122,104 120,118 Q 116,130 106,135 Q 94,138 84,130 Q 76,120 78,108 Z"/>
+
+        <!-- SOUTH AMERICA main -->
+        <path filter="url(#sh)" fill="#dde4ec" stroke="#c8d4e0" stroke-width="0.7"
+          d="M 120,100 Q 145,90 168,94 Q 195,98 218,110
+             Q 245,124 255,150 Q 265,178 258,208
+             Q 248,238 230,258 Q 210,278 192,292
+             Q 172,308 158,328 Q 142,350 134,372
+             Q 124,388 112,380 Q 100,370 94,350
+             Q 86,328 86,302 Q 86,275 88,250
+             Q 90,224 86,200 Q 82,176 88,153
+             Q 94,130 108,114 Q 114,106 120,100 Z"/>
+
+        <!-- ECUADOR highlight (SynerGy presence) -->
+        <path fill="url(#glow)" stroke="#4f46e5" stroke-width="1" opacity="0.88"
+          d="M 106,112 Q 120,106 128,116 Q 134,126 130,140
+             Q 124,150 112,150 Q 100,148 96,138 Q 92,126 106,112 Z"/>
+
+        <!-- PERU highlight (SynerGy presence) -->
+        <path fill="url(#glow)" stroke="#4f46e5" stroke-width="1" opacity="0.72"
+          d="M 96,138 Q 110,132 122,140 Q 132,150 132,168
+             Q 130,185 118,190 Q 104,192 96,182
+             Q 86,170 88,154 Z"/>
+
+        <!-- COLOMBIA faint highlight -->
+        <path fill="#a5b4fc" stroke="#818cf8" stroke-width="0.6" opacity="0.35"
+          d="M 106,112 Q 120,106 140,105 Q 155,108 162,118
+             Q 165,128 155,136 Q 142,142 126,140
+             Q 116,138 108,130 Z"/>
+
+        <!-- MIAMI dot + flag (USA presence, top) -->
+        <circle cx="155" cy="36" r="6" fill="#4f46e5" stroke="#fff" stroke-width="1.5" opacity="0.95"/>
+        <circle cx="155" cy="36" r="11" fill="#4f46e5" opacity="0.15"/>
+        <text x="164" y="40" fill="#4f46e5" font-size="9" font-weight="700" font-family="Segoe UI,system-ui,sans-serif">Miami</text>
+        <text x="164" y="50" fill="#94a3b8" font-size="7.5" font-family="Segoe UI,system-ui,sans-serif">🇺🇸 EE.UU.</text>
+
+        <!-- QUITO dot -->
+        <circle cx="111" cy="130" r="5.5" fill="#4f46e5" stroke="#fff" stroke-width="1.5"/>
+        <circle cx="111" cy="130" r="10" fill="#4f46e5" opacity="0.12"/>
+        <text x="120" y="134" fill="#4f46e5" font-size="9" font-weight="700" font-family="Segoe UI,system-ui,sans-serif">Quito</text>
+        <text x="120" y="144" fill="#94a3b8" font-size="7.5" font-family="Segoe UI,system-ui,sans-serif">🇪🇨 Ecuador</text>
+
+        <!-- LIMA dot -->
+        <circle cx="109" cy="165" r="5.5" fill="#4f46e5" stroke="#fff" stroke-width="1.5"/>
+        <circle cx="109" cy="165" r="10" fill="#4f46e5" opacity="0.12"/>
+        <text x="118" y="169" fill="#4f46e5" font-size="9" font-weight="700" font-family="Segoe UI,system-ui,sans-serif">Lima</text>
+        <text x="118" y="179" fill="#94a3b8" font-size="7.5" font-family="Segoe UI,system-ui,sans-serif">🇵🇪 Perú</text>
+
+        <!-- Dotted line connecting offices -->
+        <line x1="155" y1="42" x2="120" y2="115" stroke="#818cf8" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.5"/>
+        <line x1="111" y1="135" x2="109" y2="158" stroke="#818cf8" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.5"/>
+      </svg>
+
+      <div class="map-legend">
+        <span class="map-legend-dot"></span>
+        Oficinas SynerGy
+        &nbsp;·&nbsp;
+        <span style="width:8px;height:8px;background:#dde4ec;border:1px solid #c8d4e0;border-radius:2px;display:inline-block"></span>
+        18 mercados activos
+      </div>
     </div>
-    <div class="news-col">
-      <div class="news-col-title" id="news-country-title">País Seleccionado</div>
-      <div id="news-country" class="news-list"><div class="news-loading">Cargando noticias…</div></div>
-    </div>
   </div>
-  <div class="news-footer">Fuente: Google News RSS · Actualización cada 30 min · Última carga: <span id="news-last-update">—</span></div>
+</div>
+</div><!-- /pg-home -->
 
-</div><!-- /container -->
 
-<!-- ─── Clocks ──────────────────────────────────────────────────────── -->
+<!-- ═══════════════════════════════════════════════════════════════════
+     ANALYTICS PAGE
+══════════════════════════════════════════════════════════════════════ -->
+<div id="pg-analytics" class="hidden">
+  <!-- NAV -->
+  <nav class="an-nav">
+    <div class="an-nav-left">
+      <button class="back-btn" onclick="window.showHome()">← Inicio</button>
+      <img src="logo_cropped.png" alt="SynerGy" class="nav-logo">
+      <span class="nav-title">Dashboard LATAM</span>
+    </div>
+    <div class="nav-clocks">
+      <div class="nclock"><div class="nclock-city">Nueva York</div><div class="nclock-time" id="nclock-ny">--:--:--</div></div>
+      <div class="nclock"><div class="nclock-city">Quito</div><div class="nclock-time" id="nclock-quito">--:--:--</div></div>
+      <div class="nclock"><div class="nclock-city">Londres</div><div class="nclock-time" id="nclock-london">--:--:--</div></div>
+    </div>
+    <div class="nav-online"><span class="nav-dot"></span><span id="online-ts-nav">En línea</span></div>
+  </nav>
+
+  <div class="container">
+    <!-- COUNTRY TABS -->
+    <div class="country-tabs">
+      <button class="tab-btn active" onclick="showCountry('Mexico',this)">🇲🇽 México</button>
+      <button class="tab-btn" onclick="showCountry('Chile',this)">🇨🇱 Chile</button>
+      <button class="tab-btn" onclick="showCountry('Colombia',this)">🇨🇴 Colombia</button>
+      <button class="tab-btn" onclick="showCountry('Brasil',this)">🇧🇷 Brasil</button>
+      <button class="tab-btn" onclick="showCountry('Argentina',this)">🇦🇷 Argentina</button>
+      <button class="tab-btn" onclick="showCountry('Peru',this)">🇵🇪 Perú</button>
+      <button class="tab-btn" onclick="showCountry('Ecuador',this)">🇪🇨 Ecuador</button>
+      <button class="tab-btn" onclick="showCountry('Bolivia',this)">🇧🇴 Bolivia</button>
+      <button class="tab-btn" onclick="showCountry('Paraguay',this)">🇵🇾 Paraguay</button>
+      <button class="tab-btn" onclick="showCountry('Uruguay',this)">🇺🇾 Uruguay</button>
+      <button class="tab-btn" onclick="showCountry('Venezuela',this)">🇻🇪 Venezuela</button>
+      <button class="tab-btn" onclick="showCountry('Guatemala',this)">🇬🇹 Guatemala</button>
+      <button class="tab-btn" onclick="showCountry('Honduras',this)">🇭🇳 Honduras</button>
+      <button class="tab-btn" onclick="showCountry('ElSalvador',this)">🇸🇻 El Salvador</button>
+      <button class="tab-btn" onclick="showCountry('Nicaragua',this)">🇳🇮 Nicaragua</button>
+      <button class="tab-btn" onclick="showCountry('Panama',this)">🇵🇦 Panamá</button>
+      <button class="tab-btn" onclick="showCountry('CostaRica',this)">🇨🇷 Costa Rica</button>
+      <button class="tab-btn" onclick="showCountry('RepDominicana',this)">🇩🇴 Rep. Dominicana</button>
+    </div>
+
+    <!-- COUNTRY CONTENT DIVS -->
+    <div id="Mexico"        class="content active"><div class="loading">Cargando datos…</div></div>
+    <div id="Chile"         class="content"></div>
+    <div id="Colombia"      class="content"></div>
+    <div id="Brasil"        class="content"></div>
+    <div id="Argentina"     class="content"></div>
+    <div id="Peru"          class="content"></div>
+    <div id="Ecuador"       class="content"></div>
+    <div id="Bolivia"       class="content"></div>
+    <div id="Paraguay"      class="content"></div>
+    <div id="Uruguay"       class="content"></div>
+    <div id="Venezuela"     class="content"></div>
+    <div id="Guatemala"     class="content"></div>
+    <div id="Honduras"      class="content"></div>
+    <div id="ElSalvador"    class="content"></div>
+    <div id="Nicaragua"     class="content"></div>
+    <div id="Panama"        class="content"></div>
+    <div id="CostaRica"     class="content"></div>
+    <div id="RepDominicana" class="content"></div>
+
+    <!-- NEWS FEED -->
+    <div class="sec-title" style="margin-top:24px">Noticias de Economía — Tiempo Real</div>
+    <div class="news-grid">
+      <div class="news-col">
+        <div class="news-col-title">Economía Global</div>
+        <div id="news-global"><div class="news-loading">Cargando…</div></div>
+      </div>
+      <div class="news-col">
+        <div class="news-col-title" id="news-country-title">País Seleccionado</div>
+        <div id="news-country"><div class="news-loading">Cargando…</div></div>
+      </div>
+    </div>
+    <div class="news-footer">Fuente: Google News RSS · Actualización cada 30 min · <span id="news-last-update">—</span></div>
+  </div>
+</div><!-- /pg-analytics -->
+
+
+<!-- ═══ CLOCKS (runs on both pages) ════════════════════════════════ -->
 <script>
-(function tickClocks(){
+(function(){
   const zones=[
-    {id:'clock-ny',    tz:'America/New_York'},
-    {id:'clock-quito', tz:'America/Guayaquil'},
-    {id:'clock-london',tz:'Europe/London'},
+    {ids:['hclock-ny','nclock-ny'],    tz:'America/New_York'},
+    {ids:['hclock-quito','nclock-quito'], tz:'America/Guayaquil'},
+    {ids:['hclock-london','nclock-london'],tz:'Europe/London'},
   ];
-  function update(){
+  function tick(){
     const now=new Date();
-    zones.forEach(({id,tz})=>{
-      const el=document.getElementById(id);
-      if(el) el.textContent=now.toLocaleTimeString('es-ES',{timeZone:tz,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+    zones.forEach(({ids,tz})=>{
+      const t=now.toLocaleTimeString('es-ES',{timeZone:tz,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+      ids.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t;});
     });
   }
-  update();
-  setInterval(update,1000);
+  tick();setInterval(tick,1000);
 })();
+
+window.showHome=function(){
+  document.getElementById('pg-analytics').classList.add('hidden');
+  document.getElementById('pg-home').classList.remove('hidden');
+};
+window.showAnalytics=function(){
+  document.getElementById('pg-home').classList.add('hidden');
+  document.getElementById('pg-analytics').classList.remove('hidden');
+};
 </script>
 
-<!-- ─── Main module ─────────────────────────────────────────────────── -->
+
+<!-- ═══ MAIN MODULE ═════════════════════════════════════════════════ -->
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
@@ -256,7 +371,7 @@ const supabase = createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJucGZ4YXhzd21teHp4aWdneXd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NzA4MDcsImV4cCI6MjA5NDQ0NjgwN30.9rlU4sRukMOAuEz_FyPRasRdYmsZNHi4EzNE9JyiT8M'
 );
 
-/* ── Constants ─────────────────────────────────────────────────────── */
+/* ── Constants ─────────────────────────────────────────────────── */
 const COUNTRY_MAP={
   Mexico:'México',Chile:'Chile',Colombia:'Colombia',Brasil:'Brasil',
   Argentina:'Argentina',Peru:'Perú',Ecuador:'Ecuador',Bolivia:'Bolivia',
@@ -295,7 +410,6 @@ const CURRENCIES={
   Nicaragua:{code:'NIO',dol:false},Panama:{code:'USD',dol:true},
   CostaRica:{code:'CRC',dol:false},RepDominicana:{code:'DOP',dol:false},
 };
-// Separate annual growth assumptions for vista / plazo / acm (nominal)
 const GR={
   Mexico:{v:0.083,p:0.076,a:0.080},Chile:{v:0.063,p:0.057,a:0.060},
   Colombia:{v:0.105,p:0.095,a:0.100},Brasil:{v:0.115,p:0.105,a:0.110},
@@ -307,61 +421,76 @@ const GR={
   Nicaragua:{v:0.083,p:0.077,a:0.080},Panama:{v:0.053,p:0.047,a:0.050},
   CostaRica:{v:0.073,p:0.067,a:0.070},RepDominicana:{v:0.094,p:0.086,a:0.090},
 };
+const NEWS_TERMS={
+  Mexico:'economía México banco',Chile:'economía Chile banco',Colombia:'economía Colombia banco',
+  Brasil:'economía Brasil banco',Argentina:'economía Argentina banco',Peru:'economía Perú banco',
+  Ecuador:'economía Ecuador banco',Bolivia:'economía Bolivia banco',
+  Paraguay:'economía Paraguay banco',Uruguay:'economía Uruguay banco',
+  Venezuela:'economía Venezuela banco',Guatemala:'economía Guatemala banco',
+  Honduras:'economía Honduras banco',ElSalvador:'economía El Salvador banco',
+  Nicaragua:'economía Nicaragua banco',Panama:'economía Panamá banco',
+  CostaRica:'economía Costa Rica banco',RepDominicana:'economía República Dominicana',
+};
 
-/* ── State ─────────────────────────────────────────────────────────── */
+/* ── State ──────────────────────────────────────────────────────── */
 let dashboardData={}, exchangeRates=null, rateDate=null, exchangeRateDates={};
 let activeCountry='Mexico';
-let evoCharts={};
+const charts={};   // all Chart.js instances keyed by canvas id
 
-/* ── Helpers ───────────────────────────────────────────────────────── */
+/* ── Helpers ────────────────────────────────────────────────────── */
 function fmt(n){return n==null?'—':Number(n).toLocaleString('es-MX');}
 function fmtAx(v){
-  if(v>=1e9)return(v/1e9).toFixed(1)+'B';
-  if(v>=1e6)return(v/1e6).toFixed(1)+'M';
-  if(v>=1e3)return(v/1e3).toFixed(0)+'k';
+  if(Math.abs(v)>=1e9)return(v/1e9).toFixed(1)+'B';
+  if(Math.abs(v)>=1e6)return(v/1e6).toFixed(1)+'M';
+  if(Math.abs(v)>=1e3)return(v/1e3).toFixed(0)+'k';
   return Number(v).toFixed(0);
 }
-function cagr(v23,v26){
-  if(!v23||v23<=0)return null;
-  return((Math.pow(v26/v23,1/3)-1)*100).toFixed(1);
+function cagrPct(v21,v26){
+  if(!v21||v21<=0)return null;
+  return ((Math.pow(v26/v21,1/5)-1)*100).toFixed(1);
 }
-function buildHist(tabId,actors){
+function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+
+/* Build 5-year history 2021-2026 */
+function buildHist5(tabId,actors){
   const g=GR[tabId]||{v:0.07,p:0.07,a:0.07};
   const v26=actors.reduce((s,a)=>s+(a.vista||0),0);
   const p26=actors.reduce((s,a)=>s+(a.plazo||0),0);
   const a26=actors.reduce((s,a)=>s+(a.acm||0),0);
   const h={};
-  [2023,2024,2025,2026].forEach(yr=>{
+  [2021,2022,2023,2024,2025,2026].forEach(yr=>{
     const n=2026-yr;
     h[yr]={
-      vista: v26/Math.pow(1+g.v,n),
-      plazo: p26/Math.pow(1+g.p,n),
-      acm:   a26/Math.pow(1+g.a,n),
+      vista:v26/Math.pow(1+g.v,n),
+      plazo:p26/Math.pow(1+g.p,n),
+      acm:  a26/Math.pow(1+g.a,n),
     };
   });
   return h;
 }
+
+/* ── Econ score & phase ─────────────────────────────────────────── */
 function econScore(pibG,infl,unemp){
   let s=0.5;
-  if(pibG>=4.5)s+=0.30; else if(pibG>=3.0)s+=0.18; else if(pibG>=1.5)s+=0.08;
-  else if(pibG>=0)s+=0; else if(pibG>=-1)s-=0.12; else s-=0.25;
+  if(pibG>=4.5)s+=0.30;else if(pibG>=3.0)s+=0.18;else if(pibG>=1.5)s+=0.08;
+  else if(pibG>=-1)s-=0.12;else s-=0.25;
   if(infl<50){
-    if(infl<=3.5)s+=0.08; else if(infl<=5)s+=0.04;
-    else if(infl<=8)s-=0.02; else if(infl<=15)s-=0.08; else s-=0.14;
-  } else { s-=0.12; }
-  if(unemp<=3)s+=0.08; else if(unemp<=5)s+=0.04;
-  else if(unemp<=7)s-=0.02; else if(unemp<=10)s-=0.07; else s-=0.13;
+    if(infl<=3.5)s+=0.08;else if(infl<=5)s+=0.04;
+    else if(infl<=8)s-=0.02;else if(infl<=15)s-=0.08;else s-=0.14;
+  }else s-=0.12;
+  if(unemp<=3)s+=0.08;else if(unemp<=5)s+=0.04;
+  else if(unemp<=7)s-=0.02;else if(unemp<=10)s-=0.07;else s-=0.13;
   return Math.max(0.02,Math.min(0.98,s));
 }
 function phaseFromScore(s){
-  if(s<0.22)return{name:'Contracción',  color:'#ef4444'};
-  if(s<0.42)return{name:'Estancamiento',color:'#f97316'};
-  if(s<0.60)return{name:'Recuperación', color:'#eab308'};
-  if(s<0.80)return{name:'Crecimiento',  color:'#84cc16'};
-  return              {name:'Expansión',   color:'#22c55e'};
+  if(s<0.22)return{name:'Contracción',  color:'#ef4444',pct:Math.round(s*100)};
+  if(s<0.44)return{name:'Estancamiento',color:'#f97316',pct:Math.round(s*100)};
+  if(s<0.62)return{name:'Recuperación', color:'#eab308',pct:Math.round(s*100)};
+  if(s<0.80)return{name:'Crecimiento',  color:'#84cc16',pct:Math.round(s*100)};
+  return              {name:'Expansión',  color:'#22c55e',pct:Math.round(s*100)};
 }
 
-/* ── Gauge SVG ─────────────────────────────────────────────────────── */
+/* ── 360° Gauge SVG (270° arc with 90° gap at bottom) ─────────── */
 function makePt(cx,cy,r,deg){
   const rad=deg*Math.PI/180;
   return{x:+(cx+r*Math.cos(rad)).toFixed(2),y:+(cy-r*Math.sin(rad)).toFixed(2)};
@@ -370,182 +499,192 @@ function arcPath(cx,cy,ro,ri,a1,a2){
   const s=makePt(cx,cy,ro,a1),e=makePt(cx,cy,ro,a2);
   const si=makePt(cx,cy,ri,a2),ei=makePt(cx,cy,ri,a1);
   const lg=(a1-a2)>180?1:0;
-  return `M${s.x},${s.y} A${ro},${ro},0,${lg},0,${e.x},${e.y} L${si.x},${si.y} A${ri},${ri},0,${lg},1,${ei.x},${ei.y}Z`;
+  return`M${s.x},${s.y} A${ro},${ro},0,${lg},0,${e.x},${e.y} L${si.x},${si.y} A${ri},${ri},0,${lg},1,${ei.x},${ei.y}Z`;
 }
-function buildGaugeSVG(score){
-  const cx=120,cy=118,ro=88,ri=54;
+function buildGauge360(score){
+  const cx=110,cy=110,ro=90,ri=58;
+  // 270° arc from 225° to -45° (=315°), 4 sectors of 67.5° each
   const sectors=[
-    {a1:180,a2:135,fill:'#ef4444'},
-    {a1:135,a2:90, fill:'#f97316'},
-    {a1:90, a2:45, fill:'#eab308'},
-    {a1:45, a2:0,  fill:'#22c55e'},
-  ].map(s=>`<path d="${arcPath(cx,cy,ro,ri,s.a1,s.a2)}" fill="${s.fill}" opacity="0.82"/>`).join('');
-  // Zone dividers
-  const divs=[0,45,90,135,180].map(deg=>{
-    const p=makePt(cx,cy,ri-2,deg),q=makePt(cx,cy,ro+2,deg);
-    return`<line x1="${p.x}" y1="${p.y}" x2="${q.x}" y2="${q.y}" stroke="#f1f5f9" stroke-width="1.5"/>`;
+    {a1:225,a2:157.5,fill:'#ef4444',label:'C'},  // Contracción
+    {a1:157.5,a2:90, fill:'#f97316',label:'E'},  // Estancamiento
+    {a1:90,  a2:22.5,fill:'#eab308',label:'R'},  // Recuperación
+    {a1:22.5,a2:-45, fill:'#22c55e',label:'X'},  // Expansión
+  ];
+  const arcs=sectors.map(s=>{
+    const lg=(s.a1-s.a2)>180?1:0;
+    return`<path d="${arcPath(cx,cy,ro,ri,s.a1,s.a2)}" fill="${s.fill}" opacity="0.85"/>`;
   }).join('');
-  // Needle
-  const ndeg=180-score*180, nr=ndeg*Math.PI/180;
-  const tip={x:+(cx+76*Math.cos(nr)).toFixed(2),y:+(cy-76*Math.sin(nr)).toFixed(2)};
+  // Dividers
+  const divAngles=[225,157.5,90,22.5,-45];
+  const divs=divAngles.map(deg=>{
+    const p=makePt(cx,cy,ri-1,deg),q=makePt(cx,cy,ro+1,deg);
+    return`<line x1="${p.x}" y1="${p.y}" x2="${q.x}" y2="${q.y}" stroke="#f8fafc" stroke-width="2"/>`;
+  }).join('');
+  // Percentage ticks
+  const tickData=[
+    {a:225,pct:'0%'},{a:157.5,pct:'25%'},{a:90,pct:'50%'},{a:22.5,pct:'75%'},{a:-45,pct:'100%'}
+  ];
+  const ticks=tickData.map(({a,pct})=>{
+    const p=makePt(cx,cy,ro+9,a);
+    return`<text x="${p.x}" y="${p.y}" fill="#94a3b8" font-size="7" text-anchor="middle" dominant-baseline="middle">${pct}</text>`;
+  }).join('');
+  // Phase labels inside sectors
+  const phaseLabels=sectors.map(s=>{
+    const mid=(s.a1+s.a2)/2;
+    const p=makePt(cx,cy,(ro+ri)/2,mid);
+    return`<text x="${p.x}" y="${p.y}" fill="#fff" font-size="7.5" font-weight="700" text-anchor="middle" dominant-baseline="middle">${s.label}</text>`;
+  }).join('');
+  // Needle: angle = 225 - score*270
+  const ndeg=225-score*270;
+  const nr=ndeg*Math.PI/180;
+  const tip={x:+(cx+78*Math.cos(nr)).toFixed(2),y:+(cy-78*Math.sin(nr)).toFixed(2)};
   const pr=nr+Math.PI/2;
-  const n1={x:+(cx+6*Math.cos(pr)).toFixed(2),y:+(cy-6*Math.sin(pr)).toFixed(2)};
-  const n2={x:+(cx-6*Math.cos(pr)).toFixed(2),y:+(cy+6*Math.sin(pr)).toFixed(2)};
+  const n1={x:+(cx+5*Math.cos(pr)).toFixed(2),y:+(cy-5*Math.sin(pr)).toFixed(2)};
+  const n2={x:+(cx-5*Math.cos(pr)).toFixed(2),y:+(cy+5*Math.sin(pr)).toFixed(2)};
   const needle=`<polygon points="${tip.x},${tip.y} ${n1.x},${n1.y} ${n2.x},${n2.y}" fill="#1e293b"/>`;
-  const hub=`<circle cx="${cx}" cy="${cy}" r="7" fill="#1e293b"/>
-             <circle cx="${cx}" cy="${cy}" r="3" fill="#f8fafc"/>`;
-  // Tick marks at quadrant labels
-  const ticks=[157.5,112.5,67.5,22.5].map((deg,i)=>{
-    const labels=['C','E','R','X'],colors=['#ef4444','#f97316','#eab308','#22c55e'];
-    const p=makePt(cx,cy,ri-16,deg);
-    return`<text x="${p.x}" y="${p.y}" fill="${colors[i]}" font-size="8.5" text-anchor="middle" dominant-baseline="middle" font-weight="700">${labels[i]}</text>`;
-  }).join('');
-  return`<svg viewBox="0 0 240 135" width="100%" style="max-width:240px">
-    ${sectors}${divs}${needle}${hub}${ticks}
+  const hub=`<circle cx="${cx}" cy="${cy}" r="7" fill="#1e293b"/><circle cx="${cx}" cy="${cy}" r="3" fill="#f8fafc"/>`;
+  // Score % in center
+  const scoreTxt=`<text x="${cx}" y="${cy+22}" fill="#64748b" font-size="9" text-anchor="middle">${Math.round(score*100)}%</text>`;
+  return`<svg viewBox="0 0 220 145" width="100%" style="max-width:230px">
+    ${arcs}${divs}${ticks}${phaseLabels}${needle}${hub}${scoreTxt}
   </svg>`;
 }
-function updateGauge(tabId,d){
-  const lbl=document.getElementById('gauge-country-label');
-  const container=document.getElementById('gauge-svg-container');
-  const phaseEl=document.getElementById('gauge-phase-text');
-  if(!lbl||!container||!phaseEl)return;
-  lbl.textContent=COUNTRY_MAP[tabId]||tabId;
-  if(!d){container.innerHTML='';phaseEl.textContent='Sin datos';return;}
-  const score=econScore(d.pib_crecimiento,d.inflacion,d.desempleo);
-  const phase=phaseFromScore(score);
-  container.innerHTML=buildGaugeSVG(score);
-  phaseEl.textContent=phase.name;
-  phaseEl.style.color=phase.color;
-}
 
-/* ── Regional bar charts ────────────────────────────────────────────── */
-let regionalCharts={};
-function buildBarChart(canvasId,label,field,data18){
-  if(regionalCharts[canvasId])regionalCharts[canvasId].destroy();
-  // Sort by value descending
-  const sorted=[...data18].sort((a,b)=>parseFloat(b[field])-parseFloat(a[field]));
-  const labels=sorted.map(d=>d.name);
-  const values=sorted.map(d=>parseFloat(d[field]));
-  const colors=values.map(v=>v>=30?'rgba(239,68,68,0.75)':'rgba(79,70,229,0.72)');
-  regionalCharts[canvasId]=new Chart(document.getElementById(canvasId).getContext('2d'),{
+/* ── Per-country CAGR grouped bar chart (2021-2026) ─────────────── */
+function renderCAGRChart(tabId,history,currCode){
+  const cid='cagr-'+tabId;
+  destroyChart(cid);
+  const canvas=document.getElementById(cid);
+  if(!canvas)return;
+  const years=[2021,2022,2023,2024,2025,2026];
+  const labels=years.map(y=>y===2026?'2026':y+'*');
+  charts[cid]=new Chart(canvas.getContext('2d'),{
     type:'bar',
     data:{
       labels,
-      datasets:[{
-        label,data:values,backgroundColor:colors,borderRadius:3,
-        borderColor:colors.map(c=>c.replace('0.72','1').replace('0.75','1')),borderWidth:1,
-      }],
-    },
-    options:{
-      indexAxis:'y',responsive:true,
-      plugins:{
-        legend:{display:false},
-        tooltip:{
-          backgroundColor:'#1e293b',titleColor:'#f1f5f9',bodyColor:'#94a3b8',
-          callbacks:{label:ctx=>` ${ctx.raw.toFixed(1)}% CAGR${ctx.raw>=30?' (nominal)':''}`},
-        },
-      },
-      scales:{
-        x:{
-          ticks:{color:'#94a3b8',font:{size:10},callback:v=>v+'%'},
-          grid:{color:'rgba(0,0,0,0.06)'},
-          title:{display:true,text:'CAGR %',color:'#94a3b8',font:{size:10}},
-        },
-        y:{ticks:{color:'#475569',font:{size:11}},grid:{display:false}},
-      },
-    },
-  });
-}
-function renderRegionalCharts(){
-  const data18=Object.keys(COUNTRY_MAP).map(tabId=>{
-    const g=GR[tabId]||{v:0.07,p:0.07,a:0.07};
-    // Prefer real CAGR from dashboardData if available
-    const d=dashboardData[tabId];
-    return{
-      tabId,name:COUNTRY_MAP[tabId],
-      plazo: d ? parseFloat(d.cagr_plazo||+(g.p*100).toFixed(1)) : +(g.p*100).toFixed(1),
-      vista: d ? parseFloat(d.cagr_vista||+(g.v*100).toFixed(1)) : +(g.v*100).toFixed(1),
-      acm:   d ? parseFloat(d.cagr      ||+(g.a*100).toFixed(1)) : +(g.a*100).toFixed(1),
-    };
-  });
-  buildBarChart('chart-cagr-plazo','CAGR Dep. Plazo','plazo',data18);
-  buildBarChart('chart-cagr-vista','CAGR Dep. Vista','vista',data18);
-  buildBarChart('chart-cagr-acm',  'CAGR ACM',       'acm',  data18);
-}
-
-/* ── Evolution chart ───────────────────────────────────────────────── */
-function renderEvoChart(tabId,history,currCode){
-  if(evoCharts[tabId])evoCharts[tabId].destroy();
-  const canvas=document.getElementById('evo-'+tabId);
-  if(!canvas)return;
-  const labels=['2023*','2024*','2025*','2026'];
-  evoCharts[tabId]=new Chart(canvas.getContext('2d'),{
-    type:'line',
-    data:{
-      labels,
       datasets:[
-        {label:'Vista',data:[2023,2024,2025,2026].map(y=>history[y].vista),
-         borderColor:'#4f46e5',backgroundColor:'rgba(79,70,229,0.12)',fill:true,tension:0.35,
-         pointRadius:[3,3,3,6],pointBackgroundColor:['#4f46e5','#4f46e5','#4f46e5','#818cf8'],borderWidth:2},
-        {label:'Plazo',data:[2023,2024,2025,2026].map(y=>history[y].plazo),
-         borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.10)',fill:true,tension:0.35,
-         pointRadius:[3,3,3,6],pointBackgroundColor:['#10b981','#10b981','#10b981','#6ee7b7'],borderWidth:2},
+        {label:'Vista',data:years.map(y=>history[y].vista),
+         backgroundColor:'rgba(79,70,229,0.75)',borderRadius:3,borderWidth:0},
+        {label:'Plazo',data:years.map(y=>history[y].plazo),
+         backgroundColor:'rgba(16,185,129,0.75)',borderRadius:3,borderWidth:0},
+        {label:'AUM',data:years.map(y=>history[y].acm),
+         backgroundColor:'rgba(245,158,11,0.65)',borderRadius:3,borderWidth:0},
       ],
     },
     options:{
       responsive:true,
       interaction:{mode:'index',intersect:false},
       plugins:{
-        legend:{labels:{color:'#64748b',font:{size:11},boxWidth:12,padding:12}},
+        legend:{labels:{color:'#64748b',font:{size:11},boxWidth:10,padding:10}},
         tooltip:{
-          backgroundColor:'#1e293b',titleColor:'#f8fafc',bodyColor:'#94a3b8',borderColor:'#334155',borderWidth:1,
-          callbacks:{label:ctx=>` ${ctx.dataset.label}: ${Number(ctx.raw).toLocaleString('es-MX',{maximumFractionDigits:0})} M ${currCode}`},
+          backgroundColor:'#1e293b',titleColor:'#f8fafc',bodyColor:'#94a3b8',
+          callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmtAx(ctx.raw)} M ${currCode}`},
         },
+        title:{display:true,text:`Tendencia 5 años — mill. ${currCode} (*est.)`,color:'#94a3b8',font:{size:10},padding:{bottom:8}},
       },
       scales:{
-        x:{ticks:{color:'#94a3b8',font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}},
-        y:{ticks:{color:'#94a3b8',font:{size:10},callback:fmtAx},grid:{color:'rgba(0,0,0,0.05)'}},
+        x:{ticks:{color:'#94a3b8',font:{size:10}},grid:{display:false}},
+        y:{ticks:{color:'#94a3b8',font:{size:10},callback:fmtAx},grid:{color:'rgba(0,0,0,0.04)'}},
       },
     },
   });
 }
 
-/* ── Per-country render ─────────────────────────────────────────────── */
+/* ── Market share pie chart ─────────────────────────────────────── */
+function renderPieChart(tabId,actors){
+  const cid='pie-'+tabId;
+  destroyChart(cid);
+  const canvas=document.getElementById(cid);
+  if(!canvas)return;
+  const top10=actors.slice(0,10);
+  const COLORS=['#4f46e5','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#84cc16','#f97316','#ec4899','#6366f1'];
+  charts[cid]=new Chart(canvas.getContext('2d'),{
+    type:'doughnut',
+    data:{
+      labels:top10.map(a=>a.nombre),
+      datasets:[{data:top10.map(a=>a.cuota),backgroundColor:COLORS,borderWidth:2,borderColor:'#fff'}],
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#1e293b',titleColor:'#f8fafc',bodyColor:'#94a3b8',
+          callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw}%`},
+        },
+      },
+      cutout:'60%',
+    },
+  });
+  // Custom legend below canvas
+  const legendEl=document.getElementById('pie-legend-'+tabId);
+  if(legendEl){
+    legendEl.innerHTML=top10.map((a,i)=>
+      `<div style="display:flex;align-items:center;gap:5px;font-size:10.5px;color:#475569">
+         <span style="width:9px;height:9px;background:${COLORS[i]};border-radius:2px;flex-shrink:0"></span>
+         <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.nombre} <b>${a.cuota}%</b></span>
+       </div>`
+    ).join('');
+  }
+}
+
+/* ── Per-country render ─────────────────────────────────────────── */
 function renderDashboard(tabId,d){
   const el=document.getElementById(tabId);
-  if(!d){el.innerHTML='<p class="no-data">Sin datos en Supabase.</p>';return;}
+  if(!d){el.innerHTML='<p class="no-data">Sin datos en Supabase para este país.</p>';return;}
   const cur=CURRENCIES[tabId];
   const rate=(!cur.dol&&exchangeRates)?exchangeRates[cur.code]:null;
+
+  /* Rate bar */
   let rateHtml='';
   if(cur.dol){
     rateHtml=`<div class="rate-bar"><span class="rate-label">💱 Economía dolarizada (USD)</span><span class="rate-source">Sin conversión necesaria</span></div>`;
   }else if(rate){
     const fmtR=Number(rate).toLocaleString('es-MX',{maximumFractionDigits:2});
-    const rateDateStr=exchangeRateDates[cur.code]||rateDate;
-    const fromSupabase=!!exchangeRateDates[cur.code];
-    const srcHtml=fromSupabase?'Banco Central (Supabase)':`<a href="https://open.er-api.com" target="_blank">open.er-api.com</a>`;
-    rateHtml=`<div class="rate-bar"><span class="rate-label">💱 1 USD = <strong>${fmtR} ${cur.code}</strong></span><span class="rate-source">Fuente: ${srcHtml}${rateDateStr?' · Actualizado: '+rateDateStr:''}</span></div>`;
+    const rds=exchangeRateDates[cur.code]||rateDate;
+    const fromSB=!!exchangeRateDates[cur.code];
+    const srcHtml=fromSB?'Banco Central (Supabase)':`<a href="https://open.er-api.com" target="_blank">open.er-api.com</a>`;
+    rateHtml=`<div class="rate-bar"><span class="rate-label">💱 1 USD = <strong>${fmtR} ${cur.code}</strong></span><span class="rate-source">Fuente: ${srcHtml}${rds?' · '+rds:''}</span></div>`;
   }else{
     rateHtml=`<div class="rate-bar"><span class="rate-label">💱 ${cur.code}</span><span class="rate-source">Tipo de cambio no disponible</span></div>`;
   }
-  const bcLabel=d.tasa_bc>0?`Tasa BC: ${d.tasa_bc}%`:'Dolarizado';
-  const fecha=d.fecha?new Date(d.fecha).toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric'}):null;
+
+  /* Macro pills */
+  const bcLabel=d.tasa_bc>0?`${d.tasa_bc}%`:'—';
+  const pibClass=d.pib_crecimiento>=3?'green':d.pib_crecimiento>=0?'amber':'red';
+  const inflClass=d.inflacion<=5?'green':d.inflacion<=10?'amber':'red';
+  const macroHtml=`<div class="macro-pills">
+    <div class="pill"><span class="pill-label">PIB</span><span class="pill-value">$${fmt(d.pib)}B USD</span></div>
+    <div class="pill"><span class="pill-label">Crec. PIB</span><span class="pill-value ${pibClass}">${d.pib_crecimiento}%</span></div>
+    <div class="pill"><span class="pill-label">Inflación</span><span class="pill-value ${inflClass}">${d.inflacion}%</span></div>
+    <div class="pill"><span class="pill-label">Tasa BC</span><span class="pill-value">${bcLabel}</span></div>
+    <div class="pill"><span class="pill-label">Desempleo</span><span class="pill-value">${d.desempleo}%</span></div>
+    <div class="pill"><span class="pill-label">Bancarización</span><span class="pill-value">${d.bancarizacion}%</span></div>
+    <div class="pill"><span class="pill-label">Población</span><span class="pill-value">${fmtAx(d.poblacion)}</span></div>
+    <div class="pill"><span class="pill-label">CAGR 5Y</span><span class="pill-value green">${d.cagr5y||'—'}%</span></div>
+  </div>`;
+
+  /* Table rows */
+  const fecha=d.fecha?new Date(d.fecha).toLocaleDateString('es-MX',{year:'numeric',month:'short',day:'numeric'}):null;
   const srcLinks=(SOURCES[tabId]||[]).map(([n,u])=>`<a href="${u}" target="_blank">${n}</a>`).join(' · ');
   const showUsd=!cur.dol&&rate;
-  const usdTh=showUsd?`<th>ACM (USD M)</th>`:'';
+  const usdTh=showUsd?`<th>USD M</th>`:'';
   const rows=d.actors.map(a=>{
     const usdTd=showUsd?`<td class="usd-col">$${fmt(Math.round(a.acm/rate))}</td>`:'';
-    return`<tr><td>${a.nombre}</td><td>${fmt(a.vista)}</td><td>${fmt(a.plazo)}</td><td>${fmt(a.acm)}</td>${usdTd}<td>${a.cuota}%</td></tr>`;
+    return`<tr><td>${a.nombre}</td><td>${fmt(a.vista)}</td><td>${fmt(a.plazo)}</td><td>${fmt(a.acm)}</td>${usdTd}<td><b>${a.cuota}%</b></td></tr>`;
   }).join('');
+
   el.innerHTML=`
     ${rateHtml}
-    <div class="detail-row">
-      <div class="chart-card" style="padding:16px">
-        <div class="chart-card-title">Ciclo Económico</div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:6px">
-          <div id="gauge-local-${tabId}"></div>
-          <div id="gauge-local-phase-${tabId}" style="font-size:13px;font-weight:700;text-align:center;margin-top:2px"></div>
-          <div class="gauge-legend" style="margin-top:4px">
+    ${macroHtml}
+    <div class="row-charts">
+      <div class="card">
+        <div class="card-title">Ciclo Económico</div>
+        <div class="gauge-wrap">
+          <div id="gauge-${tabId}"></div>
+          <div id="gphase-${tabId}" class="gauge-phase"></div>
+          <div id="gpct-${tabId}" class="gauge-pct"></div>
+          <div class="gauge-legend">
             <span><i style="background:#ef4444"></i>Contracción</span>
             <span><i style="background:#f97316"></i>Estancamiento</span>
             <span><i style="background:#eab308"></i>Recuperación</span>
@@ -553,33 +692,47 @@ function renderDashboard(tabId,d){
           </div>
         </div>
       </div>
-      <div class="evo-card">
-        <div class="evo-title">Evolución Depósitos — ${COUNTRY_MAP[tabId]} (mill. ${cur.code})</div>
-        <canvas id="evo-${tabId}" height="160"></canvas>
-        <p class="chart-note">*2023–2025 estimado con tendencia histórica · 2026 fuentes oficiales</p>
+      <div class="card">
+        <div class="card-title">Evolución Depósitos 2021–2026 · Vista / Plazo / AUM</div>
+        <canvas id="cagr-${tabId}" height="175"></canvas>
       </div>
     </div>
-    <div class="table-container">
-      <div class="table-header">
-        <h2>Principales Actores Bancarios</h2>
-        <div class="meta">${fecha?`Actualizado: ${fecha}<br>`:''}${srcLinks?`Fuentes: ${srcLinks}`:''}</div>
+    <div class="row-table">
+      <div class="card">
+        <div class="table-hdr">
+          <h2>Actores del Sistema Bancario</h2>
+          <div class="meta-box">${fecha?`Act: ${fecha}<br>`:''}${srcLinks?`Fuentes: ${srcLinks}`:''}</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Institución</th><th>Vista (${cur.code}M)</th><th>Plazo (${cur.code}M)</th><th>AUM (${cur.code}M)</th>${usdTh}<th>Cuota</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+        <p class="chart-note">Incluye bancos, cooperativas y fondos de ahorro · *2021–2025 est. con tendencia histórica</p>
       </div>
-      <table>
-        <thead><tr><th>Banco</th><th>Vista (${cur.code}M)</th><th>Plazo (${cur.code}M)</th><th>ACM (${cur.code}M)</th>${usdTh}<th>Cuota</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
+      <div class="card pie-card">
+        <div class="card-title">Cuota de Mercado (AUM)</div>
+        <canvas id="pie-${tabId}" height="190"></canvas>
+        <div id="pie-legend-${tabId}" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin-top:10px;width:100%"></div>
+      </div>
     </div>`;
-  renderEvoChart(tabId,d.history,cur.code);
-  // Local gauge
+
+  /* Render charts */
   const score=econScore(d.pib_crecimiento,d.inflacion,d.desempleo);
   const phase=phaseFromScore(score);
-  const lc=document.getElementById('gauge-local-'+tabId);
-  const lp=document.getElementById('gauge-local-phase-'+tabId);
-  if(lc)lc.innerHTML=buildGaugeSVG(score);
-  if(lp){lp.textContent=phase.name;lp.style.color=phase.color;}
+  const gEl=document.getElementById('gauge-'+tabId);
+  const gpEl=document.getElementById('gphase-'+tabId);
+  const gpcEl=document.getElementById('gpct-'+tabId);
+  if(gEl)gEl.innerHTML=buildGauge360(score);
+  if(gpEl){gpEl.textContent=phase.name;gpEl.style.color=phase.color;}
+  if(gpcEl)gpcEl.textContent=`Índice: ${phase.pct}/100`;
+
+  renderCAGRChart(tabId,d.history,cur.code);
+  renderPieChart(tabId,d.actors);
 }
 
-/* ── Tab switch ─────────────────────────────────────────────────────── */
+/* ── Tab switch ─────────────────────────────────────────────────── */
 window.showCountry=function(country,btn){
   document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -588,30 +741,25 @@ window.showCountry=function(country,btn){
   activeCountry=country;
   if(dashboardData[country]!==undefined){
     renderDashboard(country,dashboardData[country]);
-    updateGauge(country,dashboardData[country]);
   }
-  // Refresh country news panel
   const ct=document.getElementById('news-country-title');
   if(ct)ct.textContent=COUNTRY_MAP[country]||country;
-  const term=NEWS_TERMS[country]||'economía LATAM banco';
-  fetchNews(term,'news-country');
+  fetchNews(NEWS_TERMS[country]||'economía LATAM banco','news-country');
 };
 
-/* ── Data loading ───────────────────────────────────────────────────── */
+/* ── Data loading ────────────────────────────────────────────────── */
 async function loadRates(){
-  // Try Supabase exchange_rates table first (populated by auto_update_exchange_rates.py)
   try{
     const {data}=await supabase.from('exchange_rates').select('*');
     if(data&&data.length>0){
       exchangeRates={};
       data.forEach(r=>{
         exchangeRates[r.currency_code]=r.rate_usd;
-        exchangeRateDates[r.currency_code]=new Date(r.last_updated).toLocaleString('es-MX',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+        exchangeRateDates[r.currency_code]=new Date(r.last_updated).toLocaleString('es-MX',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
       });
       return;
     }
-  }catch(e){console.warn('Supabase FX failed',e);}
-  // Fallback: open.er-api.com live
+  }catch(e){console.warn('Supabase FX',e);}
   try{
     const r=await fetch('https://open.er-api.com/v6/latest/USD');
     const j=await r.json();
@@ -619,7 +767,7 @@ async function loadRates(){
       exchangeRates=j.rates;
       rateDate=j.time_last_update_utc?new Date(j.time_last_update_utc).toLocaleDateString('es-MX'):null;
     }
-  }catch(e){console.warn('FX fetch failed',e);}
+  }catch(e){console.warn('FX fallback',e);}
 }
 async function loadSupabase(){
   const [{data:countries},{data:actors}]=await Promise.all([
@@ -632,72 +780,59 @@ async function loadSupabase(){
     const ca=(actors||[]).filter(a=>a.country===countryName).map(a=>({
       nombre:a.nombre_actor,vista:a.depositos_vista,plazo:a.depositos_plazo,acm:a.acm,cuota:a.cuota_mercado,
     }));
-    const hist=buildHist(tabId,ca);
+    const hist=buildHist5(tabId,ca);
+    const c5y=cagrPct(hist[2021].acm,hist[2026].acm);
     dashboardData[tabId]={
       pib:c.pib,pib_crecimiento:c.pib_crecimiento,inflacion:c.inflacion,
       tasa_bc:c.tasa_bc,desempleo:c.desempleo,poblacion:c.poblacion,bancarizacion:c.bancarizacion,
-      fecha:c.fecha_actualizacion,actors:ca,history:hist,
-      cagr:     cagr(hist[2023].acm,   hist[2026].acm),
-      cagr_vista:cagr(hist[2023].vista, hist[2026].vista),
-      cagr_plazo:cagr(hist[2023].plazo, hist[2026].plazo),
+      fecha:c.fecha_actualizacion,actors:ca,history:hist,cagr5y:c5y,
     };
   }
 }
 
-/* ── News feed ──────────────────────────────────────────────────────── */
-const NEWS_TERMS={
-  Mexico:'economía México banco finanzas',Chile:'economía Chile banco finanzas',
-  Colombia:'economía Colombia banco finanzas',Brasil:'economía Brasil banco finanzas',
-  Argentina:'economía Argentina banco finanzas',Peru:'economía Perú banco finanzas',
-  Ecuador:'economía Ecuador banco',Bolivia:'economía Bolivia banco',
-  Paraguay:'economía Paraguay banco',Uruguay:'economía Uruguay banco',
-  Venezuela:'economía Venezuela banco',Guatemala:'economía Guatemala banco',
-  Honduras:'economía Honduras banco',ElSalvador:'economía El Salvador banco',
-  Nicaragua:'economía Nicaragua banco',Panama:'economía Panamá banco',
-  CostaRica:'economía Costa Rica banco',RepDominicana:'economía República Dominicana',
-};
+/* ── Online indicator ────────────────────────────────────────────── */
+function setOnline(){
+  const ts=new Date().toLocaleString('es-MX',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  ['online-ts','online-ts-nav'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='Actualizado: '+ts;});
+}
+
+/* ── News ────────────────────────────────────────────────────────── */
 async function fetchNews(query,containerId){
-  const container=document.getElementById(containerId);
-  if(!container)return;
-  const rssUrl=`https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=es-419&gl=US&ceid=US:es-419`;
-  const proxyUrl=`https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
+  const c=document.getElementById(containerId);if(!c)return;
+  const rss=`https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=es-419&gl=US&ceid=US:es-419`;
+  const url=`https://api.allorigins.win/get?url=${encodeURIComponent(rss)}`;
   try{
-    const r=await fetch(proxyUrl,{signal:AbortSignal.timeout(15000)});
+    const r=await fetch(url,{signal:AbortSignal.timeout(15000)});
     const j=await r.json();
     const xml=new DOMParser().parseFromString(j.contents,'text/xml');
     const items=[...xml.querySelectorAll('item')].slice(0,8);
-    if(!items.length){container.innerHTML='<div class="news-loading">Sin resultados.</div>';return;}
-    container.innerHTML=items.map(item=>{
+    if(!items.length){c.innerHTML='<div class="news-loading">Sin resultados.</div>';return;}
+    c.innerHTML=items.map(item=>{
       const title=(item.querySelector('title')?.textContent||'Sin título').replace(/<[^>]+>/g,'');
       const link=item.querySelector('link')?.textContent||'#';
-      const pubDate=item.querySelector('pubDate')?.textContent||'';
-      const dateStr=pubDate?new Date(pubDate).toLocaleString('es-MX',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+      const pub=item.querySelector('pubDate')?.textContent||'';
+      const ds=pub?new Date(pub).toLocaleString('es-MX',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
       const src=item.querySelector('source')?.textContent||'';
-      return`<div class="news-item"><div class="news-headline"><a href="${link}" target="_blank" rel="noopener noreferrer">${title}</a></div><div class="news-meta">${src?src+' · ':''}${dateStr}</div></div>`;
+      return`<div class="news-item"><div class="news-headline"><a href="${link}" target="_blank" rel="noopener">${title}</a></div><div class="news-meta">${src?src+' · ':''}${ds}</div></div>`;
     }).join('');
-  }catch(e){
-    container.innerHTML='<div class="news-loading">No disponible.</div>';
-    console.warn('News fetch error',e);
-  }
+  }catch(e){c.innerHTML='<div class="news-loading">No disponible.</div>';}
 }
 async function refreshNews(){
-  const term=NEWS_TERMS[activeCountry]||'economía LATAM banco';
   const ct=document.getElementById('news-country-title');
   if(ct)ct.textContent=COUNTRY_MAP[activeCountry]||activeCountry;
   await Promise.all([
     fetchNews('banca central economía global finanzas inflación','news-global'),
-    fetchNews(term,'news-country'),
+    fetchNews(NEWS_TERMS[activeCountry]||'economía LATAM banco','news-country'),
   ]);
   const el=document.getElementById('news-last-update');
   if(el)el.textContent=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
 }
 
-/* ── Init ───────────────────────────────────────────────────────────── */
+/* ── Init ────────────────────────────────────────────────────────── */
 async function init(){
   await Promise.all([loadRates(),loadSupabase()]);
-  renderRegionalCharts();
+  setOnline();
   renderDashboard(activeCountry,dashboardData[activeCountry]);
-  updateGauge(activeCountry,dashboardData[activeCountry]);
   refreshNews();
   setInterval(refreshNews,30*60*1000);
 }
