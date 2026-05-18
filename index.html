@@ -762,72 +762,77 @@ function renderSparkline(cid,data,hexColor){
 }
 
 /* ── Dual-line deposits chart (Plazo + Inversión/AUM) ───────────── */
-function renderDepositsChart(tabId,history,currCode){
-  const cid='dep-'+tabId;
-  destroyChart(cid);
-  const canvas=document.getElementById(cid);if(!canvas)return;
+/* ── Static SVG deposits chart (Plazo + Inversión/AUM) ──────────── */
+function buildDepositsSVG(history,currCode){
   const yrs=[2021,2022,2023,2024,2025,2026];
-  const labels=yrs.map(y=>y===2026?'2026':y+'*');
-  charts[cid]=new Chart(canvas.getContext('2d'),{
-    type:'line',
-    data:{
-      labels,
-      datasets:[
-        {
-          label:'Dep. Plazo',
-          data:yrs.map(y=>history[y].plazo),
-          borderColor:'#10b981',
-          backgroundColor:'rgba(16,185,129,0.10)',
-          borderWidth:2.5,
-          fill:true,
-          tension:0.35,
-          pointRadius:yrs.map(y=>y===2026?5:0),
-          pointBackgroundColor:'#10b981',
-        },
-        {
-          label:'Inversión / AUM',
-          data:yrs.map(y=>history[y].acm),
-          borderColor:'#f59e0b',
-          backgroundColor:'rgba(245,158,11,0.08)',
-          borderWidth:2.5,
-          fill:true,
-          tension:0.35,
-          pointRadius:yrs.map(y=>y===2026?5:0),
-          pointBackgroundColor:'#f59e0b',
-          borderDash:[],
-        },
-      ],
-    },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      interaction:{mode:'index',intersect:false},
-      plugins:{
-        legend:{
-          position:'top',
-          labels:{color:'#64748b',font:{size:10},boxWidth:10,padding:10,usePointStyle:true,pointStyleWidth:7},
-        },
-        tooltip:{
-          backgroundColor:'#1e293b',titleColor:'#f8fafc',bodyColor:'#94a3b8',padding:8,
-          callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmtAx(ctx.raw)} M ${currCode}`},
-        },
-        title:{display:false},
-      },
-      scales:{
-        x:{
-          ticks:{color:'#94a3b8',font:{size:10}},
-          grid:{color:'rgba(0,0,0,0.03)'},
-          border:{dash:[3,3]},
-        },
-        y:{
-          beginAtZero:true,
-          grace:'8%',
-          ticks:{color:'#94a3b8',font:{size:10},callback:fmtAx,maxTicksLimit:5},
-          grid:{color:'rgba(0,0,0,0.04)'},
-        },
-      },
-    },
-  });
+  const pl=yrs.map(y=>history[y].plazo);
+  const au=yrs.map(y=>history[y].acm);
+  const maxV=Math.max(...pl,...au)||1;
+
+  // Layout constants
+  const W=480,H=180,pL=50,pR=14,pT=26,pB=26;
+  const pw=W-pL-pR, ph=H-pT-pB; // plot area: 416 × 128
+  const bY=pT+ph;                 // baseline y = 154
+
+  // Coordinate helpers
+  const xp=i=>(pL+i*pw/5).toFixed(1);
+  const yp=v=>(pT+ph*(1-v/maxV*0.9)).toFixed(1); // 10% headroom at top
+
+  // Polyline points
+  const pts=arr=>arr.map((v,i)=>`${xp(i)},${yp(v)}`).join(' ');
+
+  // Closed area polygon
+  const area=arr=>pts(arr)+` ${xp(5)},${bY} ${xp(0)},${bY}`;
+
+  // Smooth cubic bezier path through points
+  const smooth=arr=>{
+    let d=`M${xp(0)} ${yp(arr[0])}`;
+    for(let i=1;i<arr.length;i++){
+      const x0=+xp(Math.max(0,i-2)),y0=+yp(arr[Math.max(0,i-2)]);
+      const x1=+xp(i-1),y1=+yp(arr[i-1]);
+      const x2=+xp(i),y2=+yp(arr[i]);
+      const x3=+xp(Math.min(5,i+1)),y3=+yp(arr[Math.min(5,i+1)]);
+      const t=0.35;
+      const cp1x=(x1+(x2-x0)*t).toFixed(1),cp1y=(y1+(y2-y0)*t).toFixed(1);
+      const cp2x=(x2-(x3-x1)*t).toFixed(1),cp2y=(y2-(y3-y1)*t).toFixed(1);
+      d+=` C${cp1x} ${cp1y} ${cp2x} ${cp2y} ${x2} ${y2}`;
+    }
+    return d;
+  };
+
+  // Y-axis ticks at 0 / 25 / 50 / 75 % of maxV
+  const gridSvg=[0,0.25,0.5,0.75].map(f=>{
+    const v=maxV*f, y=yp(v);
+    return `<line x1="${pL}" y1="${y}" x2="${W-pR}" y2="${y}" stroke="#f1f5f9" stroke-width="1"/>
+<text x="${pL-4}" y="${y}" fill="#94a3b8" font-size="9" text-anchor="end" dominant-baseline="middle">${fmtAx(v)}</text>`;
+  }).join('');
+
+  // X-axis year labels
+  const xLabels=['21*','22*','23*','24*','25*','26'].map((l,i)=>
+    `<text x="${xp(i)}" y="${H-8}" fill="#94a3b8" font-size="9" text-anchor="middle">${l}</text>`
+  ).join('');
+
+  // Smooth area fills (AUM first so Plazo renders on top)
+  const auPath=smooth(au);
+  const plPath=smooth(pl);
+  const auArea=`${auPath} L${xp(5)} ${bY} L${xp(0)} ${bY} Z`;
+  const plArea=`${plPath} L${xp(5)} ${bY} L${xp(0)} ${bY} Z`;
+
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" style="display:block">
+  ${gridSvg}
+  <path d="${auArea}" fill="rgba(245,158,11,.09)"/>
+  <path d="${plArea}" fill="rgba(16,185,129,.12)"/>
+  <path d="${auPath}" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="${plPath}" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <circle cx="${xp(5)}" cy="${yp(au[5])}" r="4.5" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
+  <circle cx="${xp(5)}" cy="${yp(pl[5])}" r="4.5" fill="#10b981" stroke="#fff" stroke-width="2"/>
+  ${xLabels}
+  <rect x="${pL}" y="8" width="9" height="9" rx="2" fill="#10b981"/>
+  <text x="${pL+12}" y="16" fill="#475569" font-size="10" font-weight="600">Dep. Plazo</text>
+  <rect x="${pL+90}" y="8" width="9" height="9" rx="2" fill="#f59e0b"/>
+  <text x="${pL+102}" y="16" fill="#475569" font-size="10" font-weight="600">Inversión / AUM</text>
+  <text x="${W-pR}" y="16" fill="#cbd5e1" font-size="8" text-anchor="end">mill. ${currCode} · *est.</text>
+</svg>`;
 }
 
 /* ── Per-country render ─────────────────────────────────────────── */
@@ -945,7 +950,7 @@ function renderDashboard(tabId,d){
       </div>
       <div class="card">
         <div class="card-title">Depósitos Plazo + Inversión / AUM · 2021–2026</div>
-        <canvas id="dep-${tabId}" style="height:180px;max-height:180px"></canvas>
+        <div id="dep-${tabId}"></div>
       </div>
     </div>
     <div class="card" style="margin-bottom:14px">
@@ -981,8 +986,10 @@ function renderDashboard(tabId,d){
   renderSparkline(`sp-desemp-${tabId}`,mh.desempData, '#f59e0b');
   renderSparkline(`sp-cagr-${tabId}`,  cagrLine,      '#22c55e');
 
-  /* Dual-line deposits chart */
-  renderDepositsChart(tabId,d.history,cur.code);
+  /* SVG deposits chart */
+  destroyChart('dep-'+tabId); // clean up any leftover Chart.js instance
+  const depEl=document.getElementById('dep-'+tabId);
+  if(depEl)depEl.innerHTML=buildDepositsSVG(d.history,cur.code);
 }
 
 /* ── Tab switch ─────────────────────────────────────────────────── */
