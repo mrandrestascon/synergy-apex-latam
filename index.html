@@ -146,9 +146,10 @@ tr:hover td{background:#f8fafc}
   <div class="ticker-items" id="ticker-items">
     <div class="ticker-item"><span class="ticker-name">S&amp;P 500</span><span class="ticker-price" id="tk-spx">—</span><span class="ticker-chg flat" id="tkc-spx">—</span></div>
     <div class="ticker-item"><span class="ticker-name">BTC/USD</span><span class="ticker-price" id="tk-btc">—</span><span class="ticker-chg flat" id="tkc-btc">—</span></div>
-    <div class="ticker-item"><span class="ticker-name">XRP/USD</span><span class="ticker-price" id="tk-xrp">—</span><span class="ticker-chg flat" id="tkc-xrp">—</span></div>
     <div class="ticker-item"><span class="ticker-name">EUR/USD</span><span class="ticker-price" id="tk-eur">—</span><span class="ticker-chg flat" id="tkc-eur">—</span></div>
     <div class="ticker-item"><span class="ticker-name">USD/COP</span><span class="ticker-price" id="tk-cop">—</span><span class="ticker-chg flat" id="tkc-cop">—</span></div>
+    <div class="ticker-item"><span class="ticker-name">USD/PEN</span><span class="ticker-price" id="tk-pen">—</span><span class="ticker-chg flat" id="tkc-pen">—</span></div>
+    <div class="ticker-item"><span class="ticker-name">USD/BRL</span><span class="ticker-price" id="tk-brl">—</span><span class="ticker-chg flat" id="tkc-brl">—</span></div>
     <div class="ticker-item"><span class="ticker-name">XAU/USD</span><span class="ticker-price" id="tk-xau">—</span><span class="ticker-chg flat" id="tkc-xau">—</span></div>
   </div>
 </div>
@@ -927,7 +928,7 @@ function refreshNews(){
 }
 
 /* ── Ticker ──────────────────────────────────────────────────────── */
-const TICKER_FB={spx:{v:5840,c:0.42},btc:{v:103450,c:1.18},xrp:{v:2.42,c:-0.84},eur:{v:1.0834,c:0.09},cop:{v:4195,c:-0.31},xau:{v:3285,c:0.53}};
+const TICKER_FB={spx:{v:5840,c:0.42},btc:{v:103450,c:1.18},eur:{v:1.0834,c:0.09},cop:{v:4195,c:-0.31},pen:{v:3.72,c:0.05},brl:{v:5.72,c:-0.18},xau:{v:3285,c:0.53}};
 
 function setTicker(id,price,chgPct,decimals,prefix){
   const pEl=document.getElementById('tk-'+id);
@@ -945,25 +946,27 @@ async function loadTicker(){
   // Seed with fallback immediately so ticker shows values on load
   setTicker('spx',fb.spx.v,fb.spx.c,2,'');
   setTicker('btc',fb.btc.v,fb.btc.c,0,'$');
-  setTicker('xrp',fb.xrp.v,fb.xrp.c,4,'$');
   setTicker('eur',fb.eur.v,fb.eur.c,4,'');
-  setTicker('cop',fb.cop.v,fb.cop.c,0,'');
+  setTicker('cop',fb.cop.v,fb.cop.c,2,'');
+  setTicker('pen',fb.pen.v,fb.pen.c,4,'');
+  setTicker('brl',fb.brl.v,fb.brl.c,4,'');
   setTicker('xau',fb.xau.v,fb.xau.c,0,'$');
 
   // Crypto: Binance public API (no key, CORS enabled)
   try{
-    const r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=["BTCUSDT","XRPUSDT"]',{signal:AbortSignal.timeout(7000)});
+    const r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=["BTCUSDT"]',{signal:AbortSignal.timeout(7000)});
     const arr=await r.json();
     arr.forEach(t=>{
       if(t.symbol==='BTCUSDT') setTicker('btc',+t.lastPrice,+t.priceChangePercent,0,'$');
-      if(t.symbol==='XRPUSDT') setTicker('xrp',+t.lastPrice,+t.priceChangePercent,4,'$');
     });
   }catch(_){}
 
   // FX: reuse exchangeRates already loaded from Supabase/open.er-api.com
   if(exchangeRates){
     if(exchangeRates.EUR) setTicker('eur',+(1/exchangeRates.EUR).toFixed(4),0,4,'');
-    if(exchangeRates.COP) setTicker('cop',+exchangeRates.COP.toFixed(0),0,0,'');
+    if(exchangeRates.COP) setTicker('cop',+exchangeRates.COP.toFixed(2),0,2,'');
+    if(exchangeRates.PEN) setTicker('pen',+exchangeRates.PEN.toFixed(4),0,4,'');
+    if(exchangeRates.BRL) setTicker('brl',+exchangeRates.BRL.toFixed(4),0,4,'');
   }
 
   // Gold: metals.live free endpoint
