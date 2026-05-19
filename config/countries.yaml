@@ -1,0 +1,777 @@
+# ══════════════════════════════════════════════════════════════════════════
+# SynerGy Apex LATAM — Master Source Configuration
+# Every country, every indicator, every official source.
+#
+# Source types:
+#   api          — HTTP endpoint, structured JSON/XML
+#   csv_download — Downloadable CSV file
+#   xls_download — Downloadable Excel file
+#   web_scrape   — HTML parsing required
+#   manual       — No automation possible; value must be entered manually
+#
+# accessible: true  → pipeline can fetch automatically
+# accessible: false → mark as MISSING in output, use last known value
+#
+# fallback: supabase → on failure, use existing Supabase value
+# ══════════════════════════════════════════════════════════════════════════
+
+defaults:
+  currency_macro: USD        # All macro values stored in B USD
+  currency_deposits: local   # Deposit values in millions of local currency
+  cagr_years: 5              # Default CAGR window
+  confidence_api: high
+  confidence_csv: medium
+  confidence_manual: low
+
+# ── MEXICO ─────────────────────────────────────────────────────────────────
+México:
+  currency: MXN
+  dollarised: false
+  sources:
+    tasa_bc:
+      id: banxico_sf61745
+      name: "Banxico SIE — Tasa objetivo fondeo bancario a 1 día"
+      type: api
+      url: "https://www.banxico.org.mx/SieAPIRest/service/v1/series/SF61745/datos/oportuno"
+      auth: {header: "Bmx-Token", env: "BANXICO_TOKEN"}
+      parser: banxico_serie
+      field: tasa_bc
+      unit: percent
+      accessible: true
+
+    inflacion:
+      id: banxico_sp1
+      name: "Banxico SIE — INPC variación anual"
+      type: api
+      url: "https://www.banxico.org.mx/SieAPIRest/service/v1/series/SP1/datos/oportuno"
+      auth: {header: "Bmx-Token", env: "BANXICO_TOKEN"}
+      parser: banxico_serie
+      field: inflacion
+      unit: percent
+      accessible: true
+
+    pib:
+      id: imf_weo_mex
+      name: "FMI WEO — PIB México (B USD)"
+      type: csv_download
+      url: "https://www.imf.org/en/Publications/WEO/weo-database/2024/October/download-entire-database"
+      parser: imf_weo
+      imf_code: "484"
+      field: pib
+      unit: billion_usd
+      accessible: false   # bulk download; use cached reference value
+      fallback: reference
+      reference_value: 1347.0
+      reference_year: 2024
+
+    pib_crecimiento:
+      id: banxico_sf43718_growth
+      name: "Banxico / INEGI — Crecimiento PIB real"
+      type: api
+      url: "https://www.banxico.org.mx/SieAPIRest/service/v1/series/SE38768/datos/oportuno"
+      auth: {header: "Bmx-Token", env: "BANXICO_TOKEN"}
+      parser: banxico_serie
+      field: pib_crecimiento
+      unit: percent
+      accessible: true
+
+    desempleo:
+      id: inegi_enoe
+      name: "INEGI ENOE — Tasa de desocupación nacional"
+      type: api
+      url: "https://www.inegi.org.mx/app/indicadores/api/Indicador/ObtenerIndicador/628194/Mensual/false/false?token={INEGI_TOKEN}"
+      auth: {query: "token", env: "INEGI_TOKEN"}
+      parser: inegi_indicador
+      field: desempleo
+      unit: percent
+      accessible: false   # requires INEGI token
+      fallback: reference
+      reference_value: 2.8
+      reference_year: 2025
+
+    poblacion:
+      id: inegi_pop
+      name: "INEGI — Proyecciones de Población"
+      type: csv_download
+      url: "https://www.inegi.org.mx/app/biblioteca/ficha.html?upc=702825006792"
+      parser: inegi_csv
+      field: poblacion
+      unit: count
+      accessible: false
+      fallback: reference
+      reference_value: 129406736
+      reference_year: 2024
+
+    bancarizacion:
+      id: global_findex_mex
+      name: "Global Findex BM 2021 — % adultos con cuenta"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 56.0
+      reference_year: 2021
+      notes: "ENIF 2021. Next update: Global Findex 2024 (expected mid-2025)"
+
+    depositos:
+      id: cnbv_sf
+      name: "CNBV — Serie histórica de captación bancaria"
+      type: csv_download
+      url: "https://www.cnbv.gob.mx/SECTORES-SUPERVISADOS/BANCA-MULTIPLE/Informacion-Estadistica-BM/Paginas/default.aspx"
+      parser: cnbv_captacion
+      field: depositos_plazo
+      unit: million_mxn
+      accessible: false   # requires manual navigation
+      fallback: supabase
+      notes: "CNBV Boletín Estadístico, hoja Captación"
+
+# ── BRASIL ────────────────────────────────────────────────────────────────
+Brasil:
+  currency: BRL
+  dollarised: false
+  sources:
+    tasa_bc:
+      id: bcb_sgs432
+      name: "BCB SGS 432 — Selic meta (% a.a.)"
+      type: api
+      url: "https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/1?formato=json"
+      parser: bcb_sgs
+      field: tasa_bc
+      unit: percent
+      accessible: true
+
+    inflacion:
+      id: bcb_sgs13522
+      name: "BCB SGS 13522 — IPCA variación 12 meses"
+      type: api
+      url: "https://api.bcb.gov.br/dados/serie/bcdata.sgs.13522/dados/ultimos/1?formato=json"
+      parser: bcb_sgs
+      field: inflacion
+      unit: percent
+      accessible: true
+
+    pib:
+      id: bcb_sgs4380
+      name: "BCB SGS 4380 — PIB em reais (variação anual %)"
+      type: api
+      url: "https://api.bcb.gov.br/dados/serie/bcdata.sgs.7326/dados/ultimos/4?formato=json"
+      parser: bcb_sgs
+      field: pib
+      unit: billion_usd
+      accessible: false
+      fallback: reference
+      reference_value: 2174.0
+      reference_year: 2024
+
+    pib_crecimiento:
+      id: bcb_sgs7326
+      name: "BCB SGS 7326 — Variação do PIB real (%)"
+      type: api
+      url: "https://api.bcb.gov.br/dados/serie/bcdata.sgs.7326/dados/ultimos/4?formato=json"
+      parser: bcb_sgs
+      field: pib_crecimiento
+      unit: percent
+      accessible: true
+
+    desempleo:
+      id: ibge_pnad
+      name: "IBGE PNAD Contínua — Taxa de desocupação"
+      type: api
+      url: "https://servicodados.ibge.gov.br/api/v3/agregados/6381/periodos/-1/variaveis/4099?localidades=N1[all]"
+      parser: ibge_sidra
+      field: desempleo
+      unit: percent
+      accessible: true
+
+    poblacion:
+      id: ibge_pop
+      name: "IBGE — Estimativa população"
+      type: api
+      url: "https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/-1/variaveis/9324?localidades=N1[all]"
+      parser: ibge_sidra
+      field: poblacion
+      unit: count
+      accessible: true
+
+    bancarizacion:
+      id: global_findex_bra
+      name: "BCB Relatório Inclusão Financeira 2023"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 84.0
+      reference_year: 2023
+
+    depositos:
+      id: bcb_if_data
+      name: "BCB IF.data — Depósitos por instituição"
+      type: api
+      url: "https://olinda.bcb.gov.br/olinda/servico/Informes_Balancetes/versao/v1/odata/BalancetesConsolidadosConjunto"
+      parser: bcb_ifdata
+      field: depositos_plazo
+      unit: million_brl
+      accessible: false   # complex OData structure
+      fallback: supabase
+
+# ── PERÚ ──────────────────────────────────────────────────────────────────
+Perú:
+  currency: PEN
+  dollarised: false
+  sources:
+    tasa_bc:
+      id: bcrp_pd04706pd
+      name: "BCRP — Tasa de referencia (%)"
+      type: api
+      url: "https://estadisticas.bcrp.gob.pe/estadisticas/series/api/PD04706PD/json"
+      parser: bcrp_serie
+      field: tasa_bc
+      unit: percent
+      accessible: true
+
+    inflacion:
+      id: bcrp_pd39462pd
+      name: "BCRP — Inflación Lima Metropolitana (variación 12m)"
+      type: api
+      url: "https://estadisticas.bcrp.gob.pe/estadisticas/series/api/PD39462PD/json"
+      parser: bcrp_serie
+      field: inflacion
+      unit: percent
+      accessible: true
+
+    pib_crecimiento:
+      id: bcrp_pd38706pd
+      name: "BCRP — Variación porcentual PIB real"
+      type: api
+      url: "https://estadisticas.bcrp.gob.pe/estadisticas/series/api/PD38706PD/json"
+      parser: bcrp_serie
+      field: pib_crecimiento
+      unit: percent
+      accessible: true
+
+    pib:
+      id: bcrp_pbi
+      name: "BCRP — PBI en USD (millones)"
+      type: api
+      url: "https://estadisticas.bcrp.gob.pe/estadisticas/series/api/PN01288AM/json"
+      parser: bcrp_serie
+      field: pib
+      unit: billion_usd
+      accessible: true
+
+    desempleo:
+      id: bcrp_pd39491pd
+      name: "BCRP — Tasa de desempleo Lima"
+      type: api
+      url: "https://estadisticas.bcrp.gob.pe/estadisticas/series/api/PD39491PD/json"
+      parser: bcrp_serie
+      field: desempleo
+      unit: percent
+      accessible: true
+
+    poblacion:
+      id: inei_pop
+      name: "INEI — Proyecciones poblacionales"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 33359418
+      reference_year: 2024
+
+    bancarizacion:
+      id: global_findex_per
+      name: "SBS Perú / Global Findex BM"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 58.0
+      reference_year: 2021
+
+    depositos:
+      id: sbs_peru
+      name: "SBS Perú — Información financiera mensual"
+      type: csv_download
+      url: "https://www.sbs.gob.pe/app/stats_net/Stats/EstadisticaBoletinEstadistico.aspx?p=3"
+      parser: sbs_peru
+      field: depositos_plazo
+      unit: million_pen
+      accessible: false
+      fallback: supabase
+
+# ── COLOMBIA ──────────────────────────────────────────────────────────────
+Colombia:
+  currency: COP
+  dollarised: false
+  sources:
+    tasa_bc:
+      id: banrep_tasas
+      name: "BanRep — Tasa de política monetaria"
+      type: csv_download
+      url: "https://www.banrep.gov.co/es/estadisticas/tasas-interes-politica-monetaria"
+      parser: banrep_tasas
+      field: tasa_bc
+      unit: percent
+      accessible: false
+      fallback: reference
+      reference_value: 9.25
+      reference_year: 2025
+
+    inflacion:
+      id: dane_ipc
+      name: "DANE — IPC variación anual"
+      type: api
+      url: "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2023/IPC-con-derechos.csv"
+      parser: dane_ipc
+      field: inflacion
+      unit: percent
+      accessible: false
+      fallback: reference
+      reference_value: 5.1
+      reference_year: 2025
+
+    pib_crecimiento:
+      id: dane_pib
+      name: "DANE — Variación anual PIB"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 1.7
+      reference_year: 2024
+
+    pib:
+      id: imf_weo_col
+      name: "FMI WEO — PIB Colombia (B USD)"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 370.0
+      reference_year: 2024
+
+    desempleo:
+      id: dane_geih
+      name: "DANE GEIH — Tasa de desempleo"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 10.1
+      reference_year: 2025
+
+    poblacion:
+      id: dane_pop
+      name: "DANE — Proyecciones de población"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 52215503
+      reference_year: 2024
+
+    bancarizacion:
+      id: banca_oportunidades
+      name: "Banca de las Oportunidades 2023"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 92.0
+      reference_year: 2023
+
+    depositos:
+      id: superfinanciera_col
+      name: "Superfinanciera — Captaciones por entidad"
+      type: csv_download
+      url: "https://www.superfinanciera.gov.co/publicaciones/20037887/informacion-estadistica-y-reportes/"
+      parser: superfinanciera
+      field: depositos_plazo
+      unit: million_cop
+      accessible: false
+      fallback: supabase
+
+# ── ECUADOR ───────────────────────────────────────────────────────────────
+Ecuador:
+  currency: USD
+  dollarised: true
+  notes: "Economía dolarizada desde 2000. Sin tasa de política monetaria propia."
+  sources:
+    tasa_bc:
+      id: none
+      name: "N/A — Economía dolarizada"
+      type: manual
+      accessible: false
+      fallback: null
+      reference_value: null
+      notes: "Dollarised. Use BCE tasa activa referencial (informational only)"
+
+    inflacion:
+      id: inec_ipc_ec
+      name: "INEC Ecuador — IPC variación anual"
+      type: csv_download
+      url: "https://www.ecuadorencifras.gob.ec/documentos/web-inec/Inflacion/2024/diciembre/"
+      parser: inec_ecuador
+      field: inflacion
+      unit: percent
+      accessible: false
+      fallback: reference
+      reference_value: 0.82
+      reference_year: 2024
+
+    pib_crecimiento:
+      id: bce_pib
+      name: "BCE Ecuador — Variación PIB real"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: -0.2
+      reference_year: 2024
+      notes: "Crisis energética H2 2024 — contracción"
+
+    pib:
+      id: bce_pib_usd
+      name: "BCE Ecuador — PIB en USD"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 119.0
+      reference_year: 2024
+
+    desempleo:
+      id: inec_enemdu
+      name: "INEC ENEMDU — Tasa desempleo urbano"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 3.3
+      reference_year: 2024
+
+    poblacion:
+      id: inec_pop_ec
+      name: "INEC Ecuador — Proyecciones"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 18139000
+      reference_year: 2024
+
+    bancarizacion:
+      id: global_findex_ec
+      name: "Global Findex BM / SBS Ecuador 2023"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 57.0
+      reference_year: 2021
+
+    depositos:
+      id: sbs_ec
+      name: "SBS Ecuador — Boletín financiero bancos privados"
+      type: xls_download
+      url: "https://www.sbs.gob.ec/practg/p_index?vp_art_id=5029&vp_tip=2"
+      parser: sbs_ecuador
+      field: depositos_plazo
+      unit: million_usd
+      accessible: false
+      fallback: supabase
+
+# ── ARGENTINA ─────────────────────────────────────────────────────────────
+Argentina:
+  currency: ARS
+  dollarised: false
+  notes: "High inflation. Values in local currency require USD conversion."
+  sources:
+    tasa_bc:
+      id: bcra_tasas
+      name: "BCRA — Tasa de política monetaria"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 40.0
+      reference_year: 2025
+
+    inflacion:
+      id: indec_ipc
+      name: "INDEC — IPC variación interanual"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 55.0
+      reference_year: 2025
+      notes: "High volatility — update monthly"
+
+    pib_crecimiento:
+      id: indec_pib
+      name: "INDEC — Variación PIB real"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 5.0
+      reference_year: 2025
+
+    pib:
+      id: imf_arg
+      name: "FMI / INDEC — PIB en USD"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 641.0
+      reference_year: 2024
+
+    desempleo:
+      id: indec_eph
+      name: "INDEC EPH — Tasa desempleo"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 7.0
+      reference_year: 2024
+
+    poblacion:
+      id: indec_pop
+      name: "INDEC — Proyecciones"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 46654581
+      reference_year: 2024
+
+    bancarizacion:
+      id: bcra_enc
+      name: "BCRA Encuesta Capacidades Financieras"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 49.0
+      reference_year: 2022
+
+    depositos:
+      id: bcra_sismo
+      name: "BCRA SISMO — Depósitos por entidad"
+      type: manual
+      accessible: false
+      fallback: supabase
+
+# ── CHILE ─────────────────────────────────────────────────────────────────
+Chile:
+  currency: CLP
+  dollarised: false
+  sources:
+    tasa_bc:
+      id: bcch_tpm
+      name: "Banco Central Chile — TPM"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 5.0
+      reference_year: 2025
+
+    inflacion:
+      id: ine_cl_ipc
+      name: "INE Chile — IPC variación anual"
+      type: csv_download
+      url: "https://www.ine.gob.cl/estadisticas/economia/indices-de-precio-e-inflacion/ipc"
+      parser: ine_chile
+      field: inflacion
+      unit: percent
+      accessible: false
+      fallback: reference
+      reference_value: 4.5
+      reference_year: 2025
+
+    pib_crecimiento:
+      id: bcch_pib
+      name: "BCCh — Crecimiento PIB real"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 2.5
+      reference_year: 2024
+
+    pib:
+      id: bcch_pib_usd
+      name: "BCCh — PIB en USD"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 335.4
+      reference_year: 2024
+
+    desempleo:
+      id: ine_cl_empleo
+      name: "INE Chile — Tasa desempleo"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 8.5
+      reference_year: 2025
+
+    poblacion:
+      id: ine_cl_pop
+      name: "INE Chile — Proyecciones"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 19764742
+      reference_year: 2024
+
+    bancarizacion:
+      id: cmf_cl
+      name: "CMF Chile / Global Findex BM"
+      type: manual
+      accessible: false
+      fallback: reference
+      reference_value: 87.0
+      reference_year: 2021
+
+    depositos:
+      id: cmf_cl_bancos
+      name: "CMF Chile — Información financiera bancos"
+      type: xls_download
+      url: "https://www.cmfchile.cl/portal/estadisticas/617/w3-propertyvalue-17430.html"
+      parser: cmf_chile
+      field: depositos_plazo
+      unit: million_clp
+      accessible: false
+      fallback: supabase
+
+# ── REMAINING 11 COUNTRIES (abbreviated — all use reference/manual sources) ─
+# Full source config follows same pattern. All reference values from audit.
+
+Bolivia:
+  currency: BOB
+  dollarised: false
+  sources:
+    tasa_bc:       {id: bcb_bo, name: "BCB — Tasa política", type: manual, accessible: false, fallback: reference, reference_value: 3.5, reference_year: 2025}
+    inflacion:     {id: ine_bo, name: "INE Bolivia IPC", type: manual, accessible: false, fallback: reference, reference_value: 6.8, reference_year: 2025}
+    pib_crecimiento: {id: bcb_bo_pib, name: "BCB / INE Bolivia", type: manual, accessible: false, fallback: reference, reference_value: 1.5, reference_year: 2024}
+    pib:           {id: imf_bo, name: "FMI / BCB", type: manual, accessible: false, fallback: reference, reference_value: 44.0, reference_year: 2024}
+    desempleo:     {id: ine_bo_emp, name: "INE Bolivia", type: manual, accessible: false, fallback: reference, reference_value: 3.3, reference_year: 2024}
+    poblacion:     {id: ine_bo_pop, name: "INE Bolivia", type: manual, accessible: false, fallback: reference, reference_value: 12311000, reference_year: 2024}
+    bancarizacion: {id: asfi_bo, name: "ASFI / Global Findex", type: manual, accessible: false, fallback: reference, reference_value: 67.0, reference_year: 2021}
+    depositos:     {id: asfi_bo_dep, name: "ASFI Bolivia", type: manual, accessible: false, fallback: supabase}
+
+Paraguay:
+  currency: PYG
+  dollarised: false
+  sources:
+    tasa_bc:       {id: bcp_py, name: "BCP TPM", type: manual, accessible: false, fallback: reference, reference_value: 6.0, reference_year: 2025}
+    inflacion:     {id: bcp_ipc, name: "BCP IPC", type: manual, accessible: false, fallback: reference, reference_value: 3.9, reference_year: 2025}
+    pib_crecimiento: {id: bcp_pib, name: "BCP Crecimiento", type: manual, accessible: false, fallback: reference, reference_value: 3.8, reference_year: 2024}
+    pib:           {id: imf_py, name: "FMI / BCP", type: manual, accessible: false, fallback: reference, reference_value: 43.6, reference_year: 2024}
+    desempleo:     {id: dgeec_py, name: "DGEEC Paraguay", type: manual, accessible: false, fallback: reference, reference_value: 5.6, reference_year: 2024}
+    poblacion:     {id: dgeec_pop, name: "DGEEC Proyecciones", type: manual, accessible: false, fallback: reference, reference_value: 7359000, reference_year: 2024}
+    bancarizacion: {id: bcp_fi, name: "BCP / Global Findex", type: manual, accessible: false, fallback: reference, reference_value: 29.0, reference_year: 2021}
+    depositos:     {id: bcp_dep, name: "BCP Sistema Financiero", type: manual, accessible: false, fallback: supabase}
+
+Uruguay:
+  currency: UYU
+  dollarised: false
+  sources:
+    tasa_bc:       {id: bcu_uy, name: "BCU TPM", type: manual, accessible: false, fallback: reference, reference_value: 8.5, reference_year: 2025}
+    inflacion:     {id: ine_uy, name: "INE Uruguay IPC", type: manual, accessible: false, fallback: reference, reference_value: 5.4, reference_year: 2025}
+    pib_crecimiento: {id: bcu_pib, name: "BCU / INE Uruguay", type: manual, accessible: false, fallback: reference, reference_value: 3.1, reference_year: 2024}
+    pib:           {id: imf_uy, name: "FMI / BCU", type: manual, accessible: false, fallback: reference, reference_value: 82.0, reference_year: 2024}
+    desempleo:     {id: ine_uy_emp, name: "INE Uruguay ECH", type: manual, accessible: false, fallback: reference, reference_value: 8.2, reference_year: 2024}
+    poblacion:     {id: ine_uy_pop, name: "INE Uruguay", type: manual, accessible: false, fallback: reference, reference_value: 3444000, reference_year: 2024}
+    bancarizacion: {id: bcu_fi, name: "BCU / Global Findex", type: manual, accessible: false, fallback: reference, reference_value: 72.0, reference_year: 2021}
+    depositos:     {id: bcu_dep, name: "BCU Estadísticas Monetarias", type: manual, accessible: false, fallback: supabase}
+
+Venezuela:
+  currency: VES
+  dollarised: false
+  notes: "BCV data unreliable. Use FMI/CEPAL estimates. High uncertainty."
+  sources:
+    tasa_bc:       {id: bcv_ve, name: "BCV Tasa referencia", type: manual, accessible: false, fallback: reference, reference_value: 60.0, reference_year: 2025}
+    inflacion:     {id: bcv_ipc, name: "BCV / FMI interanual", type: manual, accessible: false, fallback: reference, reference_value: 200.0, reference_year: 2025, notes: "High uncertainty — update quarterly"}
+    pib_crecimiento: {id: imf_ve, name: "FMI WEO proyección", type: manual, accessible: false, fallback: reference, reference_value: 4.0, reference_year: 2025}
+    pib:           {id: imf_ve_pib, name: "FMI estimado", type: manual, accessible: false, fallback: reference, reference_value: 90.0, reference_year: 2024}
+    desempleo:     {id: imf_ve_emp, name: "FMI / CEPAL", type: manual, accessible: false, fallback: reference, reference_value: 7.0, reference_year: 2024}
+    poblacion:     {id: iies_ve, name: "IIES / CEPAL estimado", type: manual, accessible: false, fallback: reference, reference_value: 28302000, reference_year: 2024}
+    bancarizacion: {id: gf_ve, name: "Global Findex estimado", type: manual, accessible: false, fallback: reference, reference_value: 35.0, reference_year: 2021}
+    depositos:     {id: bcv_dep, name: "BCV (datos limitados)", type: manual, accessible: false, fallback: supabase}
+
+Guatemala:
+  currency: GTQ
+  dollarised: false
+  sources:
+    tasa_bc:       {id: banguat, name: "Banguat Tasa líder", type: manual, accessible: false, fallback: reference, reference_value: 5.0, reference_year: 2025}
+    inflacion:     {id: ine_gt, name: "INE Guatemala IPC", type: manual, accessible: false, fallback: reference, reference_value: 6.2, reference_year: 2025}
+    pib_crecimiento: {id: banguat_pib, name: "Banguat Crecimiento", type: manual, accessible: false, fallback: reference, reference_value: 3.5, reference_year: 2024}
+    pib:           {id: imf_gt, name: "FMI / Banguat", type: manual, accessible: false, fallback: reference, reference_value: 103.0, reference_year: 2024}
+    desempleo:     {id: ine_gt_emp, name: "INE Guatemala ENEI", type: manual, accessible: false, fallback: reference, reference_value: 2.6, reference_year: 2024}
+    poblacion:     {id: ine_gt_pop, name: "INE Guatemala", type: manual, accessible: false, fallback: reference, reference_value: 17263000, reference_year: 2024}
+    bancarizacion: {id: sib_gt, name: "SIB Guatemala / Findex", type: manual, accessible: false, fallback: reference, reference_value: 43.0, reference_year: 2021}
+    depositos:     {id: sib_gt_dep, name: "SIB Guatemala estadísticas", type: manual, accessible: false, fallback: supabase}
+
+Honduras:
+  currency: HNL
+  dollarised: false
+  sources:
+    tasa_bc:       {id: bch_hn, name: "BCH TPM", type: manual, accessible: false, fallback: reference, reference_value: 3.0, reference_year: 2025}
+    inflacion:     {id: ine_hn, name: "INE Honduras IPC", type: manual, accessible: false, fallback: reference, reference_value: 5.1, reference_year: 2025}
+    pib_crecimiento: {id: bch_pib, name: "BCH Crecimiento", type: manual, accessible: false, fallback: reference, reference_value: 3.5, reference_year: 2024}
+    pib:           {id: imf_hn, name: "FMI / BCH", type: manual, accessible: false, fallback: reference, reference_value: 35.0, reference_year: 2024}
+    desempleo:     {id: ine_hn_emp, name: "INE Honduras EPHPM", type: manual, accessible: false, fallback: reference, reference_value: 6.1, reference_year: 2024}
+    poblacion:     {id: ine_hn_pop, name: "INE Honduras", type: manual, accessible: false, fallback: reference, reference_value: 10280000, reference_year: 2024}
+    bancarizacion: {id: cnbs_hn, name: "CNBS Honduras / Findex", type: manual, accessible: false, fallback: reference, reference_value: 30.0, reference_year: 2021}
+    depositos:     {id: cnbs_dep, name: "CNBS Honduras", type: manual, accessible: false, fallback: supabase}
+
+"El Salvador":
+  currency: USD
+  dollarised: true
+  sources:
+    tasa_bc:       {id: none_sv, name: "N/A — Economía dolarizada", type: manual, accessible: false, fallback: null, reference_value: null}
+    inflacion:     {id: digestyc, name: "DIGESTYC IPC", type: manual, accessible: false, fallback: reference, reference_value: 2.5, reference_year: 2025}
+    pib_crecimiento: {id: bcr_sv, name: "BCR El Salvador", type: manual, accessible: false, fallback: reference, reference_value: 2.0, reference_year: 2024}
+    pib:           {id: imf_sv, name: "FMI / BCR", type: manual, accessible: false, fallback: reference, reference_value: 34.0, reference_year: 2024}
+    desempleo:     {id: digestyc_emp, name: "DIGESTYC EHPM", type: manual, accessible: false, fallback: reference, reference_value: 4.5, reference_year: 2024}
+    poblacion:     {id: digestyc_pop, name: "MINEC / DIGESTYC", type: manual, accessible: false, fallback: reference, reference_value: 6314000, reference_year: 2024}
+    bancarizacion: {id: ssf_sv, name: "SSF El Salvador / Findex", type: manual, accessible: false, fallback: reference, reference_value: 40.0, reference_year: 2021}
+    depositos:     {id: ssf_dep, name: "SSF El Salvador", type: manual, accessible: false, fallback: supabase}
+
+Nicaragua:
+  currency: NIO
+  dollarised: false
+  sources:
+    tasa_bc:       {id: bcn_ni, name: "BCN Tasa referencia", type: manual, accessible: false, fallback: reference, reference_value: 7.0, reference_year: 2025}
+    inflacion:     {id: bcn_ipc, name: "BCN / INIDE IPC", type: manual, accessible: false, fallback: reference, reference_value: 7.2, reference_year: 2025}
+    pib_crecimiento: {id: bcn_pib, name: "BCN Crecimiento", type: manual, accessible: false, fallback: reference, reference_value: 3.8, reference_year: 2024}
+    pib:           {id: imf_ni, name: "FMI / BCN", type: manual, accessible: false, fallback: reference, reference_value: 17.0, reference_year: 2024}
+    desempleo:     {id: inide_ni, name: "INIDE Nicaragua", type: manual, accessible: false, fallback: reference, reference_value: 4.5, reference_year: 2024}
+    poblacion:     {id: inide_pop, name: "INIDE Proyecciones", type: manual, accessible: false, fallback: reference, reference_value: 6948000, reference_year: 2024}
+    bancarizacion: {id: siboif_ni, name: "SIBOIF / Findex", type: manual, accessible: false, fallback: reference, reference_value: 22.0, reference_year: 2021}
+    depositos:     {id: siboif_dep, name: "SIBOIF Nicaragua", type: manual, accessible: false, fallback: supabase}
+
+Panamá:
+  currency: USD
+  dollarised: true
+  notes: "Economía dolarizada. Sin banco central emisor."
+  sources:
+    tasa_bc:       {id: none_pa, name: "N/A — Dolarizada (referencia: US Fed)", type: manual, accessible: false, fallback: null, reference_value: null}
+    inflacion:     {id: inec_pa, name: "INEC Panamá IPC", type: manual, accessible: false, fallback: reference, reference_value: 2.8, reference_year: 2025}
+    pib_crecimiento: {id: mef_pa, name: "MEF / INEC Panamá", type: manual, accessible: false, fallback: reference, reference_value: 3.2, reference_year: 2024}
+    pib:           {id: imf_pa, name: "FMI / MEF", type: manual, accessible: false, fallback: reference, reference_value: 78.5, reference_year: 2024}
+    desempleo:     {id: inec_pa_emp, name: "INEC Mercado Laboral", type: manual, accessible: false, fallback: reference, reference_value: 9.8, reference_year: 2024}
+    poblacion:     {id: inec_pa_pop, name: "INEC Proyecciones", type: manual, accessible: false, fallback: reference, reference_value: 4408581, reference_year: 2024}
+    bancarizacion: {id: sbp_pa, name: "SBP / Global Findex", type: manual, accessible: false, fallback: reference, reference_value: 58.0, reference_year: 2021}
+    depositos:     {id: sbp_dep, name: "SBP Panamá estadísticas", type: manual, accessible: false, fallback: supabase}
+
+"Costa Rica":
+  currency: CRC
+  dollarised: false
+  sources:
+    tasa_bc:       {id: bccr_cr, name: "BCCR TPM", type: manual, accessible: false, fallback: reference, reference_value: 5.25, reference_year: 2025}
+    inflacion:     {id: inec_cr, name: "INEC IPC Costa Rica", type: manual, accessible: false, fallback: reference, reference_value: 3.0, reference_year: 2025}
+    pib_crecimiento: {id: bccr_pib, name: "BCCR Crecimiento", type: manual, accessible: false, fallback: reference, reference_value: 4.5, reference_year: 2024}
+    pib:           {id: imf_cr, name: "FMI / BCCR", type: manual, accessible: false, fallback: reference, reference_value: 70.0, reference_year: 2024}
+    desempleo:     {id: inec_cr_emp, name: "INEC ENAHO", type: manual, accessible: false, fallback: reference, reference_value: 11.2, reference_year: 2025}
+    poblacion:     {id: inec_cr_pop, name: "INEC Proyecciones", type: manual, accessible: false, fallback: reference, reference_value: 5180829, reference_year: 2024}
+    bancarizacion: {id: sugef_cr, name: "SUGEF / Global Findex", type: manual, accessible: false, fallback: reference, reference_value: 65.0, reference_year: 2021}
+    depositos:     {id: sugef_dep, name: "SUGEF Estadísticas", type: manual, accessible: false, fallback: supabase}
+
+"Rep. Dominicana":
+  currency: DOP
+  dollarised: false
+  sources:
+    tasa_bc:       {id: bcrd_rd, name: "BCRD Tasa PM", type: manual, accessible: false, fallback: reference, reference_value: 7.0, reference_year: 2025}
+    inflacion:     {id: bcrd_ipc, name: "BCRD IPC", type: manual, accessible: false, fallback: reference, reference_value: 4.9, reference_year: 2025}
+    pib_crecimiento: {id: bcrd_pib, name: "BCRD Crecimiento", type: manual, accessible: false, fallback: reference, reference_value: 4.6, reference_year: 2024}
+    pib:           {id: imf_rd, name: "FMI / BCRD", type: manual, accessible: false, fallback: reference, reference_value: 113.0, reference_year: 2024}
+    desempleo:     {id: one_rd, name: "ONE / BCRD Mercado Laboral", type: manual, accessible: false, fallback: reference, reference_value: 5.9, reference_year: 2024}
+    poblacion:     {id: one_rd_pop, name: "ONE Proyecciones", type: manual, accessible: false, fallback: reference, reference_value: 11117000, reference_year: 2024}
+    bancarizacion: {id: sb_rd, name: "SB Rep. Dom. / Findex", type: manual, accessible: false, fallback: reference, reference_value: 56.0, reference_year: 2021}
+    depositos:     {id: sb_rd_dep, name: "SB Rep. Dom. Estadísticas", type: manual, accessible: false, fallback: supabase}

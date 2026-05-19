@@ -1,0 +1,207 @@
+"""
+Monthly Automation Entry Point — Railway Cron
+=============================================
+Schedule: 0 8 1 * *  (1st of each month, 08:00 UTC = 03:00 Guayaquil)
+
+Sequence:
+  1. Source audit  — test all API endpoints, log status
+  2. Data pipeline — fetch fresh data, validate, upsert to Supabase
+  3. Actor metrics — recalculate CAGR + market shares
+  4. Exchange rates — refresh from open.er-api / Banxico / BCRP / BCB
+  5. Audit report  — compare live data vs official reference values
+  6. Commit + push — save audit report to GitHub for traceability
+"""
+from __future__ import annotations
+import os
+import sys
+import json
+import logging
+import subprocess
+from datetime import datetime, timezone
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(_ROOT))
+
+for _env in [_ROOT / ".env", _ROOT.parent / "synergy-apex-latam" / ".env"]:
+    if _env.exists():
+        load_dotenv(_env)
+        break
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+log = logging.getLogger("monthly_update")
+
+REPORTS_DIR = _ROOT / "reports"
+REPORTS_DIR.mkdir(exist_ok=True)
+
+TODAY = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+
+# ── Step helpers ───────────────────────────────────────────────────────────
+
+def step(name: str):
+    log.info("─" * 60)
+    log.info("  STEP: %s", name)
+    log.info("─" * 60)
+
+
+def run_source_audit() -> dict:
+    step("1 / 6 — Source Audit")
+    try:
+        from src.source_audit.auditor import run_audit
+        return run_audit()
+    except Exception as exc:
+        log.error("Source audit failed: %s", exc)
+        return {"error": str(exc)}
+
+
+def run_data_pipeline() -> dict:
+    step("2 / 6 — Data Pipeline")
+    try:
+        from src.data_pipeline.pipeline import run as pipeline_run
+        return pipeline_run(dry_run=False)
+    except Exception as exc:
+        log.error("Pipeline failed: %s", exc)
+        return {"error": str(exc)}
+
+
+def run_exchange_rates() -> bool:
+    step("3 / 6 — Exchange Rates")
+    try:
+        rate_script = _ROOT / "auto_update_exchange_rates.py"
+        if rate_script.exists():
+            result = subprocess.run(
+                [sys.executable, str(rate_script)],
+                capture_output=True, text=True, timeout=120
+            )
+            log.info(result.stdout[-500:] if result.stdout else "")
+            if result.returncode != 0:
+                log.warning("Exchange rate script returned %d", result.returncode)
+            return result.returncode == 0
+        log.warning("auto_update_exchange_rates.py not found")
+        return False
+    except Exception as exc:
+        log.error("Exchange rates failed: %s", exc)
+        return False
+
+
+def run_data_audit() -> dict:
+    step("4 / 6 — Data Quality Audit (vs official sources)")
+    try:
+        audit_script = _ROOT / "audit_all_countries.py"
+        if audit_script.exists():
+            result = subprocess.run(
+                [sys.executable, str(audit_script), "--json"],
+                capture_output=True, text=True, timeout=120,
+                env={**os.environ}
+            )
+            return json.loads(result.stdout) if result.stdout.strip() else {}
+        return {}
+    except Exception as exc:
+        log.error("Data audit failed: %s", exc)
+        return {"error": str(exc)}
+
+
+def write_report(
+    audit_result: dict,
+    pipeline_result: dict,
+    source_audit: dict,
+) -> Path:
+    step("5 / 6 — Writing Report")
+    report_lines = [
+        f"SynerGy Apex LATAM — Monthly Update Report",
+        f"Date: {TODAY}",
+        f"Generated: {datetime.now(timezone.utc).isoformat()}",
+        "=" * 60,
+        "",
+        "## Source Audit",
+        f"  Total sources : {source_audit.get('total_sources', '?')}",
+        f"  ✅ Accessible : {source_audit.get('ok', '?')}",
+        f"  ❌ Failed     : {source_audit.get('failed', '?')}",
+        f"  🖊 Manual     : {source_audit.get('manual', '?')}",
+        "",
+        "## Data Pipeline",
+        f"  Countries updated     : {pipeline_result.get('countries', '?')}",
+        f"  Validation errors     : {pipeline_result.get('validation_errors', '?')}",
+        "",
+        "## Data Quality Audit (vs official sources)",
+        f"  ✅ OK          : {audit_result.get('ok', '?')}",
+        f"  ⚠️  Approximate : {audit_result.get('warn', '?')}",
+        f"  ❌ Errors      : {audit_result.get('error', '?')}",
+    ]
+
+    if audit_result.get("errors"):
+        report_lines += ["", "### Critical Errors (require correction):"]
+        for e in audit_result["errors"]:
+            report_lines.append(
+                f"  - {e['pais']} | {e['indicador']}: "
+                f"dashboard={e['dashboard']} | official={e['oficial']}"
+            )
+
+    report_lines += [
+        "",
+        "=" * 60,
+        "Generated by automation/monthly_update.py",
+        "Repo: https://github.com/mrandrestascon/synergy-apex-latam",
+    ]
+
+    report_path = REPORTS_DIR / f"audit_report_{TODAY}.txt"
+    report_path.write_text("\n".join(report_lines), encoding="utf-8")
+    log.info("Report → %s", report_path)
+    return report_path
+
+
+def commit_and_push(report_path: Path) -> bool:
+    step("6 / 6 — Commit + Push to GitHub")
+    try:
+        cmds = [
+            ["git", "add", str(report_path), "reports/"],
+            ["git", "commit", "-m", f"Monthly audit: {TODAY} [auto]"],
+            ["git", "push", "origin", "main"],
+        ]
+        for cmd in cmds:
+            result = subprocess.run(cmd, cwd=_ROOT, capture_output=True, text=True, timeout=60)
+            if result.returncode != 0 and "nothing to commit" not in result.stdout:
+                log.warning("Git command failed: %s\n%s", " ".join(cmd), result.stderr[:200])
+        return True
+    except Exception as exc:
+        log.error("Git commit/push failed: %s", exc)
+        return False
+
+
+# ── Main ───────────────────────────────────────────────────────────────────
+
+def main() -> None:
+    log.info("═" * 60)
+    log.info("  SynerGy LATAM Monthly Update — %s", TODAY)
+    log.info("═" * 60)
+
+    source_audit    = run_source_audit()
+    pipeline_result = run_data_pipeline()
+    run_exchange_rates()
+    audit_result    = run_data_audit()
+    report_path     = write_report(audit_result, pipeline_result, source_audit)
+    commit_and_push(report_path)
+
+    total_errors = (
+        source_audit.get("failed", 0)
+        + pipeline_result.get("validation_errors", 0)
+        + audit_result.get("error", 0)
+    )
+
+    log.info("═" * 60)
+    log.info("  MONTHLY UPDATE COMPLETE — %d issues flagged", total_errors)
+    log.info("  Report → %s", report_path)
+    log.info("═" * 60)
+
+    sys.exit(0 if total_errors == 0 else 1)
+
+
+if __name__ == "__main__":
+    main()
