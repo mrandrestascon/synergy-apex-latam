@@ -184,7 +184,8 @@ tr:hover td{background:#f8fafc}
 .stv{font-size:9px;color:#f1f5f9;font-weight:700;font-variant-numeric:tabular-nums}
 .spark-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:4px}
 .spark-val{font-size:22px;font-weight:800;color:#0f172a;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.spark-sub{font-size:10px;color:#94a3b8;margin-bottom:8px;display:flex;align-items:center;gap:4px;min-height:14px}
+.spark-sub{font-size:10px;color:#94a3b8;margin-bottom:4px;display:flex;align-items:center;gap:4px;min-height:14px}
+.spark-hover-val{font-size:11px;color:#475569;font-weight:600;min-height:15px;margin-bottom:4px;font-variant-numeric:tabular-nums}
 .spark-up{color:#34d399;font-weight:600}.spark-dn{color:#f87171;font-weight:600}
 .spark-chart-wrap{height:64px;position:relative}
 
@@ -837,29 +838,68 @@ function buildMacroHistory(d){
   return{pibData,popData,inflData,tasaData,desempData,bancData};
 }
 
-/* ── Sparkline with year labels ─────────────────────────────────── */
-function renderSparkline(cid,data,hexColor){
+/* ── Sparkline with year hover ──────────────────────────────────── */
+function renderSparkline(cid,data,hexColor,fmtFn){
   destroyChart(cid);
   const canvas=document.getElementById(cid);if(!canvas)return;
+  const hvEl=document.getElementById('shv-'+cid);
+  const yFull=['2021','2022','2023','2024','2025','2026'];
   charts[cid]=new Chart(canvas.getContext('2d'),{
     type:'line',
     data:{
       labels:['21','22','23','24','25','26'],
-      datasets:[{
-        data,
-        borderColor:hexColor,
-        borderWidth:2,
-        backgroundColor:hexColor+'1a',
-        fill:true,
-        pointRadius:0,
-        pointHoverRadius:3,
-        tension:0.4,
-      }],
+      datasets:[{data,borderColor:hexColor,borderWidth:2,backgroundColor:hexColor+'1a',fill:true,pointRadius:0,pointHoverRadius:4,tension:0.4}],
     },
     options:{
       responsive:true,
       maintainAspectRatio:false,
       animation:{duration:350},
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{enabled:false},
+      },
+      onHover:(_,active)=>{
+        if(!hvEl)return;
+        if(active.length){
+          const i=active[0].index;
+          hvEl.textContent=yFull[i]+': '+(fmtFn?fmtFn(data[i]):data[i]);
+        }else{
+          hvEl.textContent='—';
+        }
+      },
+      scales:{
+        x:{display:true,ticks:{color:'#cbd5e1',font:{size:8},maxRotation:0,padding:0},grid:{display:false},border:{display:false}},
+        y:{display:false},
+      },
+    },
+  });
+}
+
+/* ── Deposits Chart.js canvas ────────────────────────────────────── */
+function renderDepChart(cid,data,color){
+  destroyChart(cid);
+  const canvas=document.getElementById(cid);if(!canvas)return;
+  charts[cid]=new Chart(canvas.getContext('2d'),{
+    type:'line',
+    data:{
+      labels:["'21","'22","'23","'24","'25","'26"],
+      datasets:[{
+        data,
+        borderColor:color,
+        borderWidth:2.5,
+        backgroundColor:color+'20',
+        fill:true,
+        pointRadius:3,
+        pointBackgroundColor:color,
+        pointHoverRadius:5,
+        tension:0,
+      }],
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      animation:{duration:400},
       plugins:{
         legend:{display:false},
         tooltip:{
@@ -867,60 +907,20 @@ function renderSparkline(cid,data,hexColor){
           backgroundColor:'#1e293b',
           titleColor:'#94a3b8',
           bodyColor:'#f1f5f9',
-          padding:6,
+          padding:8,
           displayColors:false,
-          callbacks:{title:ctx=>"'"+ctx[0].label,label:ctx=>ctx.formattedValue},
+          callbacks:{
+            title:ctx=>ctx[0].label,
+            label:ctx=>'$'+ctx.formattedValue+'B USD',
+          },
         },
       },
       scales:{
-        x:{
-          display:true,
-          ticks:{color:'#cbd5e1',font:{size:8},maxRotation:0,padding:0},
-          grid:{display:false},
-          border:{display:false},
-        },
-        y:{display:false},
+        x:{display:true,grid:{color:'#d8dde6'},ticks:{color:'#8892a1',font:{size:9}},border:{display:false}},
+        y:{display:true,grid:{color:'#d8dde6'},ticks:{color:'#8892a1',font:{size:9},callback:v=>fmtAx(v)+'B'},border:{display:false}},
       },
     },
   });
-}
-
-/* ── BCE-style SVG chart (SynerGy colors) ────────────────────────── */
-function buildSingleLineSVG(vals,color){
-  const W=600,H=90,pL=44,pR=54,pT=6,pB=18;
-  const pw=W-pL-pR,ph=H-pT-pB;
-  const maxV=Math.max(...vals)||1;
-  const bY=pT+ph;
-  const xp=i=>(pL+i*pw/5).toFixed(1);
-  const yp=v=>(pT+ph*(1-v/maxV)).toFixed(1);
-  const linePath=arr=>`M ${arr.map((v,i)=>`${xp(i)} ${yp(v)}`).join(' L ')}`;
-
-  const bg=`<rect x="${pL}" y="${pT}" width="${pw}" height="${ph}" fill="#f0f2f5" rx="3"/>`;
-  const gridLines=[0.25,0.5,0.75].map(f=>{
-    const gy=(pT+ph*(1-f)).toFixed(1);
-    return`<line x1="${pL}" y1="${gy}" x2="${W-pR}" y2="${gy}" stroke="#d8dde6" stroke-width="1" stroke-dasharray="4,3"/>`;
-  }).join('');
-  const yLabels=[{f:0,l:'0'},{f:0.5,l:fmtAx(maxV*0.5)},{f:1,l:fmtAx(maxV)}].map(({f,l})=>{
-    const gy=(pT+ph*(1-f)).toFixed(1);
-    return`<text x="${pL-4}" y="${gy}" fill="#8892a1" font-size="9" text-anchor="end" dominant-baseline="middle">${l}</text>`;
-  }).join('');
-  const xLbls=["'21","'22","'23","'24","'25","'26"].map((l,i)=>
-    `<text x="${xp(i)}" y="${H-3}" fill="#8892a1" font-size="9" text-anchor="middle">${l}</text>`
-  ).join('');
-  const path=linePath(vals);
-  const bv=fmtAx(vals[5])+'B';
-  const bw=bv.length*6+14;
-  const ex=+(+xp(5)+8).toFixed(1);
-  const ey=+yp(vals[5]);
-  const badge=`<rect x="${ex}" y="${ey-8}" width="${bw}" height="16" fill="${color}" rx="3"/>
-<text x="${ex+bw/2}" y="${ey+0.5}" fill="#fff" font-size="9" font-weight="800" text-anchor="middle" dominant-baseline="middle">${bv}</text>`;
-  return`<svg viewBox="0 0 ${W} ${H}" width="85%" xmlns="http://www.w3.org/2000/svg" style="display:block">
-  ${bg}${gridLines}${yLabels}
-  <path d="${path} L${xp(5)} ${bY} L${xp(0)} ${bY}Z" fill="${color}" opacity="0.12"/>
-  <path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-  <circle cx="${xp(5)}" cy="${yp(vals[5])}" r="5" fill="${color}" stroke="#fff" stroke-width="2"/>
-  ${xLbls}${badge}
-</svg>`;
 }
 
 /* ── Per-country render ─────────────────────────────────────────── */
@@ -984,36 +984,42 @@ function renderDashboard(tabId,d){
         <div class="spark-label">PIB</div>
         <div class="spark-val">$${d.pib}B</div>
         <div class="spark-sub"><span class="${pibClass}">${d.pib_crecimiento>=0?'▲':'▼'}${Math.abs(d.pib_crecimiento)}%</span> crec. anual</div>
+        <div class="spark-hover-val" id="shv-sp-pib-${tabId}">—</div>
         <div class="spark-chart-wrap"><canvas id="sp-pib-${tabId}"></canvas></div>
       </div>
       <div class="spark-card">
         <div class="spark-label">Población</div>
         <div class="spark-val">${fmtAx(d.poblacion)}</div>
         <div class="spark-sub">habitantes</div>
+        <div class="spark-hover-val" id="shv-sp-pop-${tabId}">—</div>
         <div class="spark-chart-wrap"><canvas id="sp-pop-${tabId}"></canvas></div>
       </div>
       <div class="spark-card">
         <div class="spark-label">Inflación</div>
         <div class="spark-val">${d.inflacion}%</div>
         <div class="spark-sub"><span class="${inflClass}">IPC anual</span></div>
+        <div class="spark-hover-val" id="shv-sp-infl-${tabId}">—</div>
         <div class="spark-chart-wrap"><canvas id="sp-infl-${tabId}"></canvas></div>
       </div>
       <div class="spark-card">
         <div class="spark-label">Tasa BC</div>
         <div class="spark-val">${d.tasa_bc>0?d.tasa_bc+'%':'—'}</div>
         <div class="spark-sub">política monetaria</div>
+        <div class="spark-hover-val" id="shv-sp-tasa-${tabId}">—</div>
         <div class="spark-chart-wrap"><canvas id="sp-tasa-${tabId}"></canvas></div>
       </div>
       <div class="spark-card">
         <div class="spark-label">Desempleo</div>
         <div class="spark-val">${d.desempleo}%</div>
         <div class="spark-sub">tasa nacional</div>
+        <div class="spark-hover-val" id="shv-sp-desemp-${tabId}">—</div>
         <div class="spark-chart-wrap"><canvas id="sp-desemp-${tabId}"></canvas></div>
       </div>
       <div class="spark-card">
         <div class="spark-label">CAGR 5Y</div>
         <div class="spark-val spark-up">${cagr5y}%</div>
         <div class="spark-sub">depósitos totales</div>
+        <div class="spark-hover-val" id="shv-sp-cagr-${tabId}">—</div>
         <div class="spark-chart-wrap"><canvas id="sp-cagr-${tabId}"></canvas></div>
       </div>
     </div>
@@ -1065,7 +1071,7 @@ function renderDashboard(tabId,d){
                 <span class="dep-amount" style="color:#2d9d78">$${fmtAx(plB[5])}B USD *est.</span>
               </div>
             </div>
-            <div id="dep-plazo-${tabId}"></div>
+            <div style="position:relative;height:90px"><canvas id="cv-dep-plazo-${tabId}"></canvas></div>
             <div class="dep-legend">Depósitos a Plazo | Bancos Privados | Período 2021–2025 estimado<br>Fuente: Reguladores Nacionales / Elaboración: SynerGy</div>
           </div>
           <div class="dep-chart-wrap">
@@ -1076,7 +1082,7 @@ function renderDashboard(tabId,d){
                 <span class="dep-amount" style="color:#5b7cfa">$${fmtAx(auB[5])}B USD *est.</span>
               </div>
             </div>
-            <div id="dep-aum-${tabId}"></div>
+            <div style="position:relative;height:90px"><canvas id="cv-dep-aum-${tabId}"></canvas></div>
             <div class="dep-legend">Fondos, Fideicomisos y Activos bajo Administración | Período 2021–2025 estimado<br>Fuente: Reguladores Nacionales / Elaboración: SynerGy</div>
           </div>
         </div>
@@ -1114,18 +1120,16 @@ function renderDashboard(tabId,d){
   if(gpcEl)gpcEl.textContent=`Índice: ${phase.pct}/100`;
 
   /* Sparklines */
-  renderSparkline(`sp-pib-${tabId}`,   mh.pibData,    '#6b7a94');
-  renderSparkline(`sp-pop-${tabId}`,   mh.popData,    '#94a3b8');
-  renderSparkline(`sp-infl-${tabId}`,  mh.inflData,   '#f87171');
-  renderSparkline(`sp-tasa-${tabId}`,  mh.tasaData,   '#a8d5ba');
-  renderSparkline(`sp-desemp-${tabId}`,mh.desempData, '#f5deb3');
-  renderSparkline(`sp-cagr-${tabId}`,  cagrLine,      '#a8d5ba');
+  renderSparkline(`sp-pib-${tabId}`,   mh.pibData,    '#6b7a94', v=>'$'+fmtAx(v)+'B');
+  renderSparkline(`sp-pop-${tabId}`,   mh.popData,    '#94a3b8', v=>fmtAx(v));
+  renderSparkline(`sp-infl-${tabId}`,  mh.inflData,   '#f87171', v=>v+'%');
+  renderSparkline(`sp-tasa-${tabId}`,  mh.tasaData,   '#a8d5ba', v=>v+'%');
+  renderSparkline(`sp-desemp-${tabId}`,mh.desempData, '#f5deb3', v=>v+'%');
+  renderSparkline(`sp-cagr-${tabId}`,  cagrLine,      '#a8d5ba', v=>fmtAx(v)+'M');
 
-  /* SVG deposits — BCE-style */
-  const depPEl=document.getElementById('dep-plazo-'+tabId);
-  const depAEl=document.getElementById('dep-aum-'+tabId);
-  if(depPEl)depPEl.innerHTML=buildSingleLineSVG(plB,'#2d9d78');
-  if(depAEl)depAEl.innerHTML=buildSingleLineSVG(auB,'#5b7cfa');
+  /* Canvas deposits — Chart.js straight lines */
+  renderDepChart('cv-dep-plazo-'+tabId, plB, '#2d9d78');
+  renderDepChart('cv-dep-aum-'+tabId,   auB, '#5b7cfa');
 
   /* Actors pie chart */
   renderActorsPie(tabId,d.actors);
