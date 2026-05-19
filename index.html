@@ -228,7 +228,9 @@ tr:hover td{background:#f8fafc}
 html{overflow-x:hidden}
 body{overflow-x:hidden;max-width:100vw}
 
-/* Deposit canvas: full-width, height cascades via media queries */
+/* Deposit canvas: full-width desktop default.
+   Heights below use clamp(floor, vh-preferred, ceiling) so Chart.js
+   always gets a real computed height while adapting to the viewport. */
 .dep-canvas-wrap{position:relative;height:250px;width:100%}
 
 /* Minimum touch targets */
@@ -251,10 +253,13 @@ body{overflow-x:hidden;max-width:100vw}
   .home-countries-inner{display:block}
 }
 
-/* ── 600px — container padding + chart height step 1 ────────────── */
+/* ── 600px — container + chart height: clamp step 1 ────────────── */
 @media(max-width:600px){
   .container{padding:10px 10px 28px}
-  .dep-canvas-wrap{height:200px}
+  /* clamp: min 140px · prefer 28vh · max 200px
+     tablet portrait 800px tall → 28vh=224 → capped 200px
+     short viewport 500px tall  → 28vh=140 → floored 140px */
+  .dep-canvas-wrap{height:clamp(140px,28vh,200px)}
 }
 
 /* ── 540px — fixed bottom tab bar + fuentes bottom sheet ────────── */
@@ -271,7 +276,7 @@ body{overflow-x:hidden;max-width:100vw}
     margin-bottom:0;
   }
   .country-tabs::-webkit-scrollbar{display:none}
-  .tab-btn{flex-shrink:0;min-width:52px;width:52px;padding:4px 4px;min-height:50px;font-size:9px}
+  .tab-btn{flex-shrink:0;min-width:52px;width:52px;padding:4px;min-height:50px;font-size:9px}
   .tbf{font-size:15px}
   #pg-analytics .container{padding-bottom:70px}
   #pg-fuentes{align-items:flex-end}
@@ -284,7 +289,7 @@ body{overflow-x:hidden;max-width:100vw}
   .fuentes-src-grid{grid-template-columns:1fr}
 }
 
-/* ── 480px — portrait iPhone: compress all sections ────────────── */
+/* ── 480px — portrait iPhones: all vh-relative heights ─────────── */
 @media(max-width:480px){
   /* Home */
   .home-hero{padding:20px 16px 16px}
@@ -295,27 +300,27 @@ body{overflow-x:hidden;max-width:100vw}
   .home-countries{padding:12px 12px 24px}
   .home-clocks{display:none}
 
-  /* Cards: tighter padding saves vertical space */
+  /* Cards */
   .card{padding:12px}
   .spark-card{padding:10px 10px 8px}
 
-  /* Gauge: constrain width so it doesn't fill 375px */
-  .gauge-wrap{max-width:220px;margin:0 auto}
+  /* Gauge: width in vw so it never bleeds; height auto via SVG viewBox */
+  .gauge-wrap{width:100%;max-width:min(280px,72vw);max-height:45vh;margin:0 auto}
 
-  /* Deposit charts: step 2 — shorter for portrait */
-  .dep-canvas-wrap{height:150px}
+  /* Deposit charts: clamp step 2
+     iPhone SE 667px tall → 22vh=147px · iPhone 14 844px → 186px capped 160px */
+  .dep-canvas-wrap{height:clamp(110px,22vh,160px)}
   .dep-2col{gap:12px}
   .dep-kpi{flex-direction:column;gap:2px}
   .dep-cagr{font-size:15px}
   .dep-amount{font-size:13px}
 
-  /* Rate bar: stack vertically */
+  /* Sparklines: clamp · SE 667px → 9vh=60px · 14 Pro 932px → 84px capped 64px */
+  .spark-chart-wrap{height:clamp(44px,9vh,64px)}
+
+  /* Rate bar, titles, table */
   .rate-bar{flex-direction:column;align-items:flex-start;gap:3px;padding:8px 10px}
-
-  /* Section title */
   .sec-title{font-size:11px;margin-bottom:8px}
-
-  /* Table: tighter cells, smaller font */
   th{padding:6px 8px;font-size:10px}
   td{padding:6px 8px;font-size:11px}
 }
@@ -325,26 +330,28 @@ body{overflow-x:hidden;max-width:100vw}
   .home-title{font-size:1.5rem}
   .container{padding:8px 8px 28px}
   #pg-analytics .container{padding-bottom:70px}
-
-  /* Cards: tightest padding */
   .card{padding:10px}
   .spark-card{padding:8px 8px 6px}
 
-  /* Sparklines: 1 column so each chart is full-width and readable */
+  /* 1-column sparklines on SE: full-width = readable
+     SE 667px tall → 9vh=60px but floor at 40px for safety */
   .macro-spark-grid{grid-template-columns:1fr;gap:8px}
-  .spark-chart-wrap{height:52px}
+  .spark-chart-wrap{height:clamp(40px,9vh,56px)}
   .spark-val{font-size:17px}
 
-  /* Deposit charts: step 3 */
-  .dep-canvas-wrap{height:130px}
+  /* Deposit charts: clamp step 3
+     SE portrait 667px → 20vh=133px · landscape 375px → 75px floored 100px */
+  .dep-canvas-wrap{height:clamp(100px,20vh,140px)}
 }
 
-/* ── max-height:600px — landscape on small phones ───────────────── */
+/* ── max-height:600px — landscape small phones ──────────────────── */
 @media(max-height:600px) and (max-width:900px){
-  .dep-canvas-wrap{height:120px}
-  .spark-chart-wrap{height:44px}
+  /* landscape: viewport height drives everything
+     iPhone SE landscape 375px tall → 18vh=67px floored 80px */
+  .dep-canvas-wrap{height:clamp(80px,18vh,120px)}
+  .spark-chart-wrap{height:clamp(36px,8vh,44px)}
   .macro-spark-grid{grid-template-columns:repeat(3,1fr)}
-  /* Hide verbose legend — keep gauge functional */
+  /* Hide verbose labels to save vertical space */
   .gauge-calc{display:none}
   .gauge-bands{display:none}
   .gauge-letter-legend{display:none}
