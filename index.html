@@ -222,10 +222,15 @@ tr:hover td{background:#f8fafc}
 .hcty-btn{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 6px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .15s;color:#374151;font-weight:500;line-height:1}
 .hcty-btn span{font-size:10.5px;color:#4b5563;text-align:center;line-height:1.2;font-weight:600}
 .hcty-btn:hover{background:#f1f5f9;border-color:#9ca3af;transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.07)}
-/* ═══ DEPOSITS 2-COL ═══════════════════════════════════════════════ */
-.dep-2col{display:flex;flex-direction:column;gap:14px;padding-top:4px}
-.dep-col-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
-.dep-legend{font-size:8.5px;color:#94a3b8;margin-top:3px;padding-top:3px;border-top:1px solid #f1f5f9;line-height:1.4}
+/* ═══ DEPOSITS — BCE STYLE ══════════════════════════════════════════ */
+.dep-2col{display:flex;flex-direction:column;gap:16px;padding-top:4px}
+.dep-chart-wrap{display:flex;flex-direction:column}
+.dep-chart-hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:4px}
+.dep-tag{font-size:10px;color:#8892a1;font-weight:700;text-transform:uppercase;letter-spacing:.07em}
+.dep-kpi{display:flex;align-items:baseline;gap:10px}
+.dep-cagr{font-size:18px;font-weight:800;color:#0f172a;line-height:1}
+.dep-amount{font-size:16px;font-weight:700;line-height:1}
+.dep-legend{font-size:10px;color:#495057;margin-top:8px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -880,14 +885,14 @@ function renderSparkline(cid,data,hexColor){
   });
 }
 
-/* ── Single-line SVG chart — stacked full-width (B USD) ─────────── */
-function buildSingleLineSVG(vals,color,cagr,lastLabel,unitLabel){
-  const W=280,H=160,pL=38,pR=10,pT=30,pB=26;
+/* ── BCE-style SVG chart (SynerGy colors) ────────────────────────── */
+function buildSingleLineSVG(vals,color){
+  const W=600,H=90,pL=44,pR=54,pT=6,pB=18;
   const pw=W-pL-pR,ph=H-pT-pB;
   const maxV=Math.max(...vals)||1;
   const bY=pT+ph;
   const xp=i=>(pL+i*pw/5).toFixed(1);
-  const yp=v=>(pT+ph*(1-v/maxV*0.88)).toFixed(1);
+  const yp=v=>(pT+ph*(1-v/maxV)).toFixed(1);
   const smooth=arr=>{
     let d=`M${xp(0)} ${yp(arr[0])}`;
     for(let i=1;i<arr.length;i++){
@@ -900,24 +905,31 @@ function buildSingleLineSVG(vals,color,cagr,lastLabel,unitLabel){
     }
     return d;
   };
-  const grid=[0.25,0.5,0.75].map(f=>{
-    const gy=yp(maxV*f);
-    return`<line x1="${pL}" y1="${gy}" x2="${W-pR}" y2="${gy}" stroke="#f1f5f9" stroke-width="1"/>
-<text x="${pL-3}" y="${gy}" fill="#94a3b8" font-size="8" text-anchor="end" dominant-baseline="middle">${fmtAx(maxV*f)}</text>`;
+  const bg=`<rect x="${pL}" y="${pT}" width="${pw}" height="${ph}" fill="#f0f2f5" rx="3"/>`;
+  const gridLines=[0.25,0.5,0.75].map(f=>{
+    const gy=(pT+ph*(1-f)).toFixed(1);
+    return`<line x1="${pL}" y1="${gy}" x2="${W-pR}" y2="${gy}" stroke="#d8dde6" stroke-width="1" stroke-dasharray="4,3"/>`;
   }).join('');
-  const xLbls=['2021*','2022*','2023*','2024*','2025*','2026'].map((l,i)=>
-    `<text x="${xp(i)}" y="${H-8}" fill="#94a3b8" font-size="7.5" text-anchor="middle">${l}</text>`
+  const yLabels=[{f:0,l:'0'},{f:0.5,l:fmtAx(maxV*0.5)},{f:1,l:fmtAx(maxV)}].map(({f,l})=>{
+    const gy=(pT+ph*(1-f)).toFixed(1);
+    return`<text x="${pL-4}" y="${gy}" fill="#8892a1" font-size="9" text-anchor="end" dominant-baseline="middle">${l}</text>`;
+  }).join('');
+  const xLbls=["'21","'22","'23","'24","'25","'26"].map((l,i)=>
+    `<text x="${xp(i)}" y="${H-3}" fill="#8892a1" font-size="9" text-anchor="middle">${l}</text>`
   ).join('');
   const path=smooth(vals);
-  return`<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="display:block">
-  <text x="${pL}" y="14" fill="#4b5563" font-size="9.5" font-weight="600">CAGR ${cagr}%</text>
-  <text x="${W-pR}" y="14" fill="#0f172a" font-size="12" font-weight="800" text-anchor="end">${lastLabel}</text>
-  <text x="${W-pR}" y="24" fill="#94a3b8" font-size="8" text-anchor="end">${unitLabel}</text>
-  ${grid}
-  <path d="${path} L${xp(5)} ${bY} L${xp(0)} ${bY}Z" fill="${color}18"/>
-  <path d="${path}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-  <circle cx="${xp(5)}" cy="${yp(vals[5])}" r="3.5" fill="${color}" stroke="#fff" stroke-width="1.5"/>
-  ${xLbls}
+  const bv=fmtAx(vals[5])+'B';
+  const bw=bv.length*6+14;
+  const ex=+(+xp(5)+8).toFixed(1);
+  const ey=+yp(vals[5]);
+  const badge=`<rect x="${ex}" y="${ey-8}" width="${bw}" height="16" fill="${color}" rx="3"/>
+<text x="${ex+bw/2}" y="${ey+0.5}" fill="#fff" font-size="9" font-weight="800" text-anchor="middle" dominant-baseline="middle">${bv}</text>`;
+  return`<svg viewBox="0 0 ${W} ${H}" width="85%" xmlns="http://www.w3.org/2000/svg" style="display:block">
+  ${bg}${gridLines}${yLabels}
+  <path d="${path} L${xp(5)} ${bY} L${xp(0)} ${bY}Z" fill="${color}" opacity="0.10"/>
+  <path d="${path}" fill="none" stroke="${color}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+  <circle cx="${xp(5)}" cy="${yp(vals[5])}" r="5" fill="${color}" stroke="#fff" stroke-width="2"/>
+  ${xLbls}${badge}
 </svg>`;
 }
 
@@ -963,6 +975,13 @@ function renderDashboard(tabId,d){
   const yrs=[2021,2022,2023,2024,2025,2026];
   const cagrLine=yrs.map(y=>d.history[y].vista+d.history[y].plazo);
   const cagr5y=d.cagr5y||'—';
+
+  /* Pre-compute deposits B USD */
+  const depDiv=(cur.dol||!rate)?1000:rate*1000;
+  const plB=yrs.map(y=>+(d.history[y].plazo/depDiv).toFixed(2));
+  const auB=yrs.map(y=>+(d.history[y].acm/depDiv).toFixed(2));
+  const plCagr5=cagrPct(plB[0],plB[5])||'—';
+  const auCagr5=cagrPct(auB[0],auB[5])||'—';
 
   /* CSS classes */
   const pibClass=d.pib_crecimiento>=3?'spark-up':d.pib_crecimiento>=0?'':'spark-dn';
@@ -1046,18 +1065,29 @@ function renderDashboard(tabId,d){
           </div>
         </div>
       </div>
-      <div class="card" style="min-width:0;overflow:hidden;padding:14px 12px 10px">
-        <div class="card-title">Depósitos · 2021–2026</div>
+      <div class="card" style="min-width:0;overflow:hidden;padding:16px">
         <div class="dep-2col">
-          <div>
-            <div class="dep-col-label" style="color:#34d399">Dep. Plazo · 2021–2026</div>
+          <div class="dep-chart-wrap">
+            <div class="dep-chart-hdr">
+              <span class="dep-tag">DEP. PLAZO 2021–2026</span>
+              <div class="dep-kpi">
+                <span class="dep-cagr">CAGR ${plCagr5}%</span>
+                <span class="dep-amount" style="color:#2d9d78">$${fmtAx(plB[5])}B USD *est.</span>
+              </div>
+            </div>
             <div id="dep-plazo-${tabId}"></div>
-            <div class="dep-legend">Depósitos a término fijo · Back-proyección estimada · Fuente: Reguladores / Supabase</div>
+            <div class="dep-legend">Depósitos a Plazo | Bancos Privados | Período 2021–2025 estimado<br>Fuente: Reguladores Nacionales / Elaboración: SynerGy</div>
           </div>
-          <div>
-            <div class="dep-col-label" style="color:#93c5fd">Inv. / AUM · 2021–2026</div>
+          <div class="dep-chart-wrap">
+            <div class="dep-chart-hdr">
+              <span class="dep-tag">INV. / AUM 2021–2026</span>
+              <div class="dep-kpi">
+                <span class="dep-cagr">CAGR ${auCagr5}%</span>
+                <span class="dep-amount" style="color:#5b7cfa">$${fmtAx(auB[5])}B USD *est.</span>
+              </div>
+            </div>
             <div id="dep-aum-${tabId}"></div>
-            <div class="dep-legend">Fondos, fideicomisos y activos bajo administración · *2021–2025 estimado</div>
+            <div class="dep-legend">Fondos, Fideicomisos y Activos bajo Administración | Período 2021–2025 estimado<br>Fuente: Reguladores Nacionales / Elaboración: SynerGy</div>
           </div>
         </div>
       </div>
@@ -1101,17 +1131,11 @@ function renderDashboard(tabId,d){
   renderSparkline(`sp-desemp-${tabId}`,mh.desempData, '#f5deb3');
   renderSparkline(`sp-cagr-${tabId}`,  cagrLine,      '#a8d5ba');
 
-  /* SVG deposits — 2 charts in B USD */
-  const depDiv=(cur.dol||!rate)?1000:rate*1000;
-  const depYrs=[2021,2022,2023,2024,2025,2026];
-  const plB=depYrs.map(y=>+(d.history[y].plazo/depDiv).toFixed(2));
-  const auB=depYrs.map(y=>+(d.history[y].acm/depDiv).toFixed(2));
-  const plCagr5=cagrPct(plB[0],plB[5])||'—';
-  const auCagr5=cagrPct(auB[0],auB[5])||'—';
+  /* SVG deposits — BCE-style */
   const depPEl=document.getElementById('dep-plazo-'+tabId);
   const depAEl=document.getElementById('dep-aum-'+tabId);
-  if(depPEl)depPEl.innerHTML=buildSingleLineSVG(plB,'#34d399',plCagr5,'$'+fmtAx(plB[5])+'B','B USD ·*est.');
-  if(depAEl)depAEl.innerHTML=buildSingleLineSVG(auB,'#93c5fd',auCagr5,'$'+fmtAx(auB[5])+'B','B USD ·*est.');
+  if(depPEl)depPEl.innerHTML=buildSingleLineSVG(plB,'#2d9d78');
+  if(depAEl)depAEl.innerHTML=buildSingleLineSVG(auB,'#5b7cfa');
 
   /* Actors pie chart */
   renderActorsPie(tabId,d.actors);
