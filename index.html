@@ -893,18 +893,8 @@ function buildSingleLineSVG(vals,color){
   const bY=pT+ph;
   const xp=i=>(pL+i*pw/5).toFixed(1);
   const yp=v=>(pT+ph*(1-v/maxV)).toFixed(1);
-  const smooth=arr=>{
-    let d=`M${xp(0)} ${yp(arr[0])}`;
-    for(let i=1;i<arr.length;i++){
-      const x0=+xp(Math.max(0,i-2)),y0=+yp(arr[Math.max(0,i-2)]);
-      const x1=+xp(i-1),y1=+yp(arr[i-1]);
-      const x2=+xp(i),y2=+yp(arr[i]);
-      const x3=+xp(Math.min(5,i+1)),y3=+yp(arr[Math.min(5,i+1)]);
-      const t=0.35;
-      d+=` C${(x1+(x2-x0)*t).toFixed(1)} ${(y1+(y2-y0)*t).toFixed(1)} ${(x2-(x3-x1)*t).toFixed(1)} ${(y2-(y3-y1)*t).toFixed(1)} ${x2} ${y2}`;
-    }
-    return d;
-  };
+  const linePath=arr=>`M ${arr.map((v,i)=>`${xp(i)} ${yp(v)}`).join(' L ')}`;
+
   const bg=`<rect x="${pL}" y="${pT}" width="${pw}" height="${ph}" fill="#f0f2f5" rx="3"/>`;
   const gridLines=[0.25,0.5,0.75].map(f=>{
     const gy=(pT+ph*(1-f)).toFixed(1);
@@ -917,7 +907,7 @@ function buildSingleLineSVG(vals,color){
   const xLbls=["'21","'22","'23","'24","'25","'26"].map((l,i)=>
     `<text x="${xp(i)}" y="${H-3}" fill="#8892a1" font-size="9" text-anchor="middle">${l}</text>`
   ).join('');
-  const path=smooth(vals);
+  const path=linePath(vals);
   const bv=fmtAx(vals[5])+'B';
   const bw=bv.length*6+14;
   const ex=+(+xp(5)+8).toFixed(1);
@@ -926,8 +916,8 @@ function buildSingleLineSVG(vals,color){
 <text x="${ex+bw/2}" y="${ey+0.5}" fill="#fff" font-size="9" font-weight="800" text-anchor="middle" dominant-baseline="middle">${bv}</text>`;
   return`<svg viewBox="0 0 ${W} ${H}" width="85%" xmlns="http://www.w3.org/2000/svg" style="display:block">
   ${bg}${gridLines}${yLabels}
-  <path d="${path} L${xp(5)} ${bY} L${xp(0)} ${bY}Z" fill="${color}" opacity="0.10"/>
-  <path d="${path}" fill="none" stroke="${color}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="${path} L${xp(5)} ${bY} L${xp(0)} ${bY}Z" fill="${color}" opacity="0.12"/>
+  <path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
   <circle cx="${xp(5)}" cy="${yp(vals[5])}" r="5" fill="${color}" stroke="#fff" stroke-width="2"/>
   ${xLbls}${badge}
 </svg>`;
