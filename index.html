@@ -222,67 +222,98 @@ tr:hover td{background:#f8fafc}
 .dep-amount{font-size:16px;font-weight:700;line-height:1}
 .dep-legend{font-size:10px;color:#495057;margin-top:8px;line-height:1.5}
 
-/* ═══ RESPONSIVE — mobile additions ════════════════════════════════ */
+/* ═══ RESPONSIVE ═══════════════════════════════════════════════════ */
 
-/* Deposit canvas: class for responsive height override */
-.dep-canvas-wrap{position:relative;height:250px}
-@media(max-width:600px){.dep-canvas-wrap{height:175px}}
+/* Prevent ALL horizontal overflow */
+html{overflow-x:hidden}
+body{overflow-x:hidden;max-width:100vw}
+
+/* Deposit canvas: responsive, full-width */
+.dep-canvas-wrap{position:relative;height:250px;width:100%}
+@media(max-width:600px){.dep-canvas-wrap{height:200px}}
 
 /* Minimum touch targets */
 .enter-btn{min-height:48px}
 .hcty-btn{min-height:48px}
 .back-btn{min-height:44px}
 
-/* ── 480px — compact home ───────────────────────────────────────── */
+/* ── 700px — analytics nav: compact, clocks hidden ─────────────── */
+@media(max-width:700px){
+  .an-nav{grid-template-columns:auto 1fr;padding:10px 14px;gap:8px}
+  .an-nav-right{display:none}
+  .an-nav-center{justify-content:flex-start}
+  .nav-title{font-size:13px}
+  .nav-logo{height:30px}
+}
+
+/* ── 640px — hide SVG map, cleaner home grid ────────────────────── */
+@media(max-width:640px){
+  .home-map-col{display:none}
+  .home-countries-inner{display:block}
+}
+
+/* ── 600px — tighter container ──────────────────────────────────── */
+@media(max-width:600px){
+  .container{padding:10px 10px 28px}
+}
+
+/* ── 540px — fixed bottom tab bar + bottom sheet modal ─────────── */
+@media(max-width:540px){
+  /* Bottom tab bar */
+  .country-tabs{
+    position:fixed;bottom:0;left:0;right:0;
+    width:100%;z-index:1000;
+    display:flex;overflow-x:auto;flex-wrap:nowrap;
+    gap:4px;padding:6px 8px;
+    padding-bottom:max(6px,env(safe-area-inset-bottom));
+    background:#fff;border-top:1px solid #e2e8f0;border-radius:0;
+    box-shadow:0 -3px 12px rgba(0,0,0,.1);
+    -webkit-overflow-scrolling:touch;scrollbar-width:none;
+    margin-bottom:0;
+  }
+  .country-tabs::-webkit-scrollbar{display:none}
+  .tab-btn{flex-shrink:0;min-width:52px;width:52px;padding:4px 4px;min-height:50px;font-size:9px}
+  .tbf{font-size:15px}
+
+  /* Clear space for fixed bottom bar */
+  #pg-analytics .container{padding-bottom:70px}
+
+  /* Fuentes: bottom sheet */
+  #pg-fuentes{align-items:flex-end}
+  .fuentes-modal{
+    padding:20px 16px;border-radius:14px 14px 0 0;
+    max-height:85vh;overflow-y:auto;
+    position:fixed;bottom:0;left:0;right:0;
+    max-width:100%;width:100%;margin:0;
+  }
+  .fuentes-src-grid{grid-template-columns:1fr}
+}
+
+/* ── 480px — compact home page ──────────────────────────────────── */
 @media(max-width:480px){
-  .home-hero{padding:24px 14px 20px}
-  .home-title{font-size:1.85rem}
-  .home-logo{height:60px;max-width:240px}
-  .home-sub{font-size:.9rem}
-  .home-countries{padding:16px 12px 28px}
+  .home-hero{padding:20px 16px 16px}
+  .home-hero-center{min-width:0;width:100%}
+  .home-title{font-size:1.75rem}
+  .home-logo{height:56px;max-width:220px}
+  .home-sub{font-size:.875rem}
+  .home-countries{padding:12px 12px 24px}
   .home-clocks{display:none}
-  .rate-bar{flex-direction:column;align-items:flex-start;gap:3px}
+  .rate-bar{flex-direction:column;align-items:flex-start;gap:3px;padding:8px 10px}
   .dep-kpi{flex-direction:column;gap:2px}
   .dep-cagr{font-size:15px}
   .dep-amount{font-size:13px}
 }
 
-/* ── 540px — fuentes modal becomes bottom sheet ─────────────────── */
-@media(max-width:540px){
-  #pg-fuentes{align-items:flex-end}
-  .fuentes-modal{padding:20px 16px;border-radius:14px 14px 0 0;max-height:85vh;position:fixed;bottom:0;left:0;right:0;max-width:100%;width:100%;margin:0}
-  .fuentes-src-grid{grid-template-columns:1fr}
+/* ── 375px — iPhone SE / smallest supported ─────────────────────── */
+@media(max-width:375px){
+  .home-title{font-size:1.5rem}
+  .spark-val{font-size:18px}
+  .card{padding:12px}
+  .container{padding:8px 8px 28px}
+  #pg-analytics .container{padding-bottom:70px}
 }
 
-/* ── 700px — analytics nav: hide clocks, compact ───────────────── */
-@media(max-width:700px){
-  .an-nav-right{display:none}
-  .an-nav-center{justify-content:flex-start}
-  .nav-title{font-size:14px}
-  .nav-logo{height:32px}
-}
-
-/* ── 540px — country tabs: fixed bottom bar ─────────────────────── */
-@media(max-width:540px){
-  .country-tabs{
-    position:fixed;bottom:0;left:0;right:0;z-index:100;
-    display:flex;overflow-x:auto;flex-wrap:nowrap;
-    gap:4px;padding:8px 10px;
-    padding-bottom:max(8px,env(safe-area-inset-bottom));
-    background:#fff;border-top:1px solid #e2e8f0;
-    border-radius:0;box-shadow:0 -3px 14px rgba(0,0,0,.1);
-    -webkit-overflow-scrolling:touch;scrollbar-width:none;
-    margin-bottom:0;
-  }
-  .country-tabs::-webkit-scrollbar{display:none}
-  .tab-btn{flex-shrink:0;min-width:52px;padding:5px 4px;min-height:54px;font-size:9px}
-  #pg-analytics .container{padding-bottom:88px}
-}
-
-/* ── 600px — container padding ──────────────────────────────────── */
-@media(max-width:600px){.container{padding:10px 10px 28px}}
-
-/* ── Reduced motion preference ──────────────────────────────────── */
+/* ── Reduced motion ─────────────────────────────────────────────── */
 @media(prefers-reduced-motion:reduce){
   *{animation-duration:.01ms!important;transition-duration:.01ms!important}
   .online-dot,.nav-dot{animation:none}
