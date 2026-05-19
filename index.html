@@ -7,19 +7,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;padding-top:36px}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh}
 
-/* ═══ TICKER BAR ════════════════════════════════════════════════════ */
-#ticker-bar{position:fixed;top:0;left:0;right:0;z-index:300;height:36px;background:#0f172a;border-bottom:1px solid #1e293b;display:flex;align-items:center;padding:0 16px;gap:0;overflow:hidden}
-.ticker-label{font-size:9px;font-weight:800;letter-spacing:.12em;color:#4f46e5;text-transform:uppercase;padding-right:14px;border-right:1px solid #1e293b;margin-right:14px;white-space:nowrap;flex-shrink:0}
-.ticker-items{display:flex;align-items:center;gap:0;overflow:hidden;flex:1}
-.ticker-item{display:flex;align-items:center;gap:5px;padding:0 18px;border-right:1px solid #1e293b;white-space:nowrap;flex-shrink:0}
-.ticker-item:first-child{padding-left:0}
-.ticker-name{font-size:10px;color:#64748b;font-weight:600;letter-spacing:.02em}
-.ticker-price{font-size:12px;color:#f1f5f9;font-weight:700;font-variant-numeric:tabular-nums}
-.ticker-chg{font-size:10px;font-weight:600}
-.ticker-chg.up{color:#22c55e}.ticker-chg.down{color:#ef4444}.ticker-chg.flat{color:#64748b}
-.ticker-dot{width:4px;height:4px;border-radius:50%;background:#1e293b;margin:0 4px;flex-shrink:0}
 .hidden{display:none!important}
 
 /* ═══ HOME ═══════════════════════════════════════════════════════════ */
@@ -78,7 +67,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f8fafc;color:#0f172
 
 /* ═══ ANALYTICS NAV ════════════════════════════════════════════════ */
 #pg-analytics{min-height:100vh;background:#f8fafc}
-.an-nav{background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 60%,#312e81 100%);padding:14px 28px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;border-bottom:2px solid #4b5563;position:sticky;top:36px;z-index:100}
+.an-nav{background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 60%,#312e81 100%);padding:14px 28px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;border-bottom:2px solid #4b5563;position:sticky;top:0;z-index:100}
 @media(max-width:700px){.an-nav{grid-template-columns:auto auto;gap:10px}}
 .an-nav-left{display:flex;align-items:center}
 .an-nav-center{display:flex;align-items:center;justify-content:center;gap:14px}
@@ -236,19 +225,6 @@ tr:hover td{background:#f8fafc}
 </head>
 <body>
 
-<!-- ═══ TICKER BAR ═══════════════════════════════════════════════════ -->
-<div id="ticker-bar">
-  <span class="ticker-label">Mercados</span>
-  <div class="ticker-items" id="ticker-items">
-    <div class="ticker-item"><span class="ticker-name">S&amp;P 500</span><span class="ticker-price" id="tk-spx">—</span><span class="ticker-chg flat" id="tkc-spx">—</span></div>
-    <div class="ticker-item"><span class="ticker-name">BTC/USD</span><span class="ticker-price" id="tk-btc">—</span><span class="ticker-chg flat" id="tkc-btc">—</span></div>
-    <div class="ticker-item"><span class="ticker-name">EUR/USD</span><span class="ticker-price" id="tk-eur">—</span><span class="ticker-chg flat" id="tkc-eur">—</span></div>
-    <div class="ticker-item"><span class="ticker-name">USD/COP</span><span class="ticker-price" id="tk-cop">—</span><span class="ticker-chg flat" id="tkc-cop">—</span></div>
-    <div class="ticker-item"><span class="ticker-name">USD/PEN</span><span class="ticker-price" id="tk-pen">—</span><span class="ticker-chg flat" id="tkc-pen">—</span></div>
-    <div class="ticker-item"><span class="ticker-name">USD/BRL</span><span class="ticker-price" id="tk-brl">—</span><span class="ticker-chg flat" id="tkc-brl">—</span></div>
-    <div class="ticker-item"><span class="ticker-name">XAU/USD</span><span class="ticker-price" id="tk-xau">—</span><span class="ticker-chg flat" id="tkc-xau">—</span></div>
-  </div>
-</div>
 
 <!-- ═══════════════════════════════════════════════════════════════════
      HOME PAGE
@@ -1258,63 +1234,6 @@ function refreshNews(){
   if(el)el.textContent=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
 }
 
-/* ── Ticker ──────────────────────────────────────────────────────── */
-const TICKER_FB={spx:{v:5840,c:0.42},btc:{v:103450,c:1.18},eur:{v:1.0834,c:0.09},cop:{v:4195,c:-0.31},pen:{v:3.72,c:0.05},brl:{v:5.72,c:-0.18},xau:{v:3285,c:0.53}};
-
-function setTicker(id,price,chgPct,decimals,prefix){
-  const pEl=document.getElementById('tk-'+id);
-  const cEl=document.getElementById('tkc-'+id);
-  if(!pEl||!cEl)return;
-  const formatted=(prefix||'')+Number(price).toLocaleString('en-US',{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
-  pEl.textContent=formatted;
-  const c=+chgPct;
-  cEl.textContent=(c>=0?'▲':'▼')+Math.abs(c).toFixed(2)+'%';
-  cEl.className='ticker-chg '+(c>0?'up':c<0?'down':'flat');
-}
-
-async function loadTicker(){
-  const fb=TICKER_FB;
-  // Seed with fallback immediately so ticker shows values on load
-  setTicker('spx',fb.spx.v,fb.spx.c,2,'');
-  setTicker('btc',fb.btc.v,fb.btc.c,0,'$');
-  setTicker('eur',fb.eur.v,fb.eur.c,4,'');
-  setTicker('cop',fb.cop.v,fb.cop.c,2,'');
-  setTicker('pen',fb.pen.v,fb.pen.c,4,'');
-  setTicker('brl',fb.brl.v,fb.brl.c,4,'');
-  setTicker('xau',fb.xau.v,fb.xau.c,0,'$');
-
-  // Crypto: Binance public API (no key, CORS enabled)
-  try{
-    const r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=["BTCUSDT"]',{signal:AbortSignal.timeout(7000)});
-    const arr=await r.json();
-    arr.forEach(t=>{
-      if(t.symbol==='BTCUSDT') setTicker('btc',+t.lastPrice,+t.priceChangePercent,0,'$');
-    });
-  }catch(_){}
-
-  // FX: reuse exchangeRates already loaded from Supabase/open.er-api.com
-  if(exchangeRates){
-    if(exchangeRates.EUR) setTicker('eur',+(1/exchangeRates.EUR).toFixed(4),0,4,'');
-    if(exchangeRates.COP) setTicker('cop',+exchangeRates.COP.toFixed(2),0,2,'');
-    if(exchangeRates.PEN) setTicker('pen',+exchangeRates.PEN.toFixed(4),0,4,'');
-    if(exchangeRates.BRL) setTicker('brl',+exchangeRates.BRL.toFixed(4),0,4,'');
-  }
-
-  // Gold: metals.live free endpoint
-  try{
-    const r=await fetch('https://api.metals.live/v1/spot/gold',{signal:AbortSignal.timeout(7000)});
-    const j=await r.json();
-    if(j.price) setTicker('xau',j.price,0,0,'$');
-  }catch(_){}
-
-  // S&P 500: stooq.com (free, no key)
-  try{
-    const r=await fetch('https://stooq.com/q/l/?s=^spx&f=sd2t2ohlc&h&e=json',{signal:AbortSignal.timeout(7000)});
-    const j=await r.json();
-    const q=j?.symbols?.[0];
-    if(q?.close&&q?.open) setTicker('spx',q.close,((q.close-q.open)/q.open*100),2,'');
-  }catch(_){}
-}
 
 /* ── Init ────────────────────────────────────────────────────────── */
 async function init(){
@@ -1322,8 +1241,6 @@ async function init(){
   setOnline();
   renderDashboard(activeCountry,dashboardData[activeCountry]);
   refreshNews();
-  loadTicker();
-  setInterval(loadTicker,60000);
 }
 init();
 </script>
