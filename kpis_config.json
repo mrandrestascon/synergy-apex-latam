@@ -1,0 +1,21 @@
+{
+  "version": "2.1",
+  "timestamp": "$(date)",
+  "kpis": [
+    {"name": "Depósitos a Plazo", "source": "Trading Economics", "region": "LATAM"},
+    {"name": "Mercado de Valores", "source": "Trading Economics", "region": "LATAM"},
+    {"name": "Depósitos a la Vista", "source": "Bancos Centrales", "region": "LATAM"},
+    {"name": "Ciclo Económico (Tasa Interés)", "source": "Bancos Centrales", "region": "LATAM"},
+    {"name": "PIB % Crecimiento", "source": "Trading Economics", "region": "LATAM"},
+    {"name": "% Bancarización", "source": "Bancos Centrales", "region": "LATAM"},
+    {"name": "Ticket Promedio", "source": "Análisis Interno", "region": "LATAM"}
+  ],
+  "objectives": [
+    "Strategic Decisions",
+    "Due Diligence",
+    "Business Planning",
+    "Benchmarking",
+    "Reporting",
+    "Real-Time Monitoring"
+  ]
+}
