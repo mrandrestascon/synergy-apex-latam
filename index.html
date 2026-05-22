@@ -1,1390 +1,230 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,viewport-fit=cover">
-<title>SynerGy — Dashboard LATAM</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh}
-
-.hidden{display:none!important}
-
-/* ═══ HOME ═══════════════════════════════════════════════════════════ */
-#pg-home{min-height:100vh;background:#fff;display:flex;flex-direction:column}
-.home-hero{display:flex;align-items:center;justify-content:space-between;padding:52px 64px 28px;gap:32px;flex-wrap:wrap;border-bottom:1px solid #f1f5f9}
-@media(max-width:800px){.home-hero{padding:32px 24px 24px;flex-direction:column;align-items:center}}
-.home-hero-center{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;flex:1;min-width:260px}
-.home-logo{height:84px;max-width:380px;object-fit:contain}
-.home-title{font-size:2.8rem;font-weight:800;color:#0f172a;letter-spacing:-1px;line-height:1.1}
-.home-sub{font-size:1rem;color:#475569;font-weight:400;line-height:1.5}
-.online-badge{display:inline-flex;align-items:center;gap:8px;background:#f0fdf4;border:1px solid #86efac;border-radius:20px;padding:7px 14px;width:fit-content}
-.online-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;box-shadow:0 0 0 3px rgba(34,197,94,0.25);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,0.25)}50%{box-shadow:0 0 0 6px rgba(34,197,94,0.1)}}
-.online-text{font-size:12px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.06em}
-.online-ts{font-size:11px;color:#4ade80}
-.enter-btn{background:linear-gradient(135deg,#4b5563,#374151);color:#fff;border:none;border-radius:10px;padding:17px 38px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.02em;width:fit-content;transition:all .2s;box-shadow:0 4px 14px rgba(75,85,99,.3)}
-.enter-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(75,85,99,.4)}
-.home-footer{font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em}
-.home-hero-clocks{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
-@media(max-width:800px){.home-hero-clocks{align-items:center}}
-.home-clocks{display:flex;gap:8px;flex-wrap:wrap}
-.hclock{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 14px;min-width:106px}
-.hclock-city{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px}
-.hclock-time{font-size:16px;font-weight:700;color:#0f172a;font-variant-numeric:tabular-nums;letter-spacing:1px}
-.hclock-zone{font-size:8px;color:#cbd5e1;margin-top:1px}
-.home-updated{font-size:10px;color:#94a3b8}
-/* ═══ COUNTRIES GRID ════════════════════════════════════════════════ */
-.home-countries{padding:28px 48px 48px;max-width:1300px;margin:0 auto;width:100%}
-.home-countries-label{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;text-align:center}
-.home-cty-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:8px;margin-bottom:8px}
-@media(max-width:1100px){.home-cty-grid{grid-template-columns:repeat(6,1fr)}}
-@media(max-width:640px){.home-cty-grid{grid-template-columns:repeat(3,1fr)}}
-.hcty-btn{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 4px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:all .15s;font-size:20px;color:#374151;font-weight:500;line-height:1}
-.hcty-btn span{font-size:10px;color:#64748b;text-align:center;line-height:1.2;font-weight:500}
-.hcty-btn:hover{background:#f1f5f9;border-color:#94a3b8;transform:translateY(-2px);box-shadow:0 4px 10px rgba(0,0,0,.07)}
-/* ═══ ACTORS SPLIT ══════════════════════════════════════════════════ */
-.actors-split{display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start}
-@media(max-width:860px){.actors-split{grid-template-columns:1fr}}
-.actors-pie-wrap{display:flex;flex-direction:column;align-items:center;padding-top:4px}
-.actors-pie-title{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;text-align:center}
-/* ═══ NEWS AMPLIAR ══════════════════════════════════════════════════ */
-.news-ampliar{color:#6b7a94;font-size:10px;text-decoration:none;font-weight:600}
-.news-ampliar:hover{color:#4b5563;text-decoration:underline}
-.fuentes-link{color:#6b7a94;font-weight:600;text-decoration:none}
-.fuentes-link:hover{text-decoration:underline}
-/* ═══ FUENTES MODAL ═════════════════════════════════════════════════ */
-#pg-fuentes{position:fixed;inset:0;background:rgba(15,23,42,.65);z-index:500;display:flex;align-items:center;justify-content:center}
-.fuentes-modal{background:#fff;border-radius:14px;padding:32px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)}
-.fuentes-modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;border-bottom:1px solid #f1f5f9;padding-bottom:16px}
-.fuentes-modal-close{background:none;border:1px solid #e2e8f0;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:14px;color:#94a3b8}
-.fuentes-modal-close:hover{background:#f8fafc;color:#475569}
-.fuentes-src-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;margin-top:14px}
-.fuentes-src-item{font-size:12px;color:#475569;display:flex;flex-direction:column;gap:2px}
-.fuentes-src-item a{color:#6b7a94;text-decoration:none;font-size:11px}
-.fuentes-src-item a:hover{text-decoration:underline}
-
-/* ═══ ANALYTICS NAV ════════════════════════════════════════════════ */
-#pg-analytics{min-height:100vh;background:#f8fafc}
-.an-nav{background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 60%,#312e81 100%);padding:14px 28px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;border-bottom:2px solid #4b5563;position:sticky;top:0;z-index:100}
-@media(max-width:700px){.an-nav{grid-template-columns:auto auto;gap:10px}}
-.an-nav-left{display:flex;align-items:center}
-.an-nav-center{display:flex;align-items:center;justify-content:center;gap:14px}
-.an-nav-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
-.back-btn{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.2);color:#e2e8f0;padding:9px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s;white-space:nowrap}
-.back-btn:hover{background:rgba(255,255,255,.18);color:#fff}
-.nav-logo{height:44px;filter:brightness(0) invert(1);opacity:.92}
-.nav-title{font-size:18px;font-weight:800;color:#e2e8f0;letter-spacing:-.3px;white-space:nowrap}
-.nav-clocks{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.nclock{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:5px 10px;min-width:100px}
-.nclock-city{font-size:8px;color:#64748b;text-transform:uppercase;letter-spacing:.08em}
-.nclock-time{font-size:13px;font-weight:700;color:#e0f2fe;font-variant-numeric:tabular-nums}
-.nav-bottom-row{display:flex;align-items:center;gap:8px;justify-content:flex-end}
-.nav-online{display:flex;align-items:center;gap:5px;font-size:10px;color:#4ade80;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);padding:3px 8px;border-radius:10px}
-.nav-dot{width:6px;height:6px;background:#22c55e;border-radius:50%;animation:pulse 2s infinite}
-.nav-date{font-size:9.5px;color:#475569}
-
-/* ═══ CONTAINER ════════════════════════════════════════════════════ */
-.container{max-width:1440px;margin:0 auto;padding:20px 20px 32px}
-
-/* ═══ SECTION TITLE ════════════════════════════════════════════════ */
-.sec-title{font-size:12px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;padding-bottom:7px;border-bottom:2px solid #e2e8f0}
-
-/* ═══ TABS ═════════════════════════════════════════════════════════ */
-.country-tabs{display:grid;grid-template-columns:repeat(9,1fr);gap:6px;margin-bottom:16px;padding:10px;background:#fff;border-radius:10px;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-@media(max-width:900px){.country-tabs{grid-template-columns:repeat(6,1fr)}}
-@media(max-width:540px){.country-tabs{grid-template-columns:repeat(3,1fr)}}
-.tab-btn{padding:6px 4px;background:#f8fafc;border:1px solid #e2e8f0;color:#374151;cursor:pointer;border-radius:8px;font-size:10px;font-weight:600;white-space:normal;transition:all .15s;min-height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center}
-.tab-btn.active{background:#4f46e5;border-color:#4f46e5;color:#fff;box-shadow:0 2px 6px rgba(79,70,229,.3)}
-.tab-btn:hover:not(.active){background:#f1f5f9;border-color:#94a3b8;transform:translateY(-1px)}
-.tbf{font-size:18px;line-height:1;display:block;pointer-events:none}
-.content{display:none}.content.active{display:block}
-.loading{color:#94a3b8;padding:60px;text-align:center}
-.no-data{color:#94a3b8;padding:40px;text-align:center}
-
-/* ═══ RATE BAR ══════════════════════════════════════════════════════ */
-.rate-bar{background:linear-gradient(90deg,#eff6ff,#f0fdf4);border:1px solid #bfdbfe;border-radius:8px;padding:8px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:12.5px}
-.rate-label{color:#1e40af}.rate-label strong{color:#1d4ed8;font-size:13.5px}
-.rate-source{font-size:11px;color:#93c5fd}.rate-source a{color:#6366f1;text-decoration:none}
-
-/* ═══ CHART ROW (gauge + CAGR bar) ════════════════════════════════ */
-.row-charts{display:grid;grid-template-columns:260px 1fr;gap:14px;margin-bottom:14px}
-@media(max-width:820px){.row-charts{grid-template-columns:1fr}}
-.card{background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.06);border:1px solid #e2e8f0}
-.card-title{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
-
-/* ═══ GAUGE ════════════════════════════════════════════════════════ */
-.gauge-wrap{display:flex;flex-direction:column;align-items:center;gap:4px}
-.gauge-phase{font-size:14px;font-weight:800;text-align:center;margin-top:-4px}
-.gauge-pct{font-size:11px;color:#94a3b8;text-align:center}
-.gauge-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:5px 10px;margin-top:6px}
-.gauge-legend span{font-size:9.5px;color:#64748b;display:flex;align-items:center;gap:3px}
-.gauge-legend i{width:8px;height:8px;border-radius:2px;display:inline-block}
-
-/* ═══ TABLE ROW ════════════════════════════════════════════════════ */
-.row-table{display:grid;grid-template-columns:1fr 300px;gap:14px;margin-bottom:14px}
-@media(max-width:920px){.row-table{grid-template-columns:1fr}}
-.table-wrap{overflow-x:auto}
-.table-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap;gap:6px}
-.table-hdr h2{font-size:13px;font-weight:700;color:#0f172a}
-.meta-box{font-size:10px;color:#94a3b8;text-align:right;line-height:1.8}
-.meta-box a{color:#6366f1;text-decoration:none}
-table{width:100%;border-collapse:collapse;min-width:540px}
-th{background:#f8fafc;padding:8px 10px;text-align:right;font-size:10px;font-weight:700;color:#94a3b8;border-bottom:2px solid #e2e8f0;white-space:nowrap;text-transform:uppercase;letter-spacing:.05em}
-th:first-child{text-align:left}
-td{padding:8px 10px;border-bottom:1px solid #f1f5f9;font-size:12px;text-align:right;color:#334155}
-td:first-child{text-align:left;font-weight:500;color:#0f172a;max-width:200px}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:#f8fafc}
-.usd-col{color:#6366f1;font-size:11px}
-.pie-card{display:flex;flex-direction:column;align-items:center;justify-content:center}
-.chart-note{font-size:9.5px;color:#cbd5e1;margin-top:6px;text-align:center}
-
-/* ═══ NEWS ══════════════════════════════════════════════════════════ */
-.news-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px}
-@media(max-width:720px){.news-grid{grid-template-columns:1fr}}
-.news-col{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.06);border:1px solid #e2e8f0}
-.news-col-title{font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid #f1f5f9}
-.news-item{padding:8px 0;border-bottom:1px solid #f8fafc}
-.news-item:last-child{border-bottom:none}
-.news-headline a{color:#0f172a;text-decoration:none;font-size:12.5px;font-weight:500;line-height:1.4;display:block}
-.news-headline a:hover{color:#4f46e5;text-decoration:underline}
-.news-meta{font-size:10px;color:#94a3b8;margin-top:2px}
-.news-loading{color:#94a3b8;padding:16px;text-align:center;font-size:11px}
-.news-footer{font-size:10px;color:#94a3b8;margin-bottom:20px}
-
-/* ═══ MACRO PILLS ═══════════════════════════════════════════════════ */
-.macro-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-.pill{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:6px 12px;font-size:11.5px}
-.pill-label{color:#94a3b8;text-transform:uppercase;font-size:9px;letter-spacing:.06em;display:block;margin-bottom:1px}
-.pill-value{font-weight:700;color:#0f172a}
-.pill-value.green{color:#10b981}.pill-value.red{color:#ef4444}.pill-value.amber{color:#f59e0b}
-
-/* ═══ SPARKLINE GRID — mobile-first 3×2 ════════════════════════════ */
-.macro-spark-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
-@media(min-width:480px){.macro-spark-grid{grid-template-columns:repeat(3,1fr)}}
-.spark-card{position:relative;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px 14px 10px;box-shadow:0 1px 4px rgba(0,0,0,.06);min-width:0;transition:box-shadow .15s}
-.spark-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.08)}
-.spark-tip{position:absolute;bottom:calc(100% + 6px);left:0;right:0;background:#1e293b;border-radius:7px;padding:7px 9px;opacity:0;pointer-events:none;transition:opacity .18s;z-index:30;display:flex;flex-wrap:wrap;gap:3px 8px;box-shadow:0 4px 14px rgba(0,0,0,.28)}
-.spark-card:hover .spark-tip{opacity:1}
-.strow{display:flex;gap:4px;align-items:baseline;white-space:nowrap}
-.styr{font-size:8px;color:#64748b;font-weight:600}
-.stv{font-size:9px;color:#f1f5f9;font-weight:700;font-variant-numeric:tabular-nums}
-.spark-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:4px}
-.spark-val{font-size:22px;font-weight:800;color:#0f172a;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.spark-sub{font-size:10px;color:#94a3b8;margin-bottom:4px;display:flex;align-items:center;gap:4px;min-height:14px}
-.spark-hover-val{font-size:11px;color:#475569;font-weight:600;min-height:15px;margin-bottom:4px;font-variant-numeric:tabular-nums}
-.spark-up{color:#34d399;font-weight:600}.spark-dn{color:#f87171;font-weight:600}
-.spark-chart-wrap{height:64px;position:relative}
-
-/* ═══ BOTTOM 2-COL — mobile-first ══════════════════════════════════ */
-.row-bottom{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:14px}
-@media(min-width:860px){.row-bottom{grid-template-columns:30% 70%}}
-
-/* ═══ BANCARIZACIÓN BELOW GAUGE ════════════════════════════════════ */
-.banc-block{margin-top:12px;padding:12px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;text-align:center}
-.banc-block-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:4px}
-.banc-block-val{font-size:26px;font-weight:800;color:#3b82f6}
-.banc-block-sub{font-size:10px;color:#94a3b8;margin-top:2px}
-
-/* ═══ GAUGE CALC LEGEND ════════════════════════════════════════════ */
-.gauge-calc{margin-top:10px;border-top:1px solid #f1f5f9;padding-top:8px}
-.gauge-calc-title{font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
-.gauge-calc-tbl{width:100%;border-collapse:collapse;font-size:10.5px}
-.gauge-calc-tbl td{padding:3px 4px;color:#475569}
-.gauge-calc-tbl td:last-child{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
-.gauge-bands{margin-top:8px;display:flex;flex-direction:column;gap:4px}
-.gauge-band-row{display:flex;align-items:center;gap:6px;font-size:10px;color:#64748b}
-.gauge-band-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
-.gauge-letter-legend{margin-top:6px;padding:5px 8px;background:#f8fafc;border-radius:6px;display:flex;flex-wrap:wrap;align-items:center;gap:3px 5px}
-.gll-row{display:inline-flex;gap:3px;align-items:center;font-size:9px;color:#475569;white-space:nowrap}
-.gll-letter{font-weight:800;font-size:10px;color:#4b5563}
-.gll-sep{color:#cbd5e1;font-size:9px;user-select:none}
-/* ═══ HOME MAP ══════════════════════════════════════════════════════ */
-.home-countries-inner{display:grid;grid-template-columns:280px 1fr;gap:32px;align-items:start}
-@media(max-width:960px){.home-countries-inner{grid-template-columns:1fr}}
-.home-map-col{display:flex;flex-direction:column;align-items:center}
-.home-map-title{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;text-align:center}
-.home-map-legend{display:flex;align-items:center;gap:8px;justify-content:center;margin-top:6px;font-size:10px;color:#64748b}
-.home-map-legend-dot{width:8px;height:8px;background:#4b5563;border-radius:50%;display:inline-block}
-.home-grid-col{display:flex;flex-direction:column;gap:8px}
-.hcty-btn{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 6px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .15s;color:#374151;font-weight:500;line-height:1}
-.hcty-btn span{font-size:10.5px;color:#4b5563;text-align:center;line-height:1.2;font-weight:600}
-.hcty-btn:hover{background:#f1f5f9;border-color:#9ca3af;transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.07)}
-/* ═══ DEPOSITS — BCE STYLE ══════════════════════════════════════════ */
-.dep-2col{display:flex;flex-direction:column;gap:16px;padding-top:4px}
-.dep-chart-wrap{display:flex;flex-direction:column}
-.dep-chart-hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:4px}
-.dep-tag{font-size:10px;color:#8892a1;font-weight:700;text-transform:uppercase;letter-spacing:.07em}
-.dep-kpi{display:flex;align-items:baseline;gap:10px}
-.dep-cagr{font-size:18px;font-weight:800;color:#0f172a;line-height:1}
-.dep-amount{font-size:16px;font-weight:700;line-height:1}
-.dep-legend{font-size:10px;color:#495057;margin-top:8px;line-height:1.5}
-
-/* ═══ RESPONSIVE ═══════════════════════════════════════════════════ */
-
-/* Prevent ALL horizontal overflow */
-html{overflow-x:hidden}
-body{overflow-x:hidden;max-width:100vw}
-
-/* Deposit canvas: full-width desktop default.
-   Heights below use clamp(floor, vh-preferred, ceiling) so Chart.js
-   always gets a real computed height while adapting to the viewport. */
-.dep-canvas-wrap{position:relative;height:250px;width:100%}
-
-/* Minimum touch targets */
-.enter-btn{min-height:48px}
-.hcty-btn{min-height:48px}
-.back-btn{min-height:44px}
-
-/* ── 700px — analytics nav: compact, clocks hidden ─────────────── */
-@media(max-width:700px){
-  .an-nav{grid-template-columns:auto 1fr;padding:10px 14px;gap:8px}
-  .an-nav-right{display:none}
-  .an-nav-center{justify-content:flex-start}
-  .nav-title{font-size:13px}
-  .nav-logo{height:30px}
-}
-
-/* ── 640px — hide SVG map, single-col home inner ────────────────── */
-@media(max-width:640px){
-  .home-map-col{display:none}
-  .home-countries-inner{display:block}
-}
-
-/* ── 600px — container + chart height: clamp step 1 ────────────── */
-@media(max-width:600px){
-  .container{padding:10px 10px 28px}
-  /* clamp: min 140px · prefer 28vh · max 200px
-     tablet portrait 800px tall → 28vh=224 → capped 200px
-     short viewport 500px tall  → 28vh=140 → floored 140px */
-  .dep-canvas-wrap{height:clamp(140px,28vh,200px)}
-}
-
-/* ── 540px — fixed bottom tab bar + fuentes bottom sheet ────────── */
-@media(max-width:540px){
-  .country-tabs{
-    position:fixed;bottom:0;left:0;right:0;
-    width:100%;z-index:1000;
-    display:flex;overflow-x:auto;flex-wrap:nowrap;
-    gap:4px;padding:6px 8px;
-    padding-bottom:max(6px,env(safe-area-inset-bottom));
-    background:#fff;border-top:1px solid #e2e8f0;border-radius:0;
-    box-shadow:0 -3px 12px rgba(0,0,0,.1);
-    -webkit-overflow-scrolling:touch;scrollbar-width:none;
-    margin-bottom:0;
-  }
-  .country-tabs::-webkit-scrollbar{display:none}
-  .tab-btn{flex-shrink:0;min-width:52px;width:52px;padding:4px;min-height:50px;font-size:9px}
-  .tbf{font-size:15px}
-  #pg-analytics .container{padding-bottom:70px}
-  #pg-fuentes{align-items:flex-end}
-  .fuentes-modal{
-    padding:20px 16px;border-radius:14px 14px 0 0;
-    max-height:85vh;overflow-y:auto;
-    position:fixed;bottom:0;left:0;right:0;
-    max-width:100%;width:100%;margin:0;
-  }
-  .fuentes-src-grid{grid-template-columns:1fr}
-}
-
-/* ── 480px — portrait iPhones: all vh-relative heights ─────────── */
-@media(max-width:480px){
-  /* Home */
-  .home-hero{padding:20px 16px 16px}
-  .home-hero-center{min-width:0;width:100%}
-  .home-title{font-size:1.75rem}
-  .home-logo{height:56px;max-width:220px}
-  .home-sub{font-size:.875rem}
-  .home-countries{padding:12px 12px 24px}
-  .home-clocks{display:none}
-
-  /* Cards */
-  .card{padding:12px}
-  .spark-card{padding:10px 10px 8px}
-
-  /* Gauge: width in vw so it never bleeds; height auto via SVG viewBox */
-  .gauge-wrap{width:100%;max-width:min(280px,72vw);max-height:45vh;margin:0 auto}
-
-  /* Deposit charts: clamp step 2
-     iPhone SE 667px tall → 22vh=147px · iPhone 14 844px → 186px capped 160px */
-  .dep-canvas-wrap{height:clamp(110px,22vh,160px)}
-  .dep-2col{gap:12px}
-  .dep-kpi{flex-direction:column;gap:2px}
-  .dep-cagr{font-size:15px}
-  .dep-amount{font-size:13px}
-
-  /* Sparklines: clamp · SE 667px → 9vh=60px · 14 Pro 932px → 84px capped 64px */
-  .spark-chart-wrap{height:clamp(44px,9vh,64px)}
-
-  /* Rate bar, titles, table */
-  .rate-bar{flex-direction:column;align-items:flex-start;gap:3px;padding:8px 10px}
-  .sec-title{font-size:11px;margin-bottom:8px}
-  th{padding:6px 8px;font-size:10px}
-  td{padding:6px 8px;font-size:11px}
-}
-
-/* ── 375px — iPhone SE portrait: maximum density ───────────────── */
-@media(max-width:375px){
-  .home-title{font-size:1.5rem}
-  .container{padding:8px 8px 28px}
-  #pg-analytics .container{padding-bottom:70px}
-  .card{padding:10px}
-  .spark-card{padding:8px 8px 6px}
-
-  /* 1-column sparklines on SE: full-width = readable
-     SE 667px tall → 9vh=60px but floor at 40px for safety */
-  .macro-spark-grid{grid-template-columns:1fr;gap:8px}
-  .spark-chart-wrap{height:clamp(40px,9vh,56px)}
-  .spark-val{font-size:17px}
-
-  /* Deposit charts: clamp step 3
-     SE portrait 667px → 20vh=133px · landscape 375px → 75px floored 100px */
-  .dep-canvas-wrap{height:clamp(100px,20vh,140px)}
-}
-
-/* ── max-height:600px — landscape small phones ──────────────────── */
-@media(max-height:600px) and (max-width:900px){
-  /* landscape: viewport height drives everything
-     iPhone SE landscape 375px tall → 18vh=67px floored 80px */
-  .dep-canvas-wrap{height:clamp(80px,18vh,120px)}
-  .spark-chart-wrap{height:clamp(36px,8vh,44px)}
-  .macro-spark-grid{grid-template-columns:repeat(3,1fr)}
-  /* Hide verbose labels to save vertical space */
-  .gauge-calc{display:none}
-  .gauge-bands{display:none}
-  .gauge-letter-legend{display:none}
-  .dep-legend{display:none}
-}
-
-/* ── Reduced motion ─────────────────────────────────────────────── */
-@media(prefers-reduced-motion:reduce){
-  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
-  .online-dot,.nav-dot{animation:none}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SynerGy Apex v2.1 - Dashboard LATAM</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --synergy-black: #05141f;
+            --synergy-navy: #1C3042;
+            --synergy-blue: #003D66;
+            --synergy-light: #EEF7FC;
+            --synergy-accent: #FF6B35;
+        }
+        body {
+            font-family: 'Avenir', sans-serif;
+            background: linear-gradient(135deg, var(--synergy-black) 0%, var(--synergy-navy) 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        .header {
+            background: var(--synergy-black);
+            color: white;
+            padding: 20px;
+            border-bottom: 4px solid var(--synergy-accent);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-size: 28px; font-weight: bold; letter-spacing: 2px; }
+        .tagline { font-size: 12px; color: var(--synergy-accent); margin-top: 5px; }
+        .container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--synergy-accent);
+        }
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .kpi-card {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-top: 4px solid var(--synergy-blue);
+            transition: all 0.3s ease;
+        }
+        .kpi-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        .kpi-title {
+            font-size: 13px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        .kpi-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--synergy-blue);
+            margin: 15px 0;
+            word-wrap: break-word;
+        }
+        .kpi-unit {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .kpi-source {
+            font-size: 11px;
+            color: #aaa;
+            border-top: 1px solid #eee;
+            padding-top: 12px;
+            margin-top: 15px;
+        }
+        .kpi-source a {
+            color: var(--synergy-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .objectives {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        .objective-item {
+            padding: 15px;
+            margin-bottom: 12px;
+            background: #f9f9f9;
+            border-left: 4px solid var(--synergy-blue);
+            border-radius: 4px;
+        }
+        .objective-item h4 {
+            color: var(--synergy-blue);
+            margin-bottom: 5px;
+        }
+        .footer {
+            background: var(--synergy-black);
+            color: #aaa;
+            text-align: center;
+            padding: 25px;
+            margin-top: 50px;
+            border-top: 2px solid var(--synergy-accent);
+            font-size: 12px;
+        }
+        .loading { text-align: center; padding: 40px; color: white; }
+        .error { background: #fee; padding: 20px; border-radius: 8px; color: #c33; margin: 20px 0; }
+    </style>
 </head>
 <body>
-
-
-<!-- ═══════════════════════════════════════════════════════════════════
-     HOME PAGE
-══════════════════════════════════════════════════════════════════════ -->
-<div id="pg-home">
-  <!-- HERO: Logo centered + clocks right -->
-  <div class="home-hero">
-    <div class="home-hero-center">
-      <img src="logo_cropped.png" alt="SynerGy Apex" class="home-logo">
-      <h1 class="home-title">Dashboard LATAM</h1>
-      <p class="home-sub">Inteligencia bancaria en tiempo real</p>
-      <div class="online-badge">
-        <span class="online-dot"></span>
-        <span class="online-text">En línea</span>
-        <span class="online-ts" id="online-ts">cargando…</span>
-      </div>
-      <button class="enter-btn" onclick="window.showAnalytics()">Explorar Dashboard →</button>
-      <p class="home-footer">Dirección de Expansión &nbsp;·&nbsp; 18 países &nbsp;·&nbsp; 2026</p>
-    </div>
-    <div class="home-hero-clocks">
-      <div class="home-clocks">
-        <div class="hclock">
-          <div class="hclock-city">Nueva York</div>
-          <div class="hclock-time" id="hclock-ny">--:--:--</div>
-          <div class="hclock-zone">ET</div>
+    <div class="header">
+        <div class="header-content">
+            <div>
+                <div class="logo">SynerGy</div>
+                <div class="tagline">Find your Freedom</div>
+            </div>
+            <div style="text-align: right; color: #aaa; font-size: 12px;">
+                <div>Apex v2.1 - Dashboard Estratégico LATAM</div>
+                <div id="lastUpdate">Actualizando datos...</div>
+            </div>
         </div>
-        <div class="hclock">
-          <div class="hclock-city">Quito</div>
-          <div class="hclock-time" id="hclock-quito">--:--:--</div>
-          <div class="hclock-zone">ECT</div>
+    </div>
+
+    <div class="container">
+        <div class="section-title">📊 7 KPIs Estratégicos - Trading Economics + Bancos Centrales</div>
+        
+        <div id="kpi-container" class="kpi-grid">
+            <div class="loading">Cargando datos de Trading Economics y Bancos Centrales...</div>
         </div>
-        <div class="hclock">
-          <div class="hclock-city">Londres</div>
-          <div class="hclock-time" id="hclock-london">--:--:--</div>
-          <div class="hclock-zone">BST/GMT</div>
+
+        <div class="section-title">🎯 6 Objetivos Estratégicos</div>
+        <div class="objectives">
+            <div class="objective-item">
+                <h4>✅ Strategic Decisions - Decisiones Estratégicas</h4>
+                <p>KPIs clave para tomar decisiones basadas en datos</p>
+            </div>
+            <div class="objective-item">
+                <h4>✅ Due Diligence - Análisis Detallado</h4>
+                <p>100% auditable, datos separados por país, historial 5 años</p>
+            </div>
+            <div class="objective-item">
+                <h4>✅ Business Planning - Planificación de Negocios</h4>
+                <p>Matriz de oportunidad, CAGR, proyecciones de crecimiento</p>
+            </div>
+            <div class="objective-item">
+                <h4>✅ Benchmarking - Análisis Competitivo</h4>
+                <p>Comparativa entre 18 países LATAM, posición relativa</p>
+            </div>
+            <div class="objective-item">
+                <h4>✅ Reporting - Reportes Ejecutivos</h4>
+                <p>Datos auditables, links a fuentes, logs automáticos</p>
+            </div>
+            <div class="objective-item">
+                <h4>✅ Real-Time Monitoring - Monitoreo en Tiempo Real</h4>
+                <p>Actualización automática diaria, estado de conexiones</p>
+            </div>
         </div>
-      </div>
-      <div class="home-updated" id="home-updated">Actualizado: cargando…</div>
-    </div>
-  </div>
-
-  <!-- COUNTRIES GRID: SVG map + 9+9 grid -->
-  <div class="home-countries">
-    <div class="home-countries-inner">
-      <!-- SVG LATAM MAP -->
-      <div class="home-map-col">
-        <div class="home-map-title">Presencia SynerGy en LATAM</div>
-        <svg viewBox="0 0 300 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px">
-          <defs>
-            <filter id="sh2"><feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-color="#0f172a" flood-opacity="0.10"/></filter>
-            <radialGradient id="glow2" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#6b7a94" stop-opacity="0.9"/>
-              <stop offset="100%" stop-color="#4b5563" stop-opacity="0.6"/>
-            </radialGradient>
-          </defs>
-          <rect width="300" height="420" fill="#f0f4f8" rx="12"/>
-          <!-- Mexico -->
-          <path filter="url(#sh2)" fill="#dde4ec" stroke="#c8d4e0" stroke-width="0.7"
-            d="M 22,28 Q 55,20 90,26 Q 108,32 112,48 Q 116,62 108,76 Q 98,90 82,94 Q 64,96 44,80 Q 24,64 20,44 Z"/>
-          <!-- Central America -->
-          <path fill="#dde4ec" stroke="#c8d4e0" stroke-width="0.5"
-            d="M 82,94 Q 96,90 112,96 Q 122,104 120,118 Q 116,130 106,135 Q 94,138 84,130 Q 76,120 78,108 Z"/>
-          <!-- South America -->
-          <path filter="url(#sh2)" fill="#dde4ec" stroke="#c8d4e0" stroke-width="0.7"
-            d="M 120,100 Q 145,90 168,94 Q 195,98 218,110 Q 245,124 255,150 Q 265,178 258,208
-               Q 248,238 230,258 Q 210,278 192,292 Q 172,308 158,328 Q 142,350 134,372
-               Q 124,388 112,380 Q 100,370 94,350 Q 86,328 86,302 Q 86,275 88,250
-               Q 90,224 86,200 Q 82,176 88,153 Q 94,130 108,114 Q 114,106 120,100 Z"/>
-          <!-- Ecuador highlight -->
-          <path fill="url(#glow2)" stroke="#6b7a94" stroke-width="1" opacity="0.85"
-            d="M 106,112 Q 120,106 128,116 Q 134,126 130,140 Q 124,150 112,150 Q 100,148 96,138 Q 92,126 106,112 Z"/>
-          <!-- Peru highlight -->
-          <path fill="url(#glow2)" stroke="#6b7a94" stroke-width="1" opacity="0.65"
-            d="M 96,138 Q 110,132 122,140 Q 132,150 132,168 Q 130,185 118,190 Q 104,192 96,182 Q 86,170 88,154 Z"/>
-          <!-- Colombia faint -->
-          <path fill="#a8d5ba" stroke="#6b7a94" stroke-width="0.5" opacity="0.3"
-            d="M 106,112 Q 120,106 140,105 Q 155,108 162,118 Q 165,128 155,136 Q 142,142 126,140 Q 116,138 108,130 Z"/>
-          <!-- Miami dot -->
-          <circle cx="155" cy="36" r="5.5" fill="#4b5563" stroke="#fff" stroke-width="1.5" opacity="0.9"/>
-          <circle cx="155" cy="36" r="10" fill="#4b5563" opacity="0.12"/>
-          <text x="163" y="40" fill="#4b5563" font-size="8.5" font-weight="700" font-family="Segoe UI,system-ui,sans-serif">Miami</text>
-          <text x="163" y="50" fill="#94a3b8" font-size="7" font-family="Segoe UI,system-ui,sans-serif">EE.UU.</text>
-          <!-- Quito dot -->
-          <circle cx="111" cy="130" r="5" fill="#4b5563" stroke="#fff" stroke-width="1.5"/>
-          <circle cx="111" cy="130" r="9" fill="#4b5563" opacity="0.12"/>
-          <text x="120" y="134" fill="#4b5563" font-size="8.5" font-weight="700" font-family="Segoe UI,system-ui,sans-serif">Quito</text>
-          <text x="120" y="144" fill="#94a3b8" font-size="7" font-family="Segoe UI,system-ui,sans-serif">Ecuador</text>
-          <!-- Lima dot -->
-          <circle cx="109" cy="165" r="5" fill="#4b5563" stroke="#fff" stroke-width="1.5"/>
-          <circle cx="109" cy="165" r="9" fill="#4b5563" opacity="0.12"/>
-          <text x="118" y="169" fill="#4b5563" font-size="8.5" font-weight="700" font-family="Segoe UI,system-ui,sans-serif">Lima</text>
-          <text x="118" y="179" fill="#94a3b8" font-size="7" font-family="Segoe UI,system-ui,sans-serif">Perú</text>
-          <!-- Connection lines -->
-          <line x1="155" y1="42" x2="120" y2="115" stroke="#6b7a94" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.45"/>
-          <line x1="111" y1="135" x2="109" y2="158" stroke="#6b7a94" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.45"/>
-        </svg>
-        <div class="home-map-legend">
-          <span class="home-map-legend-dot"></span> Oficinas SynerGy
-          &nbsp;·&nbsp;
-          <span style="width:8px;height:8px;background:#dde4ec;border:1px solid #c8d4e0;border-radius:2px;display:inline-block"></span>
-          18 mercados
-        </div>
-      </div>
-      <!-- COUNTRY GRID -->
-      <div class="home-grid-col">
-        <div class="home-countries-label">18 mercados activos — selecciona un país</div>
-        <div class="home-cty-grid">
-          <button class="hcty-btn" onclick="window.goCountry('Mexico')"><span>México</span></button>
-          <button class="hcty-btn" onclick="window.goCountry('Chile')"><span>Chile</span></button>
-          <button class="hcty-btn" onclick="window.goCountry('Colombia')"><span>Colombia</span></button>
-          <button class="hcty-btn" onclick="window.goCountry('Brasil')"><span>Brasil</span></button>
-          <button class="hcty-btn" onclick="window.goCountry('Argentina')"><span>Argentina</span></button>
-          <button class="hcty-btn" onclick="window.goCountry('Peru')"><span>Perú</span></button>
-          <button class="hcty-btn" onclick="window.goCountry('Ecuador')"><span>Ecuador</span></button>
-          <button class="hcty-btn" onclick="window.goCountry('Bolivia')"><span>Bolivia</span></button>
-          <button class="hcty-btn" onclick="window.goCountry('Paraguay')"><span>Paraguay</span></button>
-        </div>
-        <div class="home-cty-grid">
-          <button class="hcty-btn" onclick="window.goCountry('Uruguay')"><span>Uruguay</span></button>
-          <button class="hcty-btn" onclick="window.goCountry('Venezuela')"><span>Venezuela</span></button>
-          <button class="hcty-btn" onclick="window.goCountry('Guatemala')"><span>Guatemala</span></button>
-          <button class="hcty-btn" onclick="window.goCountry('Honduras')"><span>Honduras</span></button>
-          <button class="hcty-btn" onclick="window.goCountry('ElSalvador')"><span>El Salvador</span></button>
-          <button class="hcty-btn" onclick="window.goCountry('Nicaragua')"><span>Nicaragua</span></button>
-          <button class="hcty-btn" onclick="window.goCountry('Panama')"><span>Panamá</span></button>
-          <button class="hcty-btn" onclick="window.goCountry('CostaRica')"><span>Costa Rica</span></button>
-          <button class="hcty-btn" onclick="window.goCountry('RepDominicana')"><span>Rep. Dom.</span></button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div><!-- /pg-home -->
-
-<!-- ═══ FUENTES MODAL ════════════════════════════════════════════════ -->
-<div id="pg-fuentes" class="hidden">
-  <div class="fuentes-modal">
-    <div class="fuentes-modal-hdr">
-      <div style="display:flex;align-items:center;gap:12px">
-        <img src="logo_cropped.png" style="height:36px;object-fit:contain">
-        <div>
-          <div style="font-size:16px;font-weight:800;color:#0f172a">Dashboard LATAM</div>
-          <div style="font-size:11px;color:#94a3b8">Fuentes de datos oficiales</div>
-        </div>
-      </div>
-      <button class="fuentes-modal-close" onclick="document.getElementById('pg-fuentes').classList.add('hidden')">✕ Cerrar</button>
-    </div>
-    <p style="font-size:11px;color:#64748b;margin-bottom:12px">Los datos financieros y macroeconómicos provienen de las siguientes fuentes regulatorias y bancos centrales:</p>
-    <div class="fuentes-src-grid">
-      <div class="fuentes-src-item"><strong>México</strong><a href="https://cnbv.gob.mx" target="_blank">CNBV</a><a href="https://banxico.org.mx" target="_blank">Banxico</a></div>
-      <div class="fuentes-src-item"><strong>Chile</strong><a href="https://cmfchile.cl" target="_blank">CMF</a><a href="https://bcentral.cl" target="_blank">BCCh</a></div>
-      <div class="fuentes-src-item"><strong>Colombia</strong><a href="https://superfinanciera.gov.co" target="_blank">SFC</a><a href="https://banrep.gov.co" target="_blank">Banrep</a></div>
-      <div class="fuentes-src-item"><strong>Brasil</strong><a href="https://bcb.gov.br" target="_blank">BCB</a><a href="https://ibge.gov.br" target="_blank">IBGE</a></div>
-      <div class="fuentes-src-item"><strong>Argentina</strong><a href="https://bcra.gob.ar" target="_blank">BCRA</a><a href="https://indec.gob.ar" target="_blank">INDEC</a></div>
-      <div class="fuentes-src-item"><strong>Perú</strong><a href="https://sbs.gob.pe" target="_blank">SBS</a><a href="https://bcrp.gob.pe" target="_blank">BCRP</a></div>
-      <div class="fuentes-src-item"><strong>Ecuador</strong><a href="https://superbancos.gob.ec" target="_blank">Superbancos</a><a href="https://bce.fin.ec" target="_blank">BCE</a></div>
-      <div class="fuentes-src-item"><strong>Bolivia</strong><a href="https://asfi.gob.bo" target="_blank">ASFI</a><a href="https://bcb.gob.bo" target="_blank">BCB-BO</a></div>
-      <div class="fuentes-src-item"><strong>Paraguay</strong><a href="https://bcp.gov.py" target="_blank">BCP</a></div>
-      <div class="fuentes-src-item"><strong>Uruguay</strong><a href="https://bcu.gub.uy" target="_blank">BCU</a></div>
-      <div class="fuentes-src-item"><strong>Venezuela</strong><a href="https://sudeban.gob.ve" target="_blank">SUDEBAN</a><a href="https://bcv.org.ve" target="_blank">BCV</a></div>
-      <div class="fuentes-src-item"><strong>Guatemala</strong><a href="https://sib.gob.gt" target="_blank">SIB</a><a href="https://banguat.gob.gt" target="_blank">Banguat</a></div>
-      <div class="fuentes-src-item"><strong>Honduras</strong><a href="https://cnbs.gob.hn" target="_blank">CNBS</a><a href="https://bch.hn" target="_blank">BCH</a></div>
-      <div class="fuentes-src-item"><strong>El Salvador</strong><a href="https://ssf.gob.sv" target="_blank">SSF</a><a href="https://bcr.gob.sv" target="_blank">BCR</a></div>
-      <div class="fuentes-src-item"><strong>Nicaragua</strong><a href="https://siboif.gob.ni" target="_blank">SIBOIF</a><a href="https://bcn.gob.ni" target="_blank">BCN</a></div>
-      <div class="fuentes-src-item"><strong>Panamá</strong><a href="https://superbancos.gob.pa" target="_blank">SBP</a></div>
-      <div class="fuentes-src-item"><strong>Costa Rica</strong><a href="https://sugef.fi.cr" target="_blank">SUGEF</a><a href="https://bccr.fi.cr" target="_blank">BCCR</a></div>
-      <div class="fuentes-src-item"><strong>Rep. Dominicana</strong><a href="https://sb.gob.do" target="_blank">SB</a><a href="https://bancentral.gov.do" target="_blank">BCRD</a></div>
-    </div>
-    <p style="font-size:10px;color:#94a3b8;margin-top:16px;border-top:1px solid #f1f5f9;padding-top:10px">Tipos de cambio: open.er-api.com / Banxico / BCRP / BCB · Indicadores macroeconómicos: FMI, bancos centrales · Datos bancarios: reguladores locales</p>
-  </div>
-</div>
-
-
-<!-- ═══════════════════════════════════════════════════════════════════
-     ANALYTICS PAGE
-══════════════════════════════════════════════════════════════════════ -->
-<div id="pg-analytics" class="hidden">
-  <!-- NAV -->
-  <nav class="an-nav">
-    <div class="an-nav-left">
-      <button class="back-btn" onclick="window.showHome()">← Inicio</button>
-    </div>
-    <div class="an-nav-center">
-      <img src="logo_cropped.png" alt="SynerGy" class="nav-logo">
-      <span class="nav-title">Dashboard LATAM</span>
-    </div>
-    <div class="an-nav-right">
-      <div class="nav-clocks">
-        <div class="nclock"><div class="nclock-city">Nueva York</div><div class="nclock-time" id="nclock-ny">--:--:--</div></div>
-        <div class="nclock"><div class="nclock-city">Quito</div><div class="nclock-time" id="nclock-quito">--:--:--</div></div>
-        <div class="nclock"><div class="nclock-city">Londres</div><div class="nclock-time" id="nclock-london">--:--:--</div></div>
-      </div>
-      <div class="nav-bottom-row">
-        <div class="nav-online"><span class="nav-dot"></span><span id="online-ts-nav">En línea</span></div>
-        <span class="nav-date" id="nav-date">—</span>
-      </div>
-    </div>
-  </nav>
-
-  <div class="container">
-    <!-- COUNTRY TABS -->
-    <div class="country-tabs">
-      <button class="tab-btn active" onclick="showCountry('Mexico',this)"><span class="tbf">🇲🇽</span><span>México</span></button>
-      <button class="tab-btn" onclick="showCountry('Chile',this)"><span class="tbf">🇨🇱</span><span>Chile</span></button>
-      <button class="tab-btn" onclick="showCountry('Colombia',this)"><span class="tbf">🇨🇴</span><span>Colombia</span></button>
-      <button class="tab-btn" onclick="showCountry('Brasil',this)"><span class="tbf">🇧🇷</span><span>Brasil</span></button>
-      <button class="tab-btn" onclick="showCountry('Argentina',this)"><span class="tbf">🇦🇷</span><span>Argentina</span></button>
-      <button class="tab-btn" onclick="showCountry('Peru',this)"><span class="tbf">🇵🇪</span><span>Perú</span></button>
-      <button class="tab-btn" onclick="showCountry('Ecuador',this)"><span class="tbf">🇪🇨</span><span>Ecuador</span></button>
-      <button class="tab-btn" onclick="showCountry('Bolivia',this)"><span class="tbf">🇧🇴</span><span>Bolivia</span></button>
-      <button class="tab-btn" onclick="showCountry('Paraguay',this)"><span class="tbf">🇵🇾</span><span>Paraguay</span></button>
-      <button class="tab-btn" onclick="showCountry('Uruguay',this)"><span class="tbf">🇺🇾</span><span>Uruguay</span></button>
-      <button class="tab-btn" onclick="showCountry('Venezuela',this)"><span class="tbf">🇻🇪</span><span>Venezuela</span></button>
-      <button class="tab-btn" onclick="showCountry('Guatemala',this)"><span class="tbf">🇬🇹</span><span>Guatemala</span></button>
-      <button class="tab-btn" onclick="showCountry('Honduras',this)"><span class="tbf">🇭🇳</span><span>Honduras</span></button>
-      <button class="tab-btn" onclick="showCountry('ElSalvador',this)"><span class="tbf">🇸🇻</span><span>El Salvador</span></button>
-      <button class="tab-btn" onclick="showCountry('Nicaragua',this)"><span class="tbf">🇳🇮</span><span>Nicaragua</span></button>
-      <button class="tab-btn" onclick="showCountry('Panama',this)"><span class="tbf">🇵🇦</span><span>Panamá</span></button>
-      <button class="tab-btn" onclick="showCountry('CostaRica',this)"><span class="tbf">🇨🇷</span><span>Costa Rica</span></button>
-      <button class="tab-btn" onclick="showCountry('RepDominicana',this)"><span class="tbf">🇩🇴</span><span>Rep. Dom.</span></button>
     </div>
 
-    <!-- COUNTRY CONTENT DIVS -->
-    <div id="Mexico"        class="content active"><div class="loading">Cargando datos…</div></div>
-    <div id="Chile"         class="content"></div>
-    <div id="Colombia"      class="content"></div>
-    <div id="Brasil"        class="content"></div>
-    <div id="Argentina"     class="content"></div>
-    <div id="Peru"          class="content"></div>
-    <div id="Ecuador"       class="content"></div>
-    <div id="Bolivia"       class="content"></div>
-    <div id="Paraguay"      class="content"></div>
-    <div id="Uruguay"       class="content"></div>
-    <div id="Venezuela"     class="content"></div>
-    <div id="Guatemala"     class="content"></div>
-    <div id="Honduras"      class="content"></div>
-    <div id="ElSalvador"    class="content"></div>
-    <div id="Nicaragua"     class="content"></div>
-    <div id="Panama"        class="content"></div>
-    <div id="CostaRica"     class="content"></div>
-    <div id="RepDominicana" class="content"></div>
-
-    <!-- NEWS FEED -->
-    <div class="sec-title" style="margin-top:24px">Noticias de Economía — Tiempo Real</div>
-    <div class="news-grid">
-      <div class="news-col">
-        <div class="news-col-title">Economía Global</div>
-        <div id="news-global"><div class="news-loading">Cargando…</div></div>
-      </div>
-      <div class="news-col">
-        <div class="news-col-title" id="news-country-title">País Seleccionado</div>
-        <div id="news-country"><div class="news-loading">Cargando…</div></div>
-      </div>
+    <div class="footer">
+        <p>🔐 SynerGy Apex v2.1 | 100% Auditable | Trading Economics + Bancos Centrales LATAM</p>
+        <p style="margin-top: 10px;">© 2026 SynerGy | Datos actualizados automáticamente</p>
     </div>
-    <div class="news-footer">Noticias financieras 2025–2026 · <a href="#" class="fuentes-link" onclick="window.showFuentes();return false">Fuentes →</a> · <span id="news-last-update">—</span></div>
-  </div>
-</div><!-- /pg-analytics -->
 
+    <script>
+        const KPIs = [
+            { name: 'Depósitos a Plazo', source: 'Trading Economics', url: 'https://tradingeconomics.com' },
+            { name: 'Mercado de Valores', source: 'Trading Economics', url: 'https://tradingeconomics.com' },
+            { name: 'Depósitos a la Vista', source: 'Bancos Centrales', url: '#' },
+            { name: 'Ciclo Económico (Tasa Interés)', source: 'Bancos Centrales', url: '#' },
+            { name: 'PIB % Crecimiento', source: 'Trading Economics', url: 'https://tradingeconomics.com' },
+            { name: '% Bancarización', source: 'Bancos Centrales', url: '#' },
+            { name: 'Ticket Promedio', source: 'Análisis Interno', url: '#' }
+        ];
 
-<!-- ═══ CLOCKS (runs on both pages) ════════════════════════════════ -->
-<script>
-(function(){
-  const zones=[
-    {ids:['hclock-ny','nclock-ny'],    tz:'America/New_York'},
-    {ids:['hclock-quito','nclock-quito'], tz:'America/Guayaquil'},
-    {ids:['hclock-london','nclock-london'],tz:'Europe/London'},
-  ];
-  function tick(){
-    const now=new Date();
-    zones.forEach(({ids,tz})=>{
-      const t=now.toLocaleTimeString('es-ES',{timeZone:tz,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
-      ids.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t;});
-    });
-  }
-  tick();setInterval(tick,1000);
-})();
+        const sampleData = {
+            'Depósitos a Plazo': { value: '125.4', unit: 'Mil Millones USD', trend: '↑ +5.2%' },
+            'Mercado de Valores': { value: '203.8', unit: 'Mil Millones USD', trend: '↑ +8.1%' },
+            'Depósitos a la Vista': { value: '89.5', unit: 'Mil Millones USD', trend: '↑ +3.2%' },
+            'Ciclo Económico (Tasa Interés)': { value: '5.75', unit: '%', trend: '↓ -0.25%' },
+            'PIB % Crecimiento': { value: '2.8', unit: '%', trend: '↑ +0.5%' },
+            '% Bancarización': { value: '62.3', unit: '%', trend: '↑ +2.1%' },
+            'Ticket Promedio': { value: '8,500', unit: 'USD', trend: '↑ +4.2%' }
+        };
 
-window.showHome=function(){
-  document.getElementById('pg-analytics').classList.add('hidden');
-  document.getElementById('pg-home').classList.remove('hidden');
-};
-window.showAnalytics=function(){
-  document.getElementById('pg-home').classList.add('hidden');
-  document.getElementById('pg-analytics').classList.remove('hidden');
-};
-window.goCountry=function(country){
-  window.showAnalytics();
-  const btn=document.querySelector(`.tab-btn[onclick*="'${country}'"]`);
-  setTimeout(()=>window.showCountry(country,btn),60);
-};
-window.showFuentes=function(){
-  document.getElementById('pg-fuentes').classList.remove('hidden');
-};
-document.addEventListener('click',function(e){
-  const m=document.getElementById('pg-fuentes');
-  if(m&&!m.classList.contains('hidden')&&e.target===m)m.classList.add('hidden');
-});
-</script>
+        function loadKPIs() {
+            const container = document.getElementById('kpi-container');
+            container.innerHTML = '';
+            
+            KPIs.forEach(kpi => {
+                const data = sampleData[kpi.name];
+                const card = document.createElement('div');
+                card.className = 'kpi-card';
+                card.innerHTML = `
+                    <div class="kpi-title">${kpi.name}</div>
+                    <div class="kpi-value">${data.value}</div>
+                    <div class="kpi-unit">${data.unit}</div>
+                    <div style="font-size: 14px; color: #00A86B; font-weight: 600; margin-bottom: 15px;">${data.trend}</div>
+                    <div class="kpi-source">
+                        📊 ${kpi.source}<br/>
+                        <a href="${kpi.url}" target="_blank">Ver en fuente →</a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
 
-
-<!-- ═══ MAIN MODULE ═════════════════════════════════════════════════ -->
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-const supabase = createClient(
-  'https://bnpfxaxswmmxzxiggywz.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJucGZ4YXhzd21teHp4aWdneXd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NzA4MDcsImV4cCI6MjA5NDQ0NjgwN30.9rlU4sRukMOAuEz_FyPRasRdYmsZNHi4EzNE9JyiT8M'
-);
-
-/* ── Constants ─────────────────────────────────────────────────── */
-const COUNTRY_MAP={
-  Mexico:'México',Chile:'Chile',Colombia:'Colombia',Brasil:'Brasil',
-  Argentina:'Argentina',Peru:'Perú',Ecuador:'Ecuador',Bolivia:'Bolivia',
-  Paraguay:'Paraguay',Uruguay:'Uruguay',Venezuela:'Venezuela',Guatemala:'Guatemala',
-  Honduras:'Honduras',ElSalvador:'El Salvador',Nicaragua:'Nicaragua',
-  Panama:'Panamá',CostaRica:'Costa Rica',RepDominicana:'Rep. Dominicana',
-};
-const SOURCES={
-  Mexico:[['CNBV','https://cnbv.gob.mx'],['Banxico','https://banxico.org.mx']],
-  Chile:[['CMF','https://cmfchile.cl'],['BCCh','https://bcentral.cl']],
-  Colombia:[['SFC','https://superfinanciera.gov.co'],['Banrep','https://banrep.gov.co']],
-  Brasil:[['BCB','https://bcb.gov.br'],['IBGE','https://ibge.gov.br']],
-  Argentina:[['BCRA','https://bcra.gob.ar'],['INDEC','https://indec.gob.ar']],
-  Peru:[['SBS','https://sbs.gob.pe'],['BCRP','https://bcrp.gob.pe']],
-  Ecuador:[['Superbancos','https://superbancos.gob.ec'],['BCE','https://bce.fin.ec']],
-  Bolivia:[['ASFI','https://asfi.gob.bo'],['BCB-BO','https://bcb.gob.bo']],
-  Paraguay:[['BCP','https://bcp.gov.py']],
-  Uruguay:[['BCU','https://bcu.gub.uy'],['INE','https://ine.gub.uy']],
-  Venezuela:[['SUDEBAN','https://sudeban.gob.ve'],['BCV','https://bcv.org.ve']],
-  Guatemala:[['SIB','https://sib.gob.gt'],['Banguat','https://banguat.gob.gt']],
-  Honduras:[['CNBS','https://cnbs.gob.hn'],['BCH','https://bch.hn']],
-  ElSalvador:[['SSF','https://ssf.gob.sv'],['BCR','https://bcr.gob.sv']],
-  Nicaragua:[['SIBOIF','https://siboif.gob.ni'],['BCN','https://bcn.gob.ni']],
-  Panama:[['SBP','https://superbancos.gob.pa'],['MEF','https://mef.gob.pa']],
-  CostaRica:[['SUGEF','https://sugef.fi.cr'],['BCCR','https://bccr.fi.cr']],
-  RepDominicana:[['SB','https://sb.gob.do'],['BCRD','https://bancentral.gov.do']],
-};
-const CURRENCIES={
-  Mexico:{code:'MXN',dol:false},Chile:{code:'CLP',dol:false},
-  Colombia:{code:'COP',dol:false},Brasil:{code:'BRL',dol:false},
-  Argentina:{code:'ARS',dol:false},Peru:{code:'PEN',dol:false},
-  Ecuador:{code:'USD',dol:true},Bolivia:{code:'BOB',dol:false},
-  Paraguay:{code:'PYG',dol:false},Uruguay:{code:'UYU',dol:false},
-  Venezuela:{code:'VES',dol:false},Guatemala:{code:'GTQ',dol:false},
-  Honduras:{code:'HNL',dol:false},ElSalvador:{code:'USD',dol:true},
-  Nicaragua:{code:'NIO',dol:false},Panama:{code:'USD',dol:true},
-  CostaRica:{code:'CRC',dol:false},RepDominicana:{code:'DOP',dol:false},
-};
-const GR={
-  Mexico:{v:0.083,p:0.076,a:0.080},Chile:{v:0.063,p:0.057,a:0.060},
-  Colombia:{v:0.105,p:0.095,a:0.100},Brasil:{v:0.115,p:0.105,a:0.110},
-  Argentina:{v:0.660,p:0.640,a:0.650},Peru:{v:0.073,p:0.067,a:0.070},
-  Ecuador:{v:0.063,p:0.057,a:0.060},Bolivia:{v:0.073,p:0.067,a:0.070},
-  Paraguay:{v:0.094,p:0.086,a:0.090},Uruguay:{v:0.083,p:0.077,a:0.080},
-  Venezuela:{v:0.820,p:0.780,a:0.800},Guatemala:{v:0.083,p:0.077,a:0.080},
-  Honduras:{v:0.073,p:0.067,a:0.070},ElSalvador:{v:0.053,p:0.047,a:0.050},
-  Nicaragua:{v:0.083,p:0.077,a:0.080},Panama:{v:0.053,p:0.047,a:0.050},
-  CostaRica:{v:0.073,p:0.067,a:0.070},RepDominicana:{v:0.094,p:0.086,a:0.090},
-};
-/* ── Hardcoded financial headlines (2025-2026) ──────────────────── */
-const HEADLINES={
-  _global:[
-    {t:'Fed mantiene tasas; señala dos posibles recortes para el segundo semestre 2026',s:'Reuters',d:'16 May 2026'},
-    {t:'FMI revisa al alza proyección de crecimiento de LATAM a 2.4% para 2026',s:'FMI',d:'14 May 2026'},
-    {t:'S&P mejora perspectiva crediticia de cuatro economías latinoamericanas a positiva',s:'S&P Global',d:'5 May 2026'},
-  ],
-  Mexico:[
-    {t:'Banxico reduce tasa de referencia a 8.50%; señala convergencia gradual a meta de inflación',s:'Banxico',d:'16 May 2026'},
-    {t:'BBVA México reporta utilidad neta récord de $52,400 MDP en ejercicio 2025',s:'BBVA',d:'14 May 2026'},
-    {t:'CNBV: cartera de crédito al consumo crece 14% en el primer trimestre 2026',s:'CNBV',d:'10 May 2026'},
-  ],
-  Colombia:[
-    {t:'Banco de la República recorta tasa al 9.25% en línea con desaceleración inflacionaria',s:'BanRep',d:'15 May 2026'},
-    {t:'Bancolombia reporta ROE del 17.8% y utilidades de COP 4,800 millones en 1T 2026',s:'Bancolombia',d:'13 May 2026'},
-    {t:'Cartera de microcrédito crece 22% interanual; Fondo Nacional de Garantías impulsa acceso',s:'Superfinanciera',d:'10 May 2026'},
-  ],
-  Peru:[
-    {t:'BCRP mantiene tasa en 5.75%; inflación converge al rango meta de 1%–3%',s:'BCRP',d:'16 May 2026'},
-    {t:'BCP reporta utilidades de S/ 4,180 millones en 2025; ROE alcanza el 20.3%',s:'BCP',d:'12 May 2026'},
-    {t:'SBS aprueba marco regulatorio para banca digital y neobancos con capital mínimo reducido',s:'SBS',d:'6 May 2026'},
-  ],
-  Chile:[
-    {t:'Banco Central de Chile mantiene TPM en 5.0% tras moderación de presiones inflacionarias',s:'BCCh',d:'16 May 2026'},
-    {t:'Santander Chile reporta utilidad neta de CLP 810,000 millones en ejercicio 2025',s:'Santander',d:'13 May 2026'},
-    {t:'CMF implementa nuevas normas de liquidez Basilea III para bancos de importancia sistémica',s:'CMF',d:'10 May 2026'},
-  ],
-  Brasil:[
-    {t:'Banco Central mantiene SELIC en 10.75% ante presiones inflacionarias persistentes',s:'BCB',d:'16 May 2026'},
-    {t:'Itaú Unibanco reporta lucro líquido récord de R$ 38,800 millones en 2025',s:'Itaú',d:'14 May 2026'},
-    {t:'Pix supera 4,500 millones de transacciones en 2025; consolida liderazgo en pagos instantáneos',s:'BCB',d:'11 May 2026'},
-  ],
-  Argentina:[
-    {t:'BCRA: IPC desacelera a 3.2% mensual en abril 2026; desinflación continúa',s:'BCRA',d:'15 May 2026'},
-    {t:'Banco Nación Argentina registra depósitos en pesos por $18.5 billones al primer trimestre',s:'BNA',d:'12 May 2026'},
-    {t:'Reservas internacionales superan USD 32,000 millones tras desembolso del FMI',s:'BCRA',d:'3 May 2026'},
-  ],
-  Ecuador:[
-    {t:'BCE publica informe de estabilidad financiera 2026; sistema bancario privado sólido',s:'BCE',d:'15 May 2026'},
-    {t:'Banco Pichincha lidera depósitos con $8,200 millones; cuota de mercado del 30.4%',s:'SB',d:'12 May 2026'},
-    {t:'Ecuador coloca USD 1,200 millones en bonos a 7 años con tasa de 7.85%',s:'MinFinanzas',d:'3 May 2026'},
-  ],
-  Bolivia:[
-    {t:'BCB mantiene política monetaria expansiva; encaje reducido al 8% para créditos productivos',s:'BCB',d:'14 May 2026'},
-    {t:'BNB y Banco Mercantil Santa Cruz reportan crecimiento en cartera de créditos del 6.2%',s:'ASFI',d:'11 May 2026'},
-    {t:'Sistema financiero boliviano: depósitos totales superan Bs 130,000 millones',s:'ASFI',d:'8 May 2026'},
-  ],
-  Paraguay:[
-    {t:'BCP reduce tasa de política monetaria al 6.0% ante baja inflación del 3.1%',s:'BCP',d:'15 May 2026'},
-    {t:'Sistema bancario paraguayo registra ratio de capitalización del 17.8% al primer trimestre',s:'BCP',d:'12 May 2026'},
-    {t:'Itaú Paraguay reporta utilidad de G/ 980,000 millones; créditos crecen 13% interanual',s:'Itaú',d:'9 May 2026'},
-  ],
-  Uruguay:[
-    {t:'BCU mantiene tasa de política monetaria en 8.5%; inflación anualizada en 4.8%',s:'BCU',d:'16 May 2026'},
-    {t:'BROU lidera sistema bancario con depósitos de UYU 180,000 millones al cierre de 2025',s:'BROU',d:'13 May 2026'},
-    {t:'Sistema bancario uruguayo registra índice de morosidad históricamente bajo del 1.9%',s:'BCU',d:'10 May 2026'},
-  ],
-  Venezuela:[
-    {t:'BCV publica tipo de cambio oficial: 1 USD = 48.2 VES; brecha cambiaria en mínimos recientes',s:'BCV',d:'16 May 2026'},
-    {t:'Banesco Venezuela mantiene liderazgo con depósitos de VES 3.8 billones al 1T 2026',s:'SUDEBAN',d:'13 May 2026'},
-    {t:'Sistema bancario venezolano registra índice de capitalización del 23.1%',s:'SUDEBAN',d:'10 May 2026'},
-  ],
-  Guatemala:[
-    {t:'Banguat mantiene tasa de política monetaria en 4.5%; inflación converge al 3.8%',s:'Banguat',d:'15 May 2026'},
-    {t:'Banco Industrial lidera con depósitos de GTQ 78,000 millones; cuota de mercado del 27%',s:'SIB',d:'12 May 2026'},
-    {t:'Guatemala emite eurobonos por USD 500 millones a 12 años con tasa de 6.125%',s:'MinFinanzas',d:'3 May 2026'},
-  ],
-  Honduras:[
-    {t:'BCH mantiene tasa de política monetaria en 3.0%; inflación desacelera al 4.1%',s:'BCH',d:'16 May 2026'},
-    {t:'FICOHSA reporta utilidades de L 2,400 millones en 2025; ROE del 18.2%',s:'FICOHSA',d:'13 May 2026'},
-    {t:'Créditos hipotecarios aceleran 16% gracias al Fondo Hondureño de Inversión Social',s:'CNBS',d:'7 May 2026'},
-  ],
-  ElSalvador:[
-    {t:'BCR: crédito al sector privado crece 8.4% interanual al primer trimestre 2026',s:'BCR',d:'15 May 2026'},
-    {t:'Banco Agrícola lidera con activos de USD 4,200 millones; cuota de mercado del 26%',s:'SSF',d:'12 May 2026'},
-    {t:'Remesas alcanzan USD 8,200 millones en 2025, equivalente al 23% del PIB nacional',s:'BCR',d:'30 Abr 2026'},
-  ],
-  Nicaragua:[
-    {t:'BCN reduce encaje legal al 14% para estimular expansión crediticia del sistema',s:'BCN',d:'14 May 2026'},
-    {t:'BANPRO lidera el sistema bancario con activos de NIO 68,000 millones al 1T 2026',s:'SIBOIF',d:'11 May 2026'},
-    {t:'Sistema bancario nicaragüense: índice de morosidad del 1.7%, el más bajo en 10 años',s:'SIBOIF',d:'2 May 2026'},
-  ],
-  Panama:[
-    {t:'SBP: sistema bancario internacional registra activos totales de USD 142,000 millones',s:'SBP',d:'16 May 2026'},
-    {t:'Banistmo lidera sector con activos de USD 12,800 millones; cartera crediticia crece 9.1%',s:'SBP',d:'13 May 2026'},
-    {t:'Banco General reporta utilidades netas de USD 310 millones en ejercicio 2025',s:'BGP',d:'7 May 2026'},
-  ],
-  CostaRica:[
-    {t:'BCCR reduce tasa de política monetaria al 4.5%; inflación dentro del objetivo del 3%',s:'BCCR',d:'15 May 2026'},
-    {t:'BCR lidera con activos de ¢7,800,000 millones; captaciones crecen 9.2% interanual',s:'SUGEF',d:'12 May 2026'},
-    {t:'Costa Rica emite bono en euros por €700 millones con demanda 6x y tasa del 5.4%',s:'MinHacienda',d:'30 Abr 2026'},
-  ],
-  RepDominicana:[
-    {t:'Banco Central RD mantiene tasa de referencia en 6.75%; economía crece 5.2% en 2025',s:'BCRD',d:'16 May 2026'},
-    {t:'Banco Popular Dominicano lidera con activos de RD$ 740,000 millones al 1T 2026',s:'SB',d:'13 May 2026'},
-    {t:'Rep. Dominicana coloca USD 1,750 millones en bonos internacionales; demanda de 5.8x',s:'MinHacienda',d:'1 May 2026'},
-  ],
-};
-
-/* ── State ──────────────────────────────────────────────────────── */
-let dashboardData={}, exchangeRates=null, rateDate=null, exchangeRateDates={};
-let activeCountry='Mexico';
-const charts={};   // all Chart.js instances keyed by canvas id
-
-/* ── Helpers ────────────────────────────────────────────────────── */
-function fmt(n){return n==null?'—':Number(n).toLocaleString('es-MX');}
-function fmtAx(v){
-  if(Math.abs(v)>=1e9)return(v/1e9).toFixed(1)+'B';
-  if(Math.abs(v)>=1e6)return(v/1e6).toFixed(1)+'M';
-  if(Math.abs(v)>=1e3)return(v/1e3).toFixed(0)+'k';
-  return Number(v).toFixed(0);
-}
-function cagrPct(v21,v26){
-  if(!v21||v21<=0)return null;
-  return ((Math.pow(v26/v21,1/5)-1)*100).toFixed(1);
-}
-function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
-
-/* Build 5-year history 2021-2026 */
-function buildHist5(tabId,actors){
-  const g=GR[tabId]||{v:0.07,p:0.07,a:0.07};
-  const v26=actors.reduce((s,a)=>s+(a.vista||0),0);
-  const p26=actors.reduce((s,a)=>s+(a.plazo||0),0);
-  const a26=actors.reduce((s,a)=>s+(a.acm||0),0);
-  const h={};
-  [2021,2022,2023,2024,2025,2026].forEach(yr=>{
-    const n=2026-yr;
-    h[yr]={
-      vista:v26/Math.pow(1+g.v,n),
-      plazo:p26/Math.pow(1+g.p,n),
-      acm:  a26/Math.pow(1+g.a,n),
-    };
-  });
-  return h;
-}
-
-/* ── Econ score & phase ─────────────────────────────────────────── */
-function econScore(pibG,infl,unemp){
-  let s=0.5;
-  if(pibG>=4.5)s+=0.30;else if(pibG>=3.0)s+=0.18;else if(pibG>=1.5)s+=0.08;
-  else if(pibG>=-1)s-=0.12;else s-=0.25;
-  if(infl<50){
-    if(infl<=3.5)s+=0.08;else if(infl<=5)s+=0.04;
-    else if(infl<=8)s-=0.02;else if(infl<=15)s-=0.08;else s-=0.14;
-  }else s-=0.12;
-  if(unemp<=3)s+=0.08;else if(unemp<=5)s+=0.04;
-  else if(unemp<=7)s-=0.02;else if(unemp<=10)s-=0.07;else s-=0.13;
-  return Math.max(0.02,Math.min(0.98,s));
-}
-function phaseFromScore(s){
-  if(s<0.22)return{name:'Contracción',  color:'#f87171',pct:Math.round(s*100)};
-  if(s<0.44)return{name:'Estancamiento',color:'#fb923c',pct:Math.round(s*100)};
-  if(s<0.62)return{name:'Recuperación', color:'#fbbf24',pct:Math.round(s*100)};
-  if(s<0.80)return{name:'Crecimiento',  color:'#a3e635',pct:Math.round(s*100)};
-  return              {name:'Expansión',  color:'#34d399',pct:Math.round(s*100)};
-}
-
-/* ── Semicircle Gauge SVG (180° arc, left→right) ──────────────── */
-function makePt(cx,cy,r,deg){
-  const rad=deg*Math.PI/180;
-  return{x:+(cx+r*Math.cos(rad)).toFixed(2),y:+(cy-r*Math.sin(rad)).toFixed(2)};
-}
-function sectorPathSemi(cx,cy,ro,ri,a1,a2){
-  const s=makePt(cx,cy,ro,a1),e=makePt(cx,cy,ro,a2);
-  const si=makePt(cx,cy,ri,a2),ei=makePt(cx,cy,ri,a1);
-  const lg=(a1-a2)>180?1:0;
-  return`M${s.x},${s.y} A${ro},${ro},0,${lg},1,${e.x},${e.y} L${si.x},${si.y} A${ri},${ri},0,${lg},0,${ei.x},${ei.y}Z`;
-}
-function buildSemiGauge(score){
-  const cx=122,cy=112,ro=88,ri=55;
-  // score 0→angle 180°, score 1→angle 0°
-  const sToA=p=>180-p*180;
-  const bands=[
-    {p1:0,   p2:0.22,fill:'#fca5a5'},
-    {p1:0.22,p2:0.44,fill:'#fdba74'},
-    {p1:0.44,p2:0.62,fill:'#fde68a'},
-    {p1:0.62,p2:0.80,fill:'#d9f99d'},
-    {p1:0.80,p2:1.00,fill:'#86efac'},
-  ];
-  const labels=['C','E','R','G','X'];
-  const arcs=bands.map((b,i)=>{
-    const a1=sToA(b.p1),a2=sToA(b.p2);
-    const mid=sToA((b.p1+b.p2)/2);
-    const lp=makePt(cx,cy,(ro+ri)/2,mid);
-    return`<path d="${sectorPathSemi(cx,cy,ro,ri,a1,a2)}" fill="${b.fill}" opacity="0.9"/>
-<text x="${lp.x}" y="${lp.y}" fill="#1e293b" font-size="10" font-weight="700" text-anchor="middle" dominant-baseline="middle">${labels[i]}</text>`;
-  }).join('');
-  // Dividers
-  const divA=[0,0.22,0.44,0.62,0.80,1].map(p=>sToA(p));
-  const divs=divA.map(deg=>{
-    const p=makePt(cx,cy,ri-1,deg),q=makePt(cx,cy,ro+1,deg);
-    return`<line x1="${p.x}" y1="${p.y}" x2="${q.x}" y2="${q.y}" stroke="#fff" stroke-width="2"/>`;
-  }).join('');
-  // % tick labels — black, +2pt larger
-  const tickPts=[{p:0,l:'0%'},{p:0.22,l:'22'},{p:0.44,l:'44'},{p:0.62,l:'62'},{p:0.80,l:'80'},{p:1,l:'100%'}];
-  const ticks=tickPts.map(({p,l})=>{
-    const pt=makePt(cx,cy,ro+14,sToA(p));
-    return`<text x="${pt.x}" y="${pt.y}" fill="#1e293b" font-size="9" font-weight="600" text-anchor="middle" dominant-baseline="middle">${l}</text>`;
-  }).join('');
-  // Needle
-  const ndeg=sToA(score);
-  const nr=ndeg*Math.PI/180;
-  const tip={x:+(cx+76*Math.cos(nr)).toFixed(2),y:+(cy-76*Math.sin(nr)).toFixed(2)};
-  const pr=nr+Math.PI/2;
-  const n1={x:+(cx+5*Math.cos(pr)).toFixed(2),y:+(cy-5*Math.sin(pr)).toFixed(2)};
-  const n2={x:+(cx-5*Math.cos(pr)).toFixed(2),y:+(cy+5*Math.sin(pr)).toFixed(2)};
-  const needle=`<polygon points="${tip.x},${tip.y} ${n1.x},${n1.y} ${n2.x},${n2.y}" fill="#1e293b"/>`;
-  const hub=`<circle cx="${cx}" cy="${cy}" r="8" fill="#1e293b"/><circle cx="${cx}" cy="${cy}" r="3.5" fill="#f8fafc"/>`;
-  const scoreTxt=`<text x="${cx}" y="${cy+18}" fill="#4b5563" font-size="13" font-weight="800" text-anchor="middle">${Math.round(score*100)}%</text>`;
-  return`<svg viewBox="0 0 244 134" width="100%" xmlns="http://www.w3.org/2000/svg">
-    ${arcs}${divs}${ticks}${needle}${hub}${scoreTxt}
-  </svg>`;
-}
-
-/* ── 5-year macro history (estimated back-projection) ───────────── */
-function buildMacroHistory(d){
-  const yrs=[2021,2022,2023,2024,2025,2026];
-  const gr=(d.pib_crecimiento||2)/100;
-  const pibData=yrs.map(y=>+(d.pib/Math.pow(1+gr,2026-y)).toFixed(1));
-  const popData=yrs.map(y=>Math.round((d.poblacion||0)/Math.pow(1.012,2026-y)));
-  const i0=d.inflacion||4;
-  const inflData=[1.10,1.85,1.55,1.25,1.08,1].map(f=>+(i0*f).toFixed(1));
-  const t0=d.tasa_bc||4;
-  const tasaData=[0.55,0.85,1.45,1.35,1.10,1].map(f=>+(t0*f).toFixed(2));
-  const u0=d.desempleo||5;
-  const desempData=[1.48,1.30,1.18,1.10,1.04,1].map(f=>+(u0*f).toFixed(1));
-  const b0=d.bancarizacion||50;
-  const bancData=yrs.map(y=>+(b0/Math.pow(1.025,2026-y)).toFixed(1));
-  return{pibData,popData,inflData,tasaData,desempData,bancData};
-}
-
-/* ── Sparkline with year hover ──────────────────────────────────── */
-function renderSparkline(cid,data,hexColor,fmtFn){
-  destroyChart(cid);
-  const canvas=document.getElementById(cid);if(!canvas)return;
-  const hvEl=document.getElementById('shv-'+cid);
-  const yFull=['2021','2022','2023','2024','2025','2026'];
-  charts[cid]=new Chart(canvas.getContext('2d'),{
-    type:'line',
-    data:{
-      labels:['21','22','23','24','25','26'],
-      datasets:[{data,borderColor:hexColor,borderWidth:2,backgroundColor:hexColor+'1a',fill:true,pointRadius:0,pointHoverRadius:4,tension:0.4}],
-    },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      animation:{duration:350},
-      interaction:{mode:'index',intersect:false},
-      plugins:{
-        legend:{display:false},
-        tooltip:{enabled:false},
-      },
-      onHover:(_,active)=>{
-        if(!hvEl)return;
-        if(active.length){
-          const i=active[0].index;
-          hvEl.textContent=yFull[i]+': '+(fmtFn?fmtFn(data[i]):data[i]);
-        }else{
-          hvEl.textContent='—';
+            document.getElementById('lastUpdate').textContent = `Última actualización: ${new Date().toLocaleString('es-ES')}`;
         }
-      },
-      scales:{
-        x:{display:true,ticks:{color:'#cbd5e1',font:{size:8},maxRotation:0,padding:0},grid:{display:false},border:{display:false}},
-        y:{display:false},
-      },
-    },
-  });
-}
 
-/* ── Deposits Chart.js canvas ────────────────────────────────────── */
-function renderDepChart(cid,data,color){
-  destroyChart(cid);
-  const canvas=document.getElementById(cid);if(!canvas)return;
-  charts[cid]=new Chart(canvas.getContext('2d'),{
-    type:'line',
-    data:{
-      labels:["'21","'22","'23","'24","'25","'26"],
-      datasets:[{
-        data,
-        borderColor:color,
-        borderWidth:2.5,
-        backgroundColor:color+'20',
-        fill:true,
-        pointRadius:3,
-        pointBackgroundColor:color,
-        pointHoverRadius:5,
-        tension:0,
-      }],
-    },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      animation:{duration:400},
-      plugins:{
-        legend:{display:false},
-        tooltip:{
-          enabled:true,
-          backgroundColor:'#1e293b',
-          titleColor:'#94a3b8',
-          bodyColor:'#f1f5f9',
-          padding:8,
-          displayColors:false,
-          callbacks:{
-            title:ctx=>ctx[0].label,
-            label:ctx=>'$'+ctx.formattedValue+'B USD',
-          },
-        },
-      },
-      scales:{
-        x:{display:true,grid:{color:'#d8dde6'},ticks:{color:'#8892a1',font:{size:9}},border:{display:false}},
-        y:{display:true,grid:{color:'#d8dde6'},ticks:{color:'#8892a1',font:{size:9},callback:v=>fmtAx(v)+'B'},border:{display:false}},
-      },
-    },
-  });
-}
-
-/* ── Per-country render ─────────────────────────────────────────── */
-function renderDashboard(tabId,d){
-  const el=document.getElementById(tabId);
-  if(!d){el.innerHTML='<p class="no-data">Sin datos en Supabase para este país.</p>';return;}
-  const cur=CURRENCIES[tabId];
-  const rate=(!cur.dol&&exchangeRates)?exchangeRates[cur.code]:null;
-
-  /* Rate bar */
-  let rateHtml='';
-  if(cur.dol){
-    rateHtml=`<div class="rate-bar"><span class="rate-label">💱 Economía dolarizada (USD)</span><span class="rate-source">Sin conversión necesaria</span></div>`;
-  }else if(rate){
-    const fmtR=Number(rate).toLocaleString('es-MX',{maximumFractionDigits:2});
-    const rds=exchangeRateDates[cur.code]||rateDate;
-    const srcHtml=exchangeRateDates[cur.code]?'Banco Central (Supabase)':`<a href="https://open.er-api.com" target="_blank">open.er-api.com</a>`;
-    rateHtml=`<div class="rate-bar"><span class="rate-label">💱 1 USD = <strong>${fmtR} ${cur.code}</strong></span><span class="rate-source">Fuente: ${srcHtml}${rds?' · '+rds:''}</span></div>`;
-  }else{
-    rateHtml=`<div class="rate-bar"><span class="rate-label">💱 ${cur.code}</span><span class="rate-source">Tipo de cambio no disponible</span></div>`;
-  }
-
-  /* Table rows */
-  const fecha=d.fecha?new Date(d.fecha).toLocaleDateString('es-MX',{year:'numeric',month:'short',day:'numeric'}):null;
-  const srcLinks=(SOURCES[tabId]||[]).map(([n,u])=>`<a href="${u}" target="_blank">${n}</a>`).join(' · ');
-  const showUsd=!cur.dol&&rate;
-  const usdTh=showUsd?`<th>USD M</th>`:'';
-  const rows=d.actors.map(a=>{
-    const usdTd=showUsd?`<td class="usd-col">$${fmt(Math.round(a.acm/rate))}</td>`:'';
-    return`<tr><td>${a.nombre}</td><td>${fmt(a.vista)}</td><td>${fmt(a.plazo)}</td><td>${fmt(a.acm)}</td>${usdTd}<td><b>${a.cuota}%</b></td></tr>`;
-  }).join('');
-
-  /* Score for gauge + calc breakdown */
-  const score=econScore(d.pib_crecimiento,d.inflacion,d.desempleo);
-  const phase=phaseFromScore(score);
-  const pibC=d.pib_crecimiento>=4.5?'+0.30':d.pib_crecimiento>=3?'+0.18':d.pib_crecimiento>=1.5?'+0.08':d.pib_crecimiento>=-1?'-0.12':'-0.25';
-  const inflC=d.inflacion<50?(d.inflacion<=3.5?'+0.08':d.inflacion<=5?'+0.04':d.inflacion<=8?'-0.02':d.inflacion<=15?'-0.08':'-0.14'):'-0.12';
-  const unempC=d.desempleo<=3?'+0.08':d.desempleo<=5?'+0.04':d.desempleo<=7?'-0.02':d.desempleo<=10?'-0.07':'-0.13';
-
-  /* Pre-compute sparkline data before template */
-  const mh=buildMacroHistory(d);
-  const yrs=[2021,2022,2023,2024,2025,2026];
-  const cagrLine=yrs.map(y=>d.history[y].vista+d.history[y].plazo);
-  const cagr5y=d.cagr5y||'—';
-
-  /* Pre-compute deposits B USD */
-  const depDiv=(cur.dol||!rate)?1000:rate*1000;
-  const plB=yrs.map(y=>+(d.history[y].plazo/depDiv).toFixed(2));
-  const auB=yrs.map(y=>+(d.history[y].acm/depDiv).toFixed(2));
-  const plCagr5=cagrPct(plB[0],plB[5])||'—';
-  const auCagr5=cagrPct(auB[0],auB[5])||'—';
-
-  /* CSS classes */
-  const pibClass=d.pib_crecimiento>=3?'spark-up':d.pib_crecimiento>=0?'':'spark-dn';
-  const inflClass=d.inflacion<=5?'spark-up':d.inflacion>10?'spark-dn':'';
-
-  el.innerHTML=`
-    ${rateHtml}
-    <div class="macro-spark-grid">
-      <div class="spark-card">
-        <div class="spark-label">PIB</div>
-        <div class="spark-val">$${d.pib}B</div>
-        <div class="spark-sub"><span class="${pibClass}">${d.pib_crecimiento>=0?'▲':'▼'}${Math.abs(d.pib_crecimiento)}%</span> crec. anual</div>
-        <div class="spark-hover-val" id="shv-sp-pib-${tabId}">—</div>
-        <div class="spark-chart-wrap"><canvas id="sp-pib-${tabId}"></canvas></div>
-      </div>
-      <div class="spark-card">
-        <div class="spark-label">Población</div>
-        <div class="spark-val">${fmtAx(d.poblacion)}</div>
-        <div class="spark-sub">habitantes</div>
-        <div class="spark-hover-val" id="shv-sp-pop-${tabId}">—</div>
-        <div class="spark-chart-wrap"><canvas id="sp-pop-${tabId}"></canvas></div>
-      </div>
-      <div class="spark-card">
-        <div class="spark-label">Inflación</div>
-        <div class="spark-val">${d.inflacion}%</div>
-        <div class="spark-sub"><span class="${inflClass}">IPC anual</span></div>
-        <div class="spark-hover-val" id="shv-sp-infl-${tabId}">—</div>
-        <div class="spark-chart-wrap"><canvas id="sp-infl-${tabId}"></canvas></div>
-      </div>
-      <div class="spark-card">
-        <div class="spark-label">Tasa BC</div>
-        <div class="spark-val">${d.tasa_bc>0?d.tasa_bc+'%':'—'}</div>
-        <div class="spark-sub">política monetaria</div>
-        <div class="spark-hover-val" id="shv-sp-tasa-${tabId}">—</div>
-        <div class="spark-chart-wrap"><canvas id="sp-tasa-${tabId}"></canvas></div>
-      </div>
-      <div class="spark-card">
-        <div class="spark-label">Desempleo</div>
-        <div class="spark-val">${d.desempleo}%</div>
-        <div class="spark-sub">tasa nacional</div>
-        <div class="spark-hover-val" id="shv-sp-desemp-${tabId}">—</div>
-        <div class="spark-chart-wrap"><canvas id="sp-desemp-${tabId}"></canvas></div>
-      </div>
-      <div class="spark-card">
-        <div class="spark-label">CAGR 5Y</div>
-        <div class="spark-val spark-up">${cagr5y}%</div>
-        <div class="spark-sub">depósitos totales</div>
-        <div class="spark-hover-val" id="shv-sp-cagr-${tabId}">—</div>
-        <div class="spark-chart-wrap"><canvas id="sp-cagr-${tabId}"></canvas></div>
-      </div>
-    </div>
-    <div class="row-bottom">
-      <div class="card">
-        <div class="banc-block" style="margin-top:0;margin-bottom:12px">
-          <div class="banc-block-label">Bancarización</div>
-          <div class="banc-block-val">${d.bancarizacion}%</div>
-          <div class="banc-block-sub">población con cuenta bancaria</div>
-        </div>
-        <div class="card-title">Ciclo Económico</div>
-        <div class="gauge-wrap">
-          <div id="gauge-${tabId}"></div>
-          <div id="gphase-${tabId}" class="gauge-phase"></div>
-          <div id="gpct-${tabId}" class="gauge-pct"></div>
-        </div>
-        <div class="gauge-calc">
-          <div class="gauge-calc-title">Cálculo del índice</div>
-          <table class="gauge-calc-tbl">
-            <tr><td>Base</td><td>0.50</td></tr>
-            <tr><td>PIB ${d.pib_crecimiento}%</td><td>${pibC}</td></tr>
-            <tr><td>Inflación ${d.inflacion}%</td><td>${inflC}</td></tr>
-            <tr><td>Desempleo ${d.desempleo}%</td><td>${unempC}</td></tr>
-            <tr style="border-top:1px solid #f1f5f9"><td><b>Score</b></td><td><b>${phase.pct}/100</b></td></tr>
-          </table>
-          <div class="gauge-bands">
-            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#fca5a5"></span>0–22 Contracción</div>
-            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#fdba74"></span>22–44 Estancamiento</div>
-            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#fde68a"></span>44–62 Recuperación</div>
-            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#d9f99d"></span>62–80 Crecimiento</div>
-            <div class="gauge-band-row"><span class="gauge-band-dot" style="background:#86efac"></span>80–100 Expansión</div>
-          </div>
-          <div class="gauge-letter-legend">
-            <span class="gll-row"><span class="gll-letter">C</span> Contracción</span><span class="gll-sep">|</span>
-            <span class="gll-row"><span class="gll-letter">E</span> Estancamiento</span><span class="gll-sep">|</span>
-            <span class="gll-row"><span class="gll-letter">R</span> Recuperación</span><span class="gll-sep">|</span>
-            <span class="gll-row"><span class="gll-letter">G</span> Crecimiento</span><span class="gll-sep">|</span>
-            <span class="gll-row"><span class="gll-letter">X</span> Expansión</span>
-          </div>
-        </div>
-      </div>
-      <div class="card" style="min-width:0;padding:16px">
-        <div class="dep-2col">
-          <div class="dep-chart-wrap">
-            <div class="dep-chart-hdr">
-              <span class="dep-tag">DEP. PLAZO 2021–2026</span>
-              <div class="dep-kpi">
-                <span class="dep-cagr">CAGR ${plCagr5}%</span>
-                <span class="dep-amount" style="color:#2d9d78">$${fmtAx(plB[5])}B USD *est.</span>
-              </div>
-            </div>
-            <div class="dep-canvas-wrap"><canvas id="cv-dep-plazo-${tabId}"></canvas></div>
-            <div class="dep-legend">Depósitos a Plazo | Bancos Privados | Período 2021–2025 estimado<br>Fuente: Reguladores Nacionales / Elaboración: SynerGy</div>
-          </div>
-          <div class="dep-chart-wrap">
-            <div class="dep-chart-hdr">
-              <span class="dep-tag">INV. / AUM 2021–2026</span>
-              <div class="dep-kpi">
-                <span class="dep-cagr">CAGR ${auCagr5}%</span>
-                <span class="dep-amount" style="color:#5b7cfa">$${fmtAx(auB[5])}B USD *est.</span>
-              </div>
-            </div>
-            <div class="dep-canvas-wrap"><canvas id="cv-dep-aum-${tabId}"></canvas></div>
-            <div class="dep-legend">Fondos, Fideicomisos y Activos bajo Administración | Período 2021–2025 estimado<br>Fuente: Reguladores Nacionales / Elaboración: SynerGy</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="card" style="margin-bottom:14px">
-      <div class="table-hdr">
-        <h2>Actores del Sistema Bancario</h2>
-        <div class="meta-box">${fecha?`Act: ${fecha}<br>`:''}${srcLinks?`Fuentes: ${srcLinks}`:''}</div>
-      </div>
-      <div class="actors-split">
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Institución</th><th>Vista (M USD)</th><th>Plazo (M USD)</th><th>ACM (M USD)</th><th>Cuota</th></tr></thead>
-            <tbody>${d.actors.map(a=>{
-              const div=(!cur.dol&&rate)?rate:1;
-              return`<tr><td>${a.nombre}</td><td>${fmt(Math.round(a.vista/div))}</td><td>${fmt(Math.round(a.plazo/div))}</td><td>${fmt(Math.round(a.acm/div))}</td><td><b>${a.cuota}%</b></td></tr>`;
-            }).join('')}</tbody>
-          </table>
-        </div>
-        <div class="actors-pie-wrap">
-          <div class="actors-pie-title">Cuota de mercado</div>
-          <canvas id="pie-${tabId}" style="max-width:260px;max-height:260px"></canvas>
-        </div>
-      </div>
-      <p class="chart-note">*Vista/Plazo en USD equivalente · Incluye bancos, cooperativas y fondos de ahorro</p>
-    </div>`;
-
-  /* Gauge */
-  const gEl=document.getElementById('gauge-'+tabId);
-  const gpEl=document.getElementById('gphase-'+tabId);
-  const gpcEl=document.getElementById('gpct-'+tabId);
-  if(gEl)gEl.innerHTML=buildSemiGauge(score);
-  if(gpEl){gpEl.textContent=phase.name;gpEl.style.color=phase.color;}
-  if(gpcEl)gpcEl.textContent=`Índice: ${phase.pct}/100`;
-
-  /* Sparklines */
-  renderSparkline(`sp-pib-${tabId}`,   mh.pibData,    '#6b7a94', v=>'$'+fmtAx(v)+'B');
-  renderSparkline(`sp-pop-${tabId}`,   mh.popData,    '#94a3b8', v=>fmtAx(v));
-  renderSparkline(`sp-infl-${tabId}`,  mh.inflData,   '#f87171', v=>v+'%');
-  renderSparkline(`sp-tasa-${tabId}`,  mh.tasaData,   '#a8d5ba', v=>v+'%');
-  renderSparkline(`sp-desemp-${tabId}`,mh.desempData, '#f5deb3', v=>v+'%');
-  renderSparkline(`sp-cagr-${tabId}`,  cagrLine,      '#a8d5ba', v=>fmtAx(v)+'M');
-
-  /* Canvas deposits — Chart.js straight lines */
-  renderDepChart('cv-dep-plazo-'+tabId, plB, '#2d9d78');
-  renderDepChart('cv-dep-aum-'+tabId,   auB, '#5b7cfa');
-
-  /* Actors pie chart */
-  renderActorsPie(tabId,d.actors);
-}
-
-/* ── Tab switch ─────────────────────────────────────────────────── */
-window.showCountry=function(country,btn){
-  document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById(country).classList.add('active');
-  (btn instanceof Element?btn:event.target).classList.add('active');
-  activeCountry=country;
-  if(dashboardData[country]!==undefined){
-    renderDashboard(country,dashboardData[country]);
-  }
-  const ct=document.getElementById('news-country-title');
-  if(ct)ct.textContent=COUNTRY_MAP[country]||country;
-  renderNewsSection(country,'news-country');
-};
-
-/* ── Data loading ────────────────────────────────────────────────── */
-async function loadRates(){
-  try{
-    const {data}=await supabase.from('exchange_rates').select('*');
-    if(data&&data.length>0){
-      exchangeRates={};
-      data.forEach(r=>{
-        exchangeRates[r.currency_code]=r.rate_usd;
-        exchangeRateDates[r.currency_code]=new Date(r.last_updated).toLocaleString('es-MX',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-      });
-      return;
-    }
-  }catch(e){console.warn('Supabase FX',e);}
-  try{
-    const r=await fetch('https://open.er-api.com/v6/latest/USD');
-    const j=await r.json();
-    if(j.result==='success'){
-      exchangeRates=j.rates;
-      rateDate=j.time_last_update_utc?new Date(j.time_last_update_utc).toLocaleDateString('es-MX'):null;
-    }
-  }catch(e){console.warn('FX fallback',e);}
-}
-async function loadSupabase(){
-  const [{data:countries},{data:actors}]=await Promise.all([
-    supabase.from('countries').select('*'),
-    supabase.from('actors').select('*'),
-  ]);
-  for(const[tabId,countryName]of Object.entries(COUNTRY_MAP)){
-    const c=countries?.find(x=>x.country===countryName);
-    if(!c)continue;
-    const ca=(actors||[]).filter(a=>a.country===countryName).map(a=>({
-      nombre:a.nombre_actor,vista:a.depositos_vista,plazo:a.depositos_plazo,acm:a.acm,cuota:a.cuota_mercado,
-    }));
-    const hist=buildHist5(tabId,ca);
-    const c5y=cagrPct(hist[2021].acm,hist[2026].acm);
-    dashboardData[tabId]={
-      pib:c.pib,pib_crecimiento:c.pib_crecimiento,inflacion:c.inflacion,
-      tasa_bc:c.tasa_bc,desempleo:c.desempleo,poblacion:c.poblacion,bancarizacion:c.bancarizacion,
-      fecha:c.fecha_actualizacion,actors:ca,history:hist,cagr5y:c5y,
-    };
-  }
-}
-
-/* ── Actors Pie Chart ────────────────────────────────────────────── */
-const PIE_COLORS=['#a8d5ba','#6b7a94','#f5deb3','#c8d8e8','#d4c5b0','#b8d4c0','#8fa8be','#e8d5a0','#9bbfab','#7a90a8'];
-function renderActorsPie(tabId,actors){
-  if(!actors||!actors.length)return;
-  destroyChart('pie-'+tabId);
-  const canvas=document.getElementById('pie-'+tabId);if(!canvas)return;
-  const labels=actors.map(a=>a.nombre);
-  const data=actors.map(a=>a.cuota||0);
-  const colors=actors.map((_,i)=>PIE_COLORS[i%PIE_COLORS.length]);
-  charts['pie-'+tabId]=new Chart(canvas.getContext('2d'),{
-    type:'doughnut',
-    data:{labels,datasets:[{data,backgroundColor:colors,borderColor:'#fff',borderWidth:2,hoverOffset:8}]},
-    options:{
-      responsive:true,
-      maintainAspectRatio:true,
-      cutout:'58%',
-      animation:{duration:400},
-      plugins:{
-        legend:{display:false},
-        tooltip:{
-          enabled:true,
-          backgroundColor:'#1e293b',
-          titleColor:'#f1f5f9',
-          bodyColor:'#94a3b8',
-          padding:8,
-          displayColors:true,
-          callbacks:{
-            label:ctx=>`${ctx.label}: ${ctx.parsed.toFixed(1)}%`,
-          },
-        },
-      },
-    },
-  });
-}
-
-/* ── Online indicator ────────────────────────────────────────────── */
-function setOnline(){
-  const ts=new Date().toLocaleString('es-MX',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-  const text='Actualizado: '+ts;
-  ['online-ts','online-ts-nav'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=text;});
-  const hu=document.getElementById('home-updated');if(hu)hu.textContent=text;
-  const nd=document.getElementById('nav-date');if(nd)nd.textContent=text;
-}
-
-/* ── News source URL map ─────────────────────────────────────────── */
-const NEWS_URLS={Banxico:'https://banxico.org.mx',BBVA:'https://bbvaresearch.com',CNBV:'https://cnbv.gob.mx',BanRep:'https://banrep.gov.co',Bancolombia:'https://bancolombia.com',Superfinanciera:'https://superfinanciera.gov.co',BCRP:'https://bcrp.gob.pe',BCP:'https://viabcp.com',SBS:'https://sbs.gob.pe',BCCh:'https://bcentral.cl',Santander:'https://santander.cl',CMF:'https://cmfchile.cl',BCB:'https://bcb.gov.br',Itaú:'https://itau.com.br',BCRA:'https://bcra.gob.ar',BNA:'https://bna.com.ar',BCE:'https://bce.fin.ec',SB:'https://superbancos.gob.ec',MinFinanzas:'https://finanzas.gob.ec',ASFI:'https://asfi.gob.bo',BCP_PY:'https://bcp.gov.py',BCU:'https://bcu.gub.uy',BROU:'https://brou.com.uy',BCV:'https://bcv.org.ve',SUDEBAN:'https://sudeban.gob.ve',Banguat:'https://banguat.gob.gt',SIB:'https://sib.gob.gt',BCH:'https://bch.hn',FICOHSA:'https://ficohsa.com',CNBS:'https://cnbs.gob.hn',BCR:'https://bcr.gob.sv',SSF:'https://ssf.gob.sv',BCN:'https://bcn.gob.ni',SIBOIF:'https://siboif.gob.ni',BANPRO:'https://banpro.com.ni',SBP:'https://superbancos.gob.pa',BGP:'https://bgeneral.com',BCCR:'https://bccr.fi.cr',SUGEF:'https://sugef.fi.cr',MinHacienda:'https://hacienda.go.cr',BCRD:'https://bancentral.gov.do',Reuters:'https://reuters.com',FMI:'https://imf.org','S&P Global':'https://spglobal.com',};
-
-/* ── News ────────────────────────────────────────────────────────── */
-function renderNewsSection(key,containerId){
-  const c=document.getElementById(containerId);if(!c)return;
-  const items=(HEADLINES[key]||HEADLINES._global).slice(0,3);
-  c.innerHTML=items.map(({t,s,d})=>{
-    const url=NEWS_URLS[s]||'#';
-    return`<div class="news-item"><div class="news-headline"><span style="color:#0f172a;font-size:12.5px;font-weight:500;line-height:1.4;display:block">${t}</span></div><div class="news-meta">${s?s+' · ':''}${d} · <a href="${url}" target="_blank" rel="noopener" class="news-ampliar">Ampliar noticia →</a></div></div>`;
-  }).join('');
-}
-function refreshNews(){
-  const ct=document.getElementById('news-country-title');
-  if(ct)ct.textContent=COUNTRY_MAP[activeCountry]||activeCountry;
-  renderNewsSection('_global','news-global');
-  renderNewsSection(activeCountry,'news-country');
-  const el=document.getElementById('news-last-update');
-  if(el)el.textContent=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
-}
-
-
-/* ── Init ────────────────────────────────────────────────────────── */
-async function init(){
-  await Promise.all([loadRates(),loadSupabase()]);
-  setOnline();
-  renderDashboard(activeCountry,dashboardData[activeCountry]);
-  refreshNews();
-}
-init();
-</script>
+        document.addEventListener('DOMContentLoaded', loadKPIs);
+    </script>
 </body>
 </html>
